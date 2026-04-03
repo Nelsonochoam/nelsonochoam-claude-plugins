@@ -7,7 +7,7 @@
 
 > "If implementation feels creative, something upstream is missing."
 
-Inspired by this talk
+Inspired by:
 [From RPI to QRSPI by Dexter Horthy](https://www.youtube.com/watch?v=5MWl3eRXVQk)
 
 ## The Problem It Solves
@@ -28,6 +28,8 @@ The core idea: **one phase per session, then reset**. Each skill reads artifacts
 
 ### Setup
 
+**Optional: run `/crispy-init` once per machine** to configure where crispy stores artifacts and optionally link to an Obsidian vault. Without it, crispy defaults to `~/.crispy/`. Run it only when you want to change the storage location — it is never called automatically.
+
 Set your feature name as an environment variable so every skill knows which feature folder to use:
 
 ```bash
@@ -36,38 +38,90 @@ CRISPY_FEATURE=my-feature claude
 
 This tells all crispy skills to use `.crispy/my-feature/` without prompting. You can also set it mid-session with `export CRISPY_FEATURE=my-feature`.
 
+If `CRISPY_FEATURE` is not set, crispy will ask you for a feature name the first time a skill needs one and track it for the rest of the session. But that tracking only lasts for the current session — **if you terminate the session and want to continue the same feature later, always start with `CRISPY_FEATURE=<name> claude`** so every skill resolves to the right folder without prompting.
+
+### The Phases
+
+```
+/intent → /research-questions → /research → /design → /structure → /create-plan → /implement
+```
+
+Each phase produces a file that becomes the input for the next. The **artifacts are the handoff** — not the conversation. Start a fresh session for each phase; the skill reads prior artifacts cold and works from those.
+
+#### `/intent` — Define what you're building
+
+Captures scope, motivation, acceptance criteria, and constraints before any code is touched. Every subsequent phase reads this as the source of truth.
+
+**Output:** `intent.md`
+
+#### `/research-questions` — Ask before looking
+
+Reads `intent.md` and surfaces the questions a developer would need answered before starting work — without scanning the codebase yet. Includes hint fields for steering the research.
+
+**Reads:** `intent.md` | **Output:** `research-questions.md`
+
+#### `/research` — Answer those questions
+
+Spawns parallel sub-agents to explore the codebase and answer the research questions factually. Documents what exists — no opinions, no design. Intentionally does NOT read `intent.md` so findings stay objective.
+
+**Reads:** `research-questions.md` | **Output:** `research.md`
+
+#### `/design` — Decide the approach
+
+Surfaces open design decisions as options with recommendations, gets your decisions, then writes a design document.
+
+**Reads:** `intent.md`, `research-questions.md`, `research.md` | **Output:** `design.md`
+
+#### `/structure` — Break it into phases
+
+Breaks the work into vertical slices — each phase delivers end-to-end behavior with its own tests and verification steps.
+
+**Reads:** `intent.md`, `research.md`, `design.md` | **Output:** `structure-outline.md`
+
+#### `/create-plan` — Write the mechanical plan
+
+Produces a precise, step-by-step implementation plan with exact file paths, function signatures, and success criteria. Once confirmed, generates implementation tasks in `manifest.json` — self-contained prompts with dependency metadata for each phase.
+
+**Reads:** `intent.md`, `research.md`, `design.md`, `structure-outline.md` | **Output:** `plan.md` + `tasks/phase-N.md`
+
+#### `/implement` — Execute the plan
+
+Implements one phase at a time, then stops. Reads `manifest.json` to find the next eligible phase, verifies with automated checks, and updates task status. Supports targeted execution: `/implement phase-N`.
+
+**Reads:** all prior artifacts + `plan.md` + `manifest.json` + `tasks/phase-N.md`
+
 ### Typical Workflow
 
 ```bash
-# Session 1: Define what you're building
+# Session 1: Capture intent — scope, acceptance criteria, constraints → intent.md
 CRISPY_FEATURE=my-feature claude
 > /intent
 # Review intent.md, confirm, then reset
 > /clear
 
-# Session 2: Generate research questions
+# Session 2: Surface what needs to be understood before touching the codebase → research-questions.md
 > /research-questions
-# Review, confirm, reset
+# Add hints to steer research, confirm, reset
 > /clear
 
-# Session 3: Research the codebase
+# Session 3: Answer the research questions by exploring the codebase → research.md
 > /research
-# Review, confirm, reset
+# Review research.md, confirm, reset
 > /clear
 
-# Session 4: Make design decisions
+# Session 4: Resolve design decisions → design.md
 > /design
-# Review, confirm, reset
+# Review design.md, confirm, reset
 > /clear
 
-# Session 5: Break into phases
+# Session 5: Break the work into vertical phases → structure-outline.md
 > /structure
-# Review, confirm, reset
+# Review structure-outline.md, confirm, reset
 > /clear
 
-# Session 6: Write the detailed plan
+# Session 6: Write the detailed implementation plan → plan.md + tasks/
 > /create-plan
-# Review, confirm → tasks are generated automatically
+# Review plan.md, confirm → tasks generated automatically
 > /clear
 
 # Session 7+: Implement one phase at a time
@@ -78,25 +132,24 @@ CRISPY_FEATURE=my-feature claude
 # Next phase...
 ```
 
-Each `/clear` gives the next skill a fresh context window. The skill reads only the artifact files it needs — not the conversation that produced them. This is why crispy works: a fresh agent reading a clean document follows instructions far better than a tired agent at turn 80.
+Each `/clear` gives the next skill a fresh context window. A fresh agent reading a clean artifact follows instructions far better than a tired agent at turn 80.
 
 You can also use separate terminal sessions or `claude --resume` instead of `/clear` — the key is that each phase starts with a clean context.
 
 ### Quick Plan Workflow
 
-For cases where you already know what to build — a small UI tweak, a well-scoped bug fix, a one-off change — and just want a plan on disk before touching code:
+For cases where you already know what to build — a small UI tweak, a well-scoped bug fix, a one-off change:
 
 ```bash
-# Session 1: Define what you're building
+# Session 1: Capture intent → intent.md
 CRISPY_FEATURE=my-feature claude
 > /intent
-# Review intent.md, confirm, then reset
 > /clear
 
-# Session 2: Write the plan directly
+# Session 2: Write the plan directly (skips research, design, structure)
 > /create-plan
-# Skill does a targeted research pass, surfaces all assumed decisions,
-# and writes plan.md. Iterate on the file until it's right, then confirm.
+# Skill does its own codebase research pass, surfaces all assumed decisions,
+# and writes plan.md. Review assumptions before confirming.
 > /clear
 
 # Session 3+: Implement one phase at a time
@@ -105,13 +158,13 @@ CRISPY_FEATURE=my-feature claude
 > /implement
 ```
 
-`/create-plan` handles missing intermediate artifacts — when called with only `intent.md`, it does its own codebase research pass and surfaces all design decisions and phase breakdown as explicit assumptions. Review those assumptions in `plan.md` before confirming. If any are wrong, fix them before running `/implement`.
+`/create-plan` handles missing intermediate artifacts — when called with only `intent.md`, it does its own research pass and surfaces all design decisions and phase breakdown as explicit assumptions. Review those in `plan.md` before confirming. If any are wrong, fix them before running `/implement`.
 
 **Trade-off:** Faster start, but you're compressing research, design, and structure into a single step. If the plan comes back with too many unknowns, consider running the full flow or a subset (e.g., `/research` → `/create-plan`). See [Flexible Entry Points](#flexible-entry-points).
 
 ### Skipping Phases
 
-You don't have to run every phase. If you have enough context, jump ahead — skills adapt and flag any assumptions they have to make. See [Flexible Entry Points](#flexible-entry-points) below.
+You don't have to run every phase. Skills adapt and flag any assumptions they have to make. See [Flexible Entry Points](#flexible-entry-points) below.
 
 ## When to Use (and When Not To)
 
@@ -130,73 +183,6 @@ Crispy is not for everything. It adds structure and overhead — that's the poin
 
 The full QRDSPI flow is a tool for deep work. Use it when the cost of getting it wrong is high. For everything else, point Claude at a spec and go.
 
-## The Phases
-
-```
-/intent → /research-questions → /research → /design → /structure → /create-plan → /implement
-```
-
-Each phase produces a file in `.crispy/<feature>/` at the repository root. The **artifacts are the handoff** — not the conversation. When you move to the next phase, you start a fresh session; the skill reads all prior artifacts cold and works from those. This is intentional: a fresh model reading clean documents follows instructions far better than a tired model at turn 80 of a long conversation.
-
-### `/intent` — The PRD
-
-Your product requirements document. Captures what you want to build before any code is touched — scope, motivation, acceptance criteria, constraints, and open questions. Every subsequent phase reads this document as the source of truth for what's being built and why.
-
-**Use when:** You have a task but need to define it precisely before anything else starts.
-**Output:** `intent.md`
-
-### `/research-questions` — Ask before looking
-
-Reads `intent.md` and thinks like a developer seeing requirements for the first time. Surfaces the questions that need answering before work can confidently begin — without scanning the codebase yet. Produces `research-questions.md` with optional hint fields for steering the research.
-
-**Reads:** `intent.md`
-**Use when:** Intent is confirmed, and you want focused research rather than a broad codebase sweep.
-**Output:** `research-questions.md`
-
-### `/research` — Answer those questions
-
-Spawns parallel sub-agents to explore the codebase and answer the research questions factually. Documents what exists — no opinions, no suggestions, no design. Produces `research.md` with `file:line` references.
-
-**Reads:** `research-questions.md` only — intentionally does NOT read `intent.md`. A research agent that knows what you're trying to build will unconsciously describe the codebase in terms of that solution. Keeping it unaware ensures findings are objective. The synthesis happens in `/design`, not here.
-**Use when:** Research questions are ready and you need codebase understanding before designing.
-**Output:** `research.md`
-
-### `/design` — Decide the approach
-
-Reads all prior artifacts and synthesizes them into a solution direction. Surfaces open design decisions as options with recommendations, gets your decisions, then writes a design document.
-
-**Reads:** `intent.md`, `research-questions.md`, `research.md`
-**Use when:** Research is done and you need to agree on the approach before breaking it into phases.
-**Output:** `design.md`
-
-### `/structure` — Break it into phases
-
-Reads all prior artifacts and breaks the work into vertical slices — each phase delivers end-to-end behavior with its own tests and verification steps.
-
-**Reads:** `intent.md`, `research.md`, `design.md`
-**Use when:** Design is approved and you need to agree on the phase breakdown before writing the detailed plan.
-**Output:** `structure-outline.md`
-
-### `/create-plan` — Write the mechanical plan
-
-Reads all prior artifacts and produces a precise, step-by-step implementation plan with exact file paths, function signatures, and success criteria. Implementation following this plan should feel mechanical.
-
-Once confirmed, generates **implementation tasks** in `manifest.json` — self-contained prompts with dependency metadata for each phase. See [Implementation Tasks](#implementation-tasks) below.
-
-**Reads:** `intent.md`, `research.md`, `design.md`, `structure-outline.md`
-**Use when:** Structure is approved, or you have enough context to write a concrete plan directly.
-**Output:** `plan.md` + `tasks/phase-N.md` files + task metadata in `manifest.json`
-
-### `/implement` — Execute the plan
-
-Implements one phase at a time, then stops. Reads `manifest.json` tasks to determine the next eligible phase (pending, with all dependencies done). Verifies each phase with automated checks. Updates task status and plan checkboxes as work completes.
-
-Supports targeted execution: `/implement phase-N` to work on a specific phase.
-
-**Reads:** all prior artifacts + `plan.md` + `manifest.json` tasks + `tasks/phase-N.md`
-**Use when:** Plan is confirmed and you're ready to write code.
-
----
 
 ## How Artifacts Are Stored
 

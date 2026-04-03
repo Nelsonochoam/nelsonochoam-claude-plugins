@@ -22,7 +22,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user to share the intent and research documents.
 - **Manifest handling**: If prior phases aren't marked done, warn the user ("Working without complete prior phases — design quality will be best with full research context") but continue with what's available.
 
-Once resolved, read available artifacts from `<BASE_DIR>/<feature>/` (intent.md, research.md). If research is missing, design from intent alone — surface more assumptions as open questions. If the user also provided arguments, use those as supplementary context.
+Once resolved, read available artifacts from `$FEATURE_PATH/` (intent.md, research.md). If research is missing, design from intent alone — surface more assumptions as open questions. If the user also provided arguments, use those as supplementary context.
 ## Initial Setup
 
 When this command is invoked:
@@ -77,12 +77,12 @@ Before writing the final document, collect:
 
 ### 5. Write the Design Document
 
-Read the template from `references/template.md` and synthesize everything into the final design document. Write it to `<BASE_DIR>/<feature>/design.md` (create the directory if needed).
+Read the template from `references/template.md` and synthesize everything into the final design document. Write it to `$FEATURE_PATH/design.md` (create the directory if needed).
 
 Then say:
 
 ```
-Written to <BASE_DIR>/<feature>/design.md — please review.
+Written to $FEATURE_PATH/design.md — please review.
 Let me know if any decision needs revisiting or if something is missing.
 ```
 

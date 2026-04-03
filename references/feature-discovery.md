@@ -14,17 +14,21 @@ This returns the crispy output base directory for the current repo (e.g., `~/.cr
 
 ## 2. Resolve Feature Folder
 
-1. **Check the `CRISPY_FEATURE` env variable** — if set, use `<BASE_DIR>/$CRISPY_FEATURE/` as the feature folder.
-2. **If not set**, scan `<BASE_DIR>/` for feature folders:
-   - If **one folder** exists → use it automatically.
-   - If **multiple folders** exist → check each `manifest.json` for the one where `<phase>` status is `pending`. If exactly one matches, use it. Otherwise, list the folders and ask the user which feature to continue.
-   - If **no folders** exist → determine the feature name from the user's arguments:
-     1. If a ticket is mentioned, use it as the feature name
-     2. Otherwise derive a kebab-case name from the description (e.g. `add-dark-mode-toggle`)
+Resolve the feature folder. All subsequent artifact reads and writes use `$FEATURE_PATH`.
 
-     Then create the folder:
+1. **`CRISPY_FEATURE` env variable is set** → set `FEATURE_PATH` to `$BASE_DIR/$CRISPY_FEATURE`
+2. **`CRISPY_FEATURE` is not set** → scan `$BASE_DIR/` for feature folders:
+   - **One folder found** → set `FEATURE_PATH` to that folder's absolute path
+   - **Multiple folders found** → check each folder's `manifest.json` for the one where `<phase>` status is `pending` (skip folders with no manifest or no matching phase key). If exactly one matches, set `FEATURE_PATH` to it. If zero or multiple match, use `AskUserQuestion` to list the folders and ask which feature to continue.
+   - **No folders found** → determine the feature name:
+     1. If the user's arguments contain a ticket ID (e.g. `tn-3459`) or an explicit feature name, derive from it (convert description to kebab-case, e.g. `add-dark-mode-toggle`)
+     2. Otherwise use `AskUserQuestion` to ask: *"What should this feature be named? Use kebab-case or a ticket ID — e.g. `add-dark-mode-toggle` or `tn-3459`."*
+
+     Remember the feature name as `CRISPY_FEATURE` for this session, then create the folder:
      ```bash
-     FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-name>")
+     FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "$CRISPY_FEATURE")
      ```
-     If no arguments were provided, follow the **no-args fallback** described in the skill file.
-3. **Read `manifest.json`** from the resolved feature folder (if it exists) to understand phase status. Follow any **manifest handling** instructions in the skill file.
+
+3. **Read `$FEATURE_PATH/manifest.json`** (if it exists) to understand phase status. Follow any **manifest handling** instructions in the skill file.
+
+4. **If the user provided no task description** (only a feature name, or nothing at all), follow the skill's **no-args fallback** now.

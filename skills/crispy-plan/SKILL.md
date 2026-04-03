@@ -21,7 +21,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user what they want to build.
 - **Manifest handling**: Note which phases are complete but **do not stop** if prior phases are missing — work with what's available.
 
-Once resolved, read **all** existing artifacts from `<BASE_DIR>/<feature>/`:
+Once resolved, read **all** existing artifacts from `$FEATURE_PATH/`:
 - `intent.md` — scope, acceptance criteria, what we're NOT doing
 - `research.md` — codebase findings, exact file paths, types, patterns
 - `design.md` — resolved design decisions, patterns to follow
@@ -101,7 +101,7 @@ Read the template and step entry guidelines from `references/template.md`. Write
 Then say:
 
 ```
-Written to <BASE_DIR>/<feature>/plan.md — please review.
+Written to $FEATURE_PATH/plan.md — please review.
 Does this look correct and complete? Any steps that need more detail,
 anything to add or remove, or phases to reorder?
 ```
@@ -125,15 +125,15 @@ Spawn a **subagent** to generate the task files and update the manifest. This ke
 **Subagent instructions:**
 
 > Read `references/generate-tasks.md` and follow its instructions exactly. Use these inputs:
-> - Plan path: `<BASE_DIR>/<feature>/plan.md`
-> - Feature directory: `<BASE_DIR>/<feature>/`
+> - Plan path: `$FEATURE_PATH/plan.md`
+> - Feature directory: `$FEATURE_PATH/`
 > - Feature name: `<feature>` (from manifest.json)
-> - Structure outline: `<BASE_DIR>/<feature>/structure-outline.md` (if it exists)
+> - Structure outline: `$FEATURE_PATH/structure-outline.md` (if it exists)
 
 Wait for the subagent to complete, then say:
 
 ```
-Plan confirmed. {N} implementation tasks generated in <BASE_DIR>/<feature>/tasks/.
+Plan confirmed. {N} implementation tasks generated in $FEATURE_PATH/tasks/.
 
 Run /implement to execute the next ready phase, or:
 - `/implement phase-N` to target a specific phase

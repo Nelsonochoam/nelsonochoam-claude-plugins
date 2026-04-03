@@ -18,7 +18,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user to provide a plan document to implement.
 - **Manifest handling**: Confirm the previous phase (`plan`) is done. If not, stop and tell the user — implementation without a confirmed plan is high risk.
 
-Once resolved, read `<BASE_DIR>/<feature>/plan.md` as the plan to implement. If the user also provided a path as an argument, use that instead.
+Once resolved, read `$FEATURE_PATH/plan.md` as the plan to implement. If the user also provided a path as an argument, use that instead.
 
 ## Getting Started
 

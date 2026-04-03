@@ -20,7 +20,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user to share the design document.
 - **Manifest handling**: If prior phases aren't marked done, warn the user but continue with what's available.
 
-Once resolved, read available artifacts from `<BASE_DIR>/<feature>/` (intent.md, research.md, design.md). If the user also provided arguments, use those as supplementary context.
+Once resolved, read available artifacts from `$FEATURE_PATH/` (intent.md, research.md, design.md). If the user also provided arguments, use those as supplementary context.
 ## Initial Setup
 
 When this command is invoked:
@@ -78,12 +78,12 @@ Collect:
 
 ### 4. Write the Structure Outline
 
-Read the template from `references/template.md`. Write the outline to `<BASE_DIR>/<feature>/structure-outline.md` (create the directory if needed).
+Read the template from `references/template.md`. Write the outline to `$FEATURE_PATH/structure-outline.md` (create the directory if needed).
 
 Then say:
 
 ```
-Written to <BASE_DIR>/<feature>/structure-outline.md — please review.
+Written to $FEATURE_PATH/structure-outline.md — please review.
 Do these phases look right? Anything to reorder, split, or collapse before planning?
 ```
 

@@ -21,7 +21,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user to share the intent document or feature description.
 - **Manifest handling**: If the `intent` phase isn't marked done, warn the user ("Intent phase not confirmed — proceeding with available context") but continue.
 
-Once resolved, read `<BASE_DIR>/<feature>/intent.md` as the input document. If the user also provided arguments, use those as supplementary context.
+Once resolved, read `$FEATURE_PATH/intent.md` as the input document. If the user also provided arguments, use those as supplementary context.
 ## Initial Response
 
 When this command is invoked:
@@ -70,7 +70,7 @@ Rules:
 
 ### Step 4: Write to File
 
-Write the questions to `<BASE_DIR>/<feature>/research-questions.md` (create the directory if needed). Use this format:
+Write the questions to `$FEATURE_PATH/research-questions.md` (create the directory if needed). Use this format:
 
 ```
 ### Research Questions
@@ -87,7 +87,7 @@ Below each question add a `Hint:` line — this lets the user optionally add ste
 Then say:
 
 ```
-Written to <BASE_DIR>/<feature>/research-questions.md — please review.
+Written to $FEATURE_PATH/research-questions.md — please review.
 Add hints to any question where you want to steer the research.
 Let me know if any questions are missing or should be changed.
 ```

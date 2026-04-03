@@ -2,6 +2,7 @@
 name: crispy-init
 description: Initialize crispy configuration — set where artifacts are stored and optionally link to an Obsidian vault. Run once per machine; config is shared across all repos and worktrees.
 argument-hint: '[--reset to reconfigure]'
+disable-model-invocation: true
 ---
 
 User's request: $ARGUMENTS

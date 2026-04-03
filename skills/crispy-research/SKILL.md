@@ -27,7 +27,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **No-args fallback**: ask the user to provide the research questions.
 - **Manifest handling**: If the `research-questions` phase isn't marked done, warn the user but continue with whatever questions are available.
 
-Once resolved, read `<BASE_DIR>/<feature>/research-questions.md` as the **only** input. Do NOT read `intent.md` or any other prior artifact — the research phase must not know what is being built, only what questions need answering. This keeps findings factual and unbiased. If the user also provided arguments, use those as supplementary context only if they are additional questions, not intent or design direction.
+Once resolved, read `$FEATURE_PATH/research-questions.md` as the **only** input. Do NOT read `intent.md` or any other prior artifact — the research phase must not know what is being built, only what questions need answering. This keeps findings factual and unbiased. If the user also provided arguments, use those as supplementary context only if they are additional questions, not intent or design direction.
 ## Initial Setup
 
 When this command is invoked, check if research questions were provided (either from the feature folder or as an argument):
@@ -67,12 +67,12 @@ Compile all findings. Organize by question or component area, not by which agent
 
 ### 6. Write the Research Document
 
-Read the document format from `references/template.md`. Write findings to `<BASE_DIR>/<feature>/research.md` (create the directory if needed).
+Read the document format from `references/template.md`. Write findings to `$FEATURE_PATH/research.md` (create the directory if needed).
 
 Then say:
 
 ```
-Written to <BASE_DIR>/<feature>/research.md — please review.
+Written to $FEATURE_PATH/research.md — please review.
 Let me know if any area needs more depth or if something looks off.
 ```
 
