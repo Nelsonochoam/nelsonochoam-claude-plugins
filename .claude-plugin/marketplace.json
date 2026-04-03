@@ -16,9 +16,9 @@
         "name": "nelsonochoam",
         "url": "https://github.com/nelsonochoam"
       },
-      "source": "./",
+      "source": "./plugins/crispy",
       "category": "development",
-      "homepage": "https://github.com/nelsonochoam/crispy",
+      "homepage": "https://github.com/nelsonochoam/nelsonochoam-plugins",
       "tags": [
         "rpi",
         "qrdspi"
