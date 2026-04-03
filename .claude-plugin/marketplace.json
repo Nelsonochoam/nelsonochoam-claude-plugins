@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "nelsonochoam-plugins",
+  "description": "",
+  "version": "1.0.0",
+  "owner": {
+    "name": "Nelson Ochoa",
+    "url": "https://github.com/nelsonochoam"
+  },
+  "plugins": [
+    {
+      "name": "crispy",
+      "description": "A framework for agentic development",
+      "version": "1.0.0",
+      "author": {
+        "name": "nelsonochoam",
+        "url": "https://github.com/nelsonochoam"
+      },
+      "source": "./",
+      "category": "development",
+      "homepage": "https://github.com/nelsonochoam/crispy",
+      "tags": [
+        "rpi",
+        "qrdspi"
+      ]
+    }
+  ]
+}

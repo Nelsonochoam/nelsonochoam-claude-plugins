@@ -1,0 +1,48 @@
+{
+  "feature": "<Feature Name>",
+  "phases": {
+    "intent": {
+      "status": "done",
+      "file": ".crispy/<feature>/intent.md",
+      "updated": "<today's date>"
+    },
+    "research-questions": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    },
+    "research": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    },
+    "design": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    },
+    "structure": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    },
+    "plan": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    },
+    "implement": {
+      "status": "pending",
+      "file": null,
+      "updated": null
+    }
+  },
+  "tasks": {
+    "phase-N": {
+      "name": "Phase N: <title from plan>",
+      "status": "pending",
+      "dependencies": [],
+      "file": ".crispy/<feature>/tasks/phase-N.md"
+    }
+  }
+}
