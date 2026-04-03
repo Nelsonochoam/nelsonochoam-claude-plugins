@@ -56,7 +56,7 @@ Captures scope, motivation, acceptance criteria, and constraints before any code
 
 #### `/research-questions` — Ask before looking
 
-Reads `intent.md` and surfaces the questions a developer would need answered before starting work — without scanning the codebase yet. Includes hint fields for steering the research.
+Reads `intent.md` and surfaces the questions a developer would need answered before starting work — without scanning the codebase yet. Each question is written with a `Hint:` field below it. If you already have partial knowledge about a question — a file you suspect is relevant, a flag you remember seeing, a module you know is involved — fill in that hint before running `/research`. The research agents will use filled hints to focus their investigation on what you point them toward, while still answering the full question.
 
 **Reads:** `intent.md` | **Output:** `research-questions.md`
 
@@ -101,7 +101,8 @@ CRISPY_FEATURE=my-feature claude
 
 # Session 2: Surface what needs to be understood before touching the codebase → research-questions.md
 > /research-questions
-# Add hints to steer research, confirm, reset
+# Review research-questions.md — fill in Hint: fields for any question where you
+# already know where to look (a file, flag, module, etc.). Then confirm and reset.
 > /clear
 
 # Session 3: Answer the research questions by exploring the codebase → research.md

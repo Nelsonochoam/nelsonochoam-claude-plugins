@@ -28,6 +28,8 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **Manifest handling**: If the `research-questions` phase isn't marked done, warn the user but continue with whatever questions are available.
 
 Once resolved, read `$FEATURE_PATH/research-questions.md` as the **only** input. Do NOT read `intent.md` or any other prior artifact — the research phase must not know what is being built, only what questions need answering. This keeps findings factual and unbiased. If the user also provided arguments, use those as supplementary context only if they are additional questions, not intent or design direction.
+
+**Hint handling:** Each question in `research-questions.md` may have a `Hint:` line below it. If the hint is non-empty, treat it as a scoping constraint for that question — include it verbatim in the sub-agent's prompt so the agent focuses its investigation accordingly. A hint narrows the search area; it does not replace it. The agent should still answer the full question, but prioritize what the hint points to.
 ## Initial Setup
 
 When this command is invoked, check if research questions were provided (either from the feature folder or as an argument):

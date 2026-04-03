@@ -88,11 +88,22 @@ Then say:
 
 ```
 Written to $FEATURE_PATH/research-questions.md — please review.
-Add hints to any question where you want to steer the research.
-Let me know if any questions are missing or should be changed.
+
+Each question has a Hint: field — fill these in before running /research if you already know where to look (a file, module, flag, etc.). The research agents will use filled hints to focus their investigation.
 ```
 
 Wait for the user's response.
+
+### Step 4b: Help Fill Hints (optional)
+
+If the user wants help filling hints, go through the questions one at a time:
+
+- Ask: *"Do you have any prior knowledge about [question topic] — a file you suspect is relevant, a flag or config you've seen, a module you know is involved?"*
+- If the user shares context, distill it into a concise, focused hint (one or two sentences max) and write it to the file using Edit.
+- If the user has nothing to add, leave the hint blank and move to the next question.
+- After going through all questions, confirm: *"All hints updated. Let me know if anything else needs to change."*
+
+If the user prefers to fill hints themselves or skips this step, move directly to Step 5.
 
 ### Step 5: Iterate Until Confirmed
 
