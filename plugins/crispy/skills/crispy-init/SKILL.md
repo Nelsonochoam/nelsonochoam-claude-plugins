@@ -37,17 +37,18 @@ If the user chooses to keep the current config, exit and say "Configuration unch
 
 ## Step 1: Storage Location
 
-Use `AskUserQuestion` to ask:
+Use `AskUserQuestion` to ask for the storage location. Present the choices clearly but allow for direct input:
 
 > Where should crispy store feature artifacts?
+> 1. **Default** (`~/.crispy/`)
+> 2. **Custom path** (Please provide the full absolute path below)
 
-Options:
-- `Default (~/.crispy/)` — recommended
-- `Custom path`
+**Logic:**
+- If the user selects "Default", set `base_dir` to `$HOME/.crispy/`.
+- If the user selects "Custom path" or provides a path directly, use that input. 
+- If the path is provided but not absolute, or contains `~`, expand it using `$HOME`.
 
-If the user picks **Custom path**, use `AskUserQuestion` to ask for the full path (the base directory where artifacts will be stored).
-
-Store the result as `base_dir` (absolute path, `~` expanded using `$HOME`).
+Store the final result as `base_dir`.
 
 ## Step 2: Confirm
 
@@ -66,11 +67,20 @@ If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 
 ## Step 3: Apply
 
+Call the helper script to handle all setup deterministically:
+
 ```bash
-mkdir -p "<base_dir>"
-printf '{"base_dir":"%s"}\n' "<base_dir>" > "$HOME/.crispy/config.json"
-cat "$HOME/.crispy/config.json"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-crispy.sh" "<base_dir>"
 ```
+
+This script will:
+- Create `~/.crispy` directory
+- Handle existing symlinks at `~/.crispy`
+- Create the artifact base directory
+- Write `config.json` with proper JSON escaping
+- Validate everything succeeded
+
+If it fails, it exits with code 1 and prints an error.
 
 ## Step 4: Done
 
