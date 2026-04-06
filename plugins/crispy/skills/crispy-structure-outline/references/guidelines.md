@@ -1,7 +1,7 @@
 # Structure Outline Guidelines
 
-- **Phases deliver behavior, not layers**: "Add product count guard to KB search and updates sections" not "all UI changes"
-- **Header file, not implementation**: Name the specific functions, props, and identifiers that change, but not the full body. "Update `showProducts` prop on `KnowledgeBaseSearchTable` to derive from `isMultiProduct`" — not "update the component" (too vague) and not the full JSX diff (too detailed)
+- **Phases deliver behavior, not layers**: "Add product count guard to search and updates sections" not "all UI changes"
+- **Header file, not implementation**: Name the specific functions, props, and identifiers that change, but not the full body.
 - **One sentence per phase header**: Describes what the phase delivers. The File Changes section fills in the shape.
 - **Each phase is a shippable vertical slice**: It must include the tests for the behavior it introduces. Never defer tests to a later phase — a phase without tests is not independently shippable
 - **Tests section is mandatory per phase**: List the test files (new or existing) and the specific cases they cover, at the same level of detail as File Changes

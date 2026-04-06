@@ -1,7 +1,6 @@
 ---
 name: crispy-research-questions
 description: Generate focused research questions a developer would naturally need to answer before starting work on a feature.
-argument-hint: '<paste or reference the intent document>'
 model: opus
 ---
 

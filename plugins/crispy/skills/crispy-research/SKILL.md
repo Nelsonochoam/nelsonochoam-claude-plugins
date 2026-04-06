@@ -1,7 +1,6 @@
 ---
 name: crispy-research
 description: Answer research questions by exploring the codebase factually and writing findings to a document.
-argument-hint: '<paste the research questions file path or the questions directly>'
 disable-model-invocation: true
 model: opus
 ---

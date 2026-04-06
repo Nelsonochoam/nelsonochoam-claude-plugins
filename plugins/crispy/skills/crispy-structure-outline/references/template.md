@@ -9,7 +9,7 @@ sha: <short git SHA>
 ---
 
 ### Status
-- Document: .crispy/<feature>/structure-outline.md
+- Document: <base_dir>/<repo>/<feature>/structure-outline.md
 - Ticket: <ticket id>
 - Phases: <N> (<M> sequential, <K> parallel)
 - Open Questions: <none, or list them>
@@ -42,7 +42,7 @@ What does a developer most need to know before starting? What changes their ment
 ### Validation
 
 ```
-<automated check command, e.g. yarn workspace @sb/server run type-check && yarn workspace @sb/server test --runTestsByPath <path>>
+<automated check command, e.g. npm run type-check && npm test --runTestsByPath <path>
 ```
 
 Manual testing:
@@ -133,12 +133,4 @@ Legend:
 - **Sequential**: <which phases depend on which, and why>
 - **Parallel**: <which phases can run concurrently, and why they are independent>
 - **Converge**: <which phases must wait for parallel work to complete>
-
-### Next Steps
-
-To continue to writing the plan, use:
-
-```
-/create-plan
-```
 ```

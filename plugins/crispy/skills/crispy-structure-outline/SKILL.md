@@ -1,7 +1,6 @@
 ---
 name: crispy-structure-outline
 description: Break the approved design into phases and write a structure outline document.
-argument-hint: '<path to intent doc> <path to research doc> <path to design doc>'
 disable-model-invocation: true
 model: opus
 ---
@@ -12,29 +11,31 @@ User's request: $ARGUMENTS
 
 You are tasked with reading the design document and breaking the work into clear phases — each one a coherent chunk of work with a specific goal. This is not a detailed plan. It is a breakdown of the order and shape of the work before implementation details are written.
 
-## Feature Discovery
+## Input Resolution
 
-Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
+Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `structure` to resolve `$FEATURE_PATH`.
 
-- **Current phase**: `structure`
-- **No-args fallback**: ask the user to share the design document.
-- **Manifest handling**: If prior phases aren't marked done, warn the user but continue with what's available.
+Collect context from both sources, then merge:
 
-Once resolved, read available artifacts from `$FEATURE_PATH/` (intent.md, research.md, design.md). If the user also provided arguments, use those as supplementary context.
-## Initial Setup
+1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `design.md`, `intent.md`, `research.md`.
+   - If prior phases aren't marked done in the manifest, warn the user but continue with what's available.
+   - `design.md` is the primary input. `intent.md` and `research.md` provide supporting context — include them when present.
+2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
+   - Treat arguments as supplementary context that extends or clarifies what is in the feature folder.
 
-When this command is invoked:
+If no design context is found from either source, respond with:
 
-1. **Check if documents were provided** (either from the feature folder or as arguments):
-   - If yes, read them all fully and proceed to Step 1
-   - If no, respond with:
-     ```
-     Please provide:
-     1. The Intent Document (acceptance criteria and scope)
-     2. The Research Document (codebase findings and file references)
-     3. The Design Document (resolved design decisions and patterns)
-     ```
-   Then wait for input.
+```
+To structure the work, I need to understand the design.
+Share any of the following — whatever you have:
+- A path to a design document
+- A path to intent or research documents
+- A description of the solution you've decided on
+
+Even a rough description of the approach is enough to begin.
+```
+
+Then wait for input.
 
 ## Steps
 
@@ -73,12 +74,12 @@ Look across all three documents for the most important orienting fact — the th
 Collect:
 - Current git branch: `git branch --show-current`
 - Current git SHA: `git rev-parse --short HEAD`
-- Ticket/task identifier from the design document (e.g. `tn-3459`)
+- Ticket/task identifier from the design document (e.g. `ticket-1234`)
 - Today's date for the filename
 
 ### 4. Write the Structure Outline
 
-Read the template from `references/template.md`. Write the outline to `$FEATURE_PATH/structure-outline.md` (create the directory if needed).
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the outline to `$FEATURE_PATH/structure-outline.md` (create the directory if needed).
 
 Then say:
 
@@ -98,9 +99,9 @@ Once the user explicitly confirms, update the manifest's `structure` phase to `d
 Then say:
 
 ```
-Structure confirmed. Run /create-plan to write the detailed implementation plan.
+Structure confirmed. Run /crispy-plan to write the detailed implementation plan.
 ```
 
 ## Guidelines
 
-Before presenting the outline, read `references/guidelines.md` for the full set of quality guidelines to follow.
+Before presenting the outline, read `${CLAUDE_SKILL_DIR}/references/guidelines.md` for the full set of quality guidelines to follow.

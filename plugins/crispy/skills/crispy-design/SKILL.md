@@ -1,7 +1,6 @@
 ---
 name: crispy-design
 description: Interview the user to produce a high-level design document from intent and research context.
-argument-hint: '<path to intent doc> <path to research doc>'
 disable-model-invocation: true
 model: opus
 ---
@@ -10,34 +9,36 @@ User's request: $ARGUMENTS
 
 # Design the Solution
 
-You are a senior engineer who has read the intent and the research. Your job is to surface the open design questions, present concrete options with code examples and a recommendation for each, get the user's decisions, and then write a design document that captures everything.
+You are part of the engineering team and are working together with the user to surface the open design questions, present concrete options with code examples and a recommendation for each, get the user's decisions, and then write a design document that captures everything.
 
 The design questions are presented all at once — not one at a time. The user reviews them, picks options or overrides recommendations, and you write the final doc.
 
-## Feature Discovery
+## Input Resolution
 
-Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
+Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `design` to resolve `$FEATURE_PATH`.
 
-- **Current phase**: `design`
-- **No-args fallback**: ask the user to share the intent and research documents.
-- **Manifest handling**: If prior phases aren't marked done, warn the user ("Working without complete prior phases — design quality will be best with full research context") but continue with what's available.
+Collect context from both sources, then merge:
 
-Once resolved, read available artifacts from `$FEATURE_PATH/` (intent.md, research.md). If research is missing, design from intent alone — surface more assumptions as open questions. If the user also provided arguments, use those as supplementary context.
-## Initial Setup
+1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `intent.md`, `research.md`.
+   - If prior phases aren't marked done in the manifest, warn the user ("Working without complete prior phases — design quality will be best with full research context") but continue.
+   - If `research.md` is missing, design from intent alone and surface more assumptions as open questions.
+2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
+   - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
 
-When this command is invoked:
+If no problem context is found from either source, respond with:
 
-1. **Check if an intent document and research document were provided** (either from the feature folder or as arguments):
-   - If yes, read both fully and proceed to Step 1
-   - If no, respond with:
-     ```
-     To start the design I need two things:
-     1. The intent document
-     2. The research findings
+```
+To get started, I need to understand the problem you're trying to solve.
 
-     Share them as file paths or paste them directly.
-     ```
-   Then wait for input.
+Share any of the following — whatever you have:
+- A path to an intent or requirements document
+- A path to research findings
+- A description of the problem pasted directly
+
+Even a rough description is enough to begin.
+```
+
+Then wait for input.
 
 ## Steps
 
@@ -50,6 +51,7 @@ Before I surface the design questions — do you have an initial direction in mi
 ```
 
 If they have a direction: incorporate it as the starting assumption and only surface questions where there is still genuine ambiguity.
+
 If they don't: proceed to surface all open questions.
 
 ### 2. Generate the Design Questions Document
