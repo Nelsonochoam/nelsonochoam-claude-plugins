@@ -46,9 +46,11 @@ After reading, extract and hold in mind (skip items whose source doc doesn't exi
 - **File references**: From the research doc — use these exact paths and line numbers in each step entry. If no research doc exists, resolve all file paths through direct codebase lookup before writing the plan.
 - **Out of scope**: From the intent doc's "What we're NOT doing" — anything listed there must not appear in the plan.
 
-### Step 1b: Deep Research Pass
+### Step 1b: Research to Complete the Plan
 
-Read `${CLAUDE_SKILL_DIR}/references/deep-research-triggers.md` for the full list of triggers and research methods. Do not proceed to Step 2 until every phase has enough concrete detail to write without placeholders.
+Research whatever is needed so that every phase doc can be written without placeholders. The goal is a plan complete enough that an agent can implement each phase without opening additional files or making judgment calls.
+
+Start from what the prior artifacts already provide. Look up anything they don't cover — exact file paths, function signatures, prop types, import lists, test patterns, data shapes. Use the Read tool for targeted file reads and spawn parallel sub-agents for independent lookups. Do not proceed to Step 2 until you have everything needed to write every step concretely.
 
 ### Step 2: Gather Metadata
 

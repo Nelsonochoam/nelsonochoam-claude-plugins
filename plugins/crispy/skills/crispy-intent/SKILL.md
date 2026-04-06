@@ -84,7 +84,6 @@ Then say:
 
 ```
 Written to $FEATURE_PATH/intent.md — please open it and review.
-Let me know if anything needs to change, or confirm to proceed to /crispy-research-questions.
 ```
 
 Wait for the user's response.
@@ -97,11 +96,6 @@ If the user requests changes, edit the file directly using the Edit tool and re-
 
 Once the user explicitly confirms the intent document is correct, update the manifest's `intent` phase to `done` with today's date.
 
-Then say:
-
-```
-Intent confirmed. Run /crispy-research-questions to generate the research questions.
-```
 
 ## Guidelines
 

@@ -22,4 +22,4 @@ Before presenting the plan and phase docs, run this checklist. Detail lives in t
 - [ ] References section links back to plan.md, intent.md, research.md, design.md
 - [ ] Dependencies section lists other phase doc file paths (if any)
 
-If any item fails, do more research (Step 1b) or tighten the step — do not present a plan with known gaps.
+If any item fails, do more research or tighten the step — do not present a plan with known gaps.
