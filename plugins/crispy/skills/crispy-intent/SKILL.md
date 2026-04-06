@@ -100,7 +100,7 @@ Once the user explicitly confirms the intent document is correct, update the man
 Then say:
 
 ```
-Intent confirmed. Run /research-questions to generate the research questions.
+Intent confirmed. Run /crispy-research-questions to generate the research questions.
 ```
 
 ## Guidelines
@@ -110,7 +110,3 @@ Intent confirmed. Run /research-questions to generate the research questions.
 3. **Be specific about acceptance criteria**: Vague criteria ("it should work well") should be pushed back on — ask for something testable
 4. **No open questions in the final document**: If something is unresolved, either research it or flag it explicitly as an open question
 5. **Keep scope tight**: If the user's request seems to be expanding, note it and ask if that is intentional
-
-## Example Interaction Flow
-
-If you need guidance on the interaction pattern, read `references/example.md`.

@@ -97,5 +97,5 @@ Run /crispy-intent to start your first feature.
 
 ## Notes
 
-- `base_dir` in config stores the root WITHOUT the repo-name segment. The `get-config.sh` script appends the current repo name at runtime.
+- `base_dir` in config stores the root WITHOUT the repo-name segment. The `resolve-basedir.sh` script appends the current repo name at runtime.
 - The config file is always written to `~/.crispy/config.json` for consistency across repos, but artifacts can be stored anywhere.

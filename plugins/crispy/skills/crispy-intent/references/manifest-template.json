@@ -3,7 +3,7 @@
   "phases": {
     "intent": {
       "status": "done",
-      "file": ".crispy/<feature>/intent.md",
+      "file": "<base_dir>/<repo-name>/<feature>/intent.md",
       "updated": "<today's date>"
     },
     "research-questions": {
@@ -42,7 +42,7 @@
       "name": "Phase N: <title from plan>",
       "status": "pending",
       "dependencies": [],
-      "file": ".crispy/<feature>/tasks/phase-N.md"
+      "file": "<base_dir>/<repo-name>/<feature>/tasks/phase-N.md"
     }
   }
 }

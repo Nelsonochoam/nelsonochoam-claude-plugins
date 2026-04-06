@@ -15,7 +15,7 @@ if [ -z "$FEATURE_NAME" ]; then
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BASE_DIR=$(bash "$SCRIPT_DIR/get-config.sh")
+BASE_DIR=$(bash "$SCRIPT_DIR/resolve-basedir.sh")
 
 FEATURE_PATH="$BASE_DIR/$FEATURE_NAME"
 mkdir -p "$FEATURE_PATH"

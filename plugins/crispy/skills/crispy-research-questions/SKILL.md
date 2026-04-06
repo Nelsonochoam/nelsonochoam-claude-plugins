@@ -9,9 +9,9 @@ User's request: $ARGUMENTS
 
 # Generate Research Questions
 
-You are an engineer reading an intent/prd document for the first time. Your job is to surface the questions you would naturally have — the things you'd need to figure out before you could confidently start working.
+You are an engineer reading an intent or product requirements document for the first time. Your job is to surface the questions you would naturally have - the things you'd need to figure out before you could confidently start designing a solution.
 
-Do not scan the codebase. Do not research anything. Just think like a software engineer and ask the right questions.
+Do not scan the codebase or perform any research. Just think like a software engineer and ask the right questions.
 
 ## Feature Discovery
 
@@ -22,6 +22,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **Manifest handling**: If the `intent` phase isn't marked done, warn the user ("Intent phase not confirmed — proceeding with available context") but continue.
 
 Once resolved, read `$FEATURE_PATH/intent.md` as the input document. If the user also provided arguments, use those as supplementary context.
+
 ## Initial Response
 
 When this command is invoked:
@@ -40,7 +41,7 @@ When this command is invoked:
 
 Read the intent document carefully. Identify every feature area, behavior change, or system touch point mentioned.
 
-### Step 2: Think Like a Developer Starting This Work
+### Step 2: Think Like a Developer
 
 For each feature area or touch point, ask: *what would I need to understand before I could work on this confidently?*
 
@@ -50,62 +51,37 @@ Think about:
 - Seeking understanding on how aspects of the system are handled and edge cases
 - Questionning limitations
 
-### Step 3: Write the Questions
+### Step 3: Write Questions to File
 
-Format the output as questions to topics that need to be explored, to gain the understanding needed to figure out how to proceed in designing a solution.
-
-Format:
-
-```
-### Research Questions
-
-- <The question a developer would have. Reference specific files, components, or concepts from the intent by name where relevant. Be specific about the ambiguity or gap.>
-
-- <question>
-```
-
-Rules:
-- Reference specific names from the intent (component names, flags, data fields) so the question is grounded
-- Questions should reveal an ambiguity, a gap in understanding, or a decision that depends on what the code currently does
-
-### Step 4: Write to File
-
-Write the questions to `$FEATURE_PATH/research-questions.md` (create the directory if needed). Use this format:
+Write the questions directly to `$FEATURE_PATH/research-questions.md` (create the directory if needed). Use this format:
 
 ```
 ### Research Questions
 
 - <question>
 Hint:
-
-- <question>
-Hint:
 ```
 
-Below each question add a `Hint:` line — this lets the user optionally add steering context before running research.
+Reference specific names from the intent (component names, flags, data fields) so each question is grounded. Questions should reveal an ambiguity, a gap in understanding, or a decision that depends on what the code currently does.
 
 Then say:
 
 ```
 Written to $FEATURE_PATH/research-questions.md — please review.
 
-Each question has a Hint: field — fill these in before running /research if you already know where to look (a file, module, flag, etc.). The research agents will use filled hints to focus their investigation.
+Each question has a Hint: field — hints are optional but help the research agents focus their investigation. A hint can be a file name, a module you suspect is involved, or any prior knowledge you have. If you don't have hints, that's fine — the research agents will figure it out. Feel free to edit the file directly, or let me know if you'd like to go through the questions together.
 ```
 
-Wait for the user's response.
+Wait for the user's response. They might take different paths — all are valid:
 
-### Step 4b: Help Fill Hints (optional)
+- If they want to walk through hints together, go question by question. Ask if they have any relevant prior knowledge, but make it easy to skip. If they share something, distill it into a concise hint and write it with Edit. If not, move on.
+- If they've edited the file themselves or say they're happy, move straight to confirming.
+- If they have no hints at all, that's a fine outcome — confirm and proceed.
+- If they want to change questions, edit the file directly — don't reprint the full list, just point to the file.
 
-If the user wants help filling hints, go through the questions one at a time:
+The goal is a reviewed file the user feels good about, whether it has hints or not.
 
-- Ask: *"Do you have any prior knowledge about [question topic] — a file you suspect is relevant, a flag or config you've seen, a module you know is involved?"*
-- If the user shares context, distill it into a concise, focused hint (one or two sentences max) and write it to the file using Edit.
-- If the user has nothing to add, leave the hint blank and move to the next question.
-- After going through all questions, confirm: *"All hints updated. Let me know if anything else needs to change."*
-
-If the user prefers to fill hints themselves or skips this step, move directly to Step 5.
-
-### Step 5: Iterate Until Confirmed
+### Step 4: Iterate Until Confirmed
 
 If the user requests changes, edit the file directly using the Edit tool. Re-prompt for review. Do not reprint the full list to the conversation — point the user to the file.
 
@@ -114,7 +90,7 @@ Once the user explicitly confirms, update the manifest's `research-questions` ph
 Then say:
 
 ```
-Confirmed. Run /research to get these questions answered.
+Confirmed. Run /crispy-research to get these questions answered.
 ```
 
 ## Important Guidelines
