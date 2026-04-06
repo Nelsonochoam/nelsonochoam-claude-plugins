@@ -2,10 +2,10 @@
 
 ## How Artifacts Are Stored
 
-All files go in `<base-dir>/<repo-name>/<feature-name>/`:
+All files go in `<base_dir>/<repo-name>/<feature-name>/`:
 
 ```
-<base-dir>/
+<base_dir>/
   my-repo/
     my-feature/
       manifest.json          ← phase status + task metadata
@@ -48,7 +48,7 @@ This keeps the conversation clean — you're reviewing a structured document, no
 
 ## Multiple Repositories
 
-When working on multiple repos, each gets its own folder under `<base-dir>/<repo-name>/`. If you use the same base directory for all repos, all artifacts appear in the same place organized by repo and feature.
+When working on multiple repos, each gets its own folder under `<base_dir>/<repo-name>/`. If you use the same base directory for all repos, all artifacts appear in the same place organized by repo and feature.
 
 ## Changing Your Storage Location
 

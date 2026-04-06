@@ -6,13 +6,13 @@
 
 > "If implementation feels creative, something upstream is missing."
 
-Inspired by [RPI methodology](https://www.youtube.com/watch?v=5MWl3eRXVQk).
+Inspired by [QRSPI methodology](https://www.youtube.com/watch?v=5MWl3eRXVQk).
 
 ## Why Crispy?
 
-Agents that jump to code routinely build the wrong thing, misread the codebase, or drift mid-implementation. Worse: **long conversations degrade instruction-following** — after 80 turns, models stop listening to their instructions and start improvising.
+Agents without proper context management can build the wrong thing, misread the codebase or drift mid-implementation. **Long conversations degrade instruction-following** — models stop listening to their instructions and start improvising.
 
-Crispy solves both by making each phase a **fresh context window**. Each skill reads only what it needs, does its focused job, writes output to a file, and exits. The next phase starts clean. No sprawl, no drift.
+Crispy tries to solve this by doing "intentional compaction" steering the context in the right direction. Each skill reads only what it needs, does its focused job, writes output to a file. The next phase starts clean. No sprawl, no drift.
 
 **Core principle:** *Context is the enemy of focus. Each phase gets exactly what it needs — and nothing more.*
 

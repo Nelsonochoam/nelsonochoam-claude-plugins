@@ -3,7 +3,7 @@
 Before writing a single step, walk through each phase in the structure outline and ask: *"Can I write every step in this phase with exact file paths, function signatures, prop names, and type definitions — without guessing?"*
 
 For each phase, identify what you do **not** yet know concretely:
-- Exact component prop signatures (e.g., does `CardsSectionDrawer` already accept a `showConversations` prop, or does it need one added?)
+- Exact component prop signatures
 - Exact function signatures for methods you will call or modify
 - Current import structure for files you will edit
 - Existing test file structure and factory patterns for tests you will add
@@ -34,4 +34,4 @@ If any of these are unknown, trigger a deep research pass to discover them befor
   - **codebase-analyzer**: understanding a specific method, hook, or data flow
   - **codebase-locator**: finding a file or symbol the research doc did not identify
 
-Do not proceed to Step 2 until every phase has enough concrete detail to write without placeholders. If a gap cannot be resolved through research (e.g., it requires a product decision), surface it to the user before writing the plan.
+Do not proceed until every phase has enough concrete detail to write without placeholders. If a gap cannot be resolved through research (e.g., it requires a product decision), surface it to the user before writing the plan.

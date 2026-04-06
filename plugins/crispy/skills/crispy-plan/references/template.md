@@ -29,9 +29,9 @@ sha: <full git SHA>
 ## Success Criteria
 
 ### Automated Verification
-- [ ] `yarn workspace @sb/server lint` passes
-- [ ] `yarn workspace @sb/server run type-check` passes
-- [ ] `yarn workspace @sb/server test` passes
+- [ ] `npm run lint` passes
+- [ ] `npm run type-check` passes
+- [ ] `npm test` passes
 - [ ] <any feature-specific test commands>
 
 ### Manual Verification
@@ -102,7 +102,7 @@ For each: state the decision and why — so the implementer doesn't re-open the 
 - Describe the change precisely enough that someone unfamiliar with the codebase could execute it
 - Include TypeScript types, field names, function signatures, and SQL details where relevant
 - Include before/after code blocks for any step that wraps, reorders, or modifies multi-line JSX/logic — prose descriptions of wrapping are ambiguous and lead to incorrect implementations. For simple prop additions (adding a field to an interface, passing a prop), prose is sufficient.
-- When referencing a location in a file, include both the approximate line number AND a textual anchor (e.g., "at line ~407, inside the `renderDrawerItems` map callback" or "after the `<DrawerItemContent>` closing tag"). Line numbers drift; textual anchors let the implementer find the correct location even if lines have shifted.
+- When referencing a location in a file, include both the approximate line number AND a textual anchor (e.g., "at line ~407, inside the `renderItems` map callback" or "after the `<ItemContent>` closing tag"). Line numbers drift; textual anchors let the implementer find the correct location even if lines have shifted.
 - For every step, identify which resolved design decision it implements — reference it explicitly. If no design doc exists, document the decision inline with rationale.
 - Flag any step that touches auth, permissions, billing, or migrations
 - Do not introduce patterns not established in the design doc (if one exists) or not verified in the codebase

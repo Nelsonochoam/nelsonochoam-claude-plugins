@@ -6,7 +6,7 @@ You are a subagent tasked with generating self-contained task files from a confi
 
 You will be given:
 - **Plan path**: the confirmed `plan.md` file
-- **Feature directory**: the `.crispy/<feature>/` path
+- **Feature directory**: the `<base_dir>/<repo>/<feature>/` path
 - **Feature name**: from `manifest.json`
 - **Structure outline path** (if it exists): contains the dependency chart
 
@@ -24,11 +24,11 @@ If no structure outline exists, assume all phases are sequential (each depends o
 
 ### 3. Create the Tasks Directory
 
-Create `<feature-dir>/tasks/` if it doesn't exist.
+Create `<base_dir>/<repo-name>/<feature-dir>/tasks/` if it doesn't exist.
 
 ### 4. For Each Phase, Generate a Task File
 
-Write a file to `<feature-dir>/tasks/phase-{N}.md` using this template:
+Write a file to `<base_dir>/<repo-name>/<feature-dir>/tasks/phase-{N}.md` using this template:
 
 ````markdown
 ---
@@ -65,9 +65,8 @@ After completing all changes:
 
 1. Run the automated checks specified in Phase {N}'s success criteria
 2. Fix any failures before reporting completion
-3. Update `plan.md` — check off completed items (`- [ ]` → `- [x]`) for Phase {N} only
-4. Update `manifest.json` — set `tasks.phase-{N}.status` to `"done"` and update `implement.status` to reflect progress
-5. Report what was done, what checks passed, and list any manual verification steps the user should perform
+3. Update `manifest.json` — set `tasks.phase-{N}.status` to `"done"` and update `implement.status` to reflect progress
+4. Report what was done, what checks passed, and list any manual verification steps the user should perform
 
 ## Guidelines
 
@@ -104,13 +103,13 @@ Add a `"tasks"` key (sibling to `"phases"`) in `manifest.json` with one entry pe
       "name": "Phase 1: <title from plan>",
       "status": "pending",
       "dependencies": [],
-      "file": ".crispy/<feature>/tasks/phase-1.md"
+      "file": "<base_dir>/<repo-name>/<feature>/tasks/phase-1.md"
     },
     "phase-2": {
       "name": "Phase 2: <title from plan>",
       "status": "pending",
       "dependencies": ["phase-1"],
-      "file": ".crispy/<feature>/tasks/phase-2.md"
+      "file": "<base_dir>/<repo-name>/<feature>/tasks/phase-2.md"
     }
   }
 }

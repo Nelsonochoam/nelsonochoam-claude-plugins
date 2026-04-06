@@ -2,6 +2,7 @@
 name: crispy-implement
 description: Implement an approved plan phase by phase, with verification after each phase and explicit stops when reality does not match the plan.
 argument-hint: '<optional: phase-N to target a specific phase>'
+disable-model-invocation: true
 ---
 
 User's request: $ARGUMENTS
@@ -51,7 +52,7 @@ If `manifest.json` has no `tasks` key (older plans without task generation), fal
 
 ### Targeted (`phase-N` argument)
 
-When the user passes a specific phase (e.g., `/implement phase-2`):
+When the user passes a specific phase (e.g., `/crispy-implement phase-2`):
 1. Read the matching task from `manifest.json`
 2. Verify all its `dependencies` have status `"done"`. If not, report which dependencies are incomplete and **stop**.
 3. Read the task file from the path in `tasks.phase-N.file` for additional context
