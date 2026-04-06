@@ -42,7 +42,7 @@ All prerequisites are met. Continue with the skill's normal workflow.
 
 ### If `ok` is false and `missing` is non-empty → OFFER OPTIONS
 
-Prerequisites are missing. Present the situation using `AskUserQuestion` and wait for the user's choice:
+Prerequisites are missing. Use `AskUserQuestion` (not plain text) to present exactly two choices and wait for the user's selection:
 
 ```
 The following prerequisite phases are not yet complete:
@@ -50,14 +50,18 @@ The following prerequisite phases are not yet complete:
 - <phase-2>
 - ...
 
-Options:
+How would you like to proceed?
+
 1. **Auto-advance** — run missing phases automatically using `claude -p` (each phase runs as a separate agent, no human review between them)
 2. **Stop** — I'll run the missing phases manually: /crispy-<phase-1>, /crispy-<phase-2>, ...
 
 ⚠️ **Auto-advance warning**: Auto-advance will make decisions on your behalf for each missing phase (research focus areas, design choices, structure breakdown). This is faster but produces lower quality results than running each phase manually, where you can review and guide each step. Use auto-advance for well-scoped work where you trust the defaults.
 ```
 
-Wait for the user to choose before doing anything else. **Do not proceed without their explicit choice.** There is no "proceed anyway" option — prerequisites are required.
+**CRITICAL: Only two paths exist here.**
+- If the user picks 1, or says anything like "proceed", "yes", "go ahead", "auto", "auto-advance" → treat it as choosing **Auto-advance** and go to Section 3.
+- If the user picks 2, or says anything like "stop", "manual", "I'll do it" → stop completely and list the manual commands.
+- **There is no third option.** You cannot run the missing phases yourself inline. You cannot do your own research as a substitute. The only way missing prerequisites get fulfilled is via the auto-advance script or by the user running the phases manually.
 
 ## 3. Auto-Advance Execution
 
