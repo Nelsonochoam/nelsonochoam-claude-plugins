@@ -2,13 +2,13 @@
 
 ## Getting Started
 
-- **[Usage Guide](./usage.md)** — Phase descriptions, typical workflow, quick plan workflow, flexible entry points, why it works
+- **[Usage Guide](./usage.md)** — Phase descriptions, typical workflow, prerequisite enforcement, auto-advance
 
 ## How Crispy Works
 
 - **[Artifact Storage](./artifacts.md)** — How files are organized, write-first review pattern, choosing storage locations
 - **[Using with Markdown Readers](./markdown-readers.md)** — Store artifacts in Obsidian, Logseq, Dendron, or any markdown app
-- **[Implementation Details](./implementation.md)** — Task metadata, execution strategies (sequential, parallel, external), Ralph loop automation
+- **[Implementation Details](./implementation.md)** — Phase documents, execution strategies (sequential, parallel, external), Ralph loop automation
 
 ## Troubleshooting
 
@@ -40,3 +40,11 @@ See [Execution Strategies](./implementation.md#execution-strategies) — use sep
 **I want to automate the full workflow**
 
 See [Ralph Loop Integration](./implementation.md#ralph-loop-integration) — it orchestrates sequential execution automatically.
+
+**Auto-advance failed for a phase**
+
+If auto-advance fails mid-way, run the failed phase manually with its slash command (e.g., `/crispy-research`). The manifest tracks which phases completed, so subsequent phases will pick up where auto-advance left off.
+
+**I want to skip a phase but crispy won't let me**
+
+Prerequisites are enforced — every phase requires all prior phases. Use auto-advance to fill in missing phases quickly, or run them manually. If you want speed, auto-advance compresses the process while still producing the required artifacts.

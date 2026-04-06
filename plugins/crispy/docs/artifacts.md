@@ -8,20 +8,20 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
 <base_dir>/
   my-repo/
     my-feature/
-      manifest.json          ← phase status + task metadata
+      manifest.json          ← phase status + implementation metadata
       intent.md
       research-questions.md
       research.md
       design.md
       structure-outline.md
-      plan.md
-      tasks/
-        phase-1.md           ← self-contained task prompts
+      plan.md                ← master index (overview, dependency graph, links to phase docs)
+      phases/
+        phase-1.md           ← self-sufficient implementation doc
         phase-2.md
         ...
 ```
 
-`manifest.json` tracks which phases are done and contains task metadata (status, dependencies, file paths). Each skill reads it to know where you are and updates it when a phase is confirmed. The `tasks/` directory contains one markdown file per implementation phase — each is a standalone prompt an agent can execute.
+`manifest.json` tracks which phases are done and contains implementation metadata (status, dependencies, file paths). Each skill reads it to know where you are and updates it when a phase is confirmed. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) reads the manifest and blocks any skill whose prior phases aren't marked `done`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
 
 ## Choosing Your Storage Location
 

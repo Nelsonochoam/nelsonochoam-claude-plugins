@@ -17,25 +17,12 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 Collect context from both sources, then merge:
 
+**Before reading artifacts**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `structure`. If the check halts, stop here.
+
 1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `design.md`, `intent.md`, `research.md`.
-   - If prior phases aren't marked done in the manifest, warn the user but continue with what's available.
    - `design.md` is the primary input. `intent.md` and `research.md` provide supporting context — include them when present.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is in the feature folder.
-
-If no design context is found from either source, respond with:
-
-```
-To structure the work, I need to understand the design.
-Share any of the following — whatever you have:
-- A path to a design document
-- A path to intent or research documents
-- A description of the solution you've decided on
-
-Even a rough description of the approach is enough to begin.
-```
-
-Then wait for input.
 
 ## Steps
 
@@ -72,10 +59,7 @@ Look across all three documents for the most important orienting fact — the th
 ### 3. Gather Metadata
 
 Collect:
-- Current git branch: `git branch --show-current`
-- Current git SHA: `git rev-parse --short HEAD`
 - Ticket/task identifier from the design document (e.g. `ticket-1234`)
-- Today's date for the filename
 
 ### 4. Write the Structure Outline
 

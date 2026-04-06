@@ -10,7 +10,7 @@ Captures scope, motivation, acceptance criteria, and constraints before any code
 
 ### 2. Research Questions — Ask before looking
 
-Reads `intent.md` and surfaces the questions a developer would need answered before starting work — without scanning the codebase yet. Each question has a `Hint:` field below it. Fill in hints for any question where you already know where to look (a file, flag, module, etc.), and research agents will focus on what you point them toward.
+Reads `intent.md` and surfaces the questions a developer would need answered before starting work — without scanning the codebase yet.
 
 **Reads:** `intent.md` | **Output:** `research-questions.md`
 
@@ -34,15 +34,15 @@ Breaks the work into vertical slices — each phase delivers end-to-end behavior
 
 ### 6. Plan — Write the mechanical plan
 
-Produces a precise, step-by-step implementation plan with exact file paths, function signatures, and success criteria. Once confirmed, generates implementation tasks in `manifest.json` — self-contained prompts with dependency metadata for each phase.
+Produces a master plan index and self-sufficient phase docs. The plan (`plan.md`) contains the overview, dependency graph, and links to phase docs. Each phase doc (`phases/phase-N.md`) contains all implementation details: exact file paths, code changes, design decisions, and success criteria. Generated in a single pass.
 
-**Reads:** `intent.md`, `research.md`, `design.md`, `structure-outline.md` | **Output:** `plan.md` + `tasks/phase-N.md`
+**Reads:** `intent.md`, `research.md`, `design.md`, `structure-outline.md` | **Output:** `plan.md` + `phases/phase-N.md`
 
 ### 7. Implement — Execute the plan
 
-Implements one phase at a time, then stops. Reads `manifest.json` to find the next eligible phase, verifies with automated checks, and updates task status. Supports targeted execution: `/implement phase-N`.
+Implements one phase at a time, then stops. Uses `next-phase.sh` to find the next eligible phase from `manifest.json`, reads the phase doc (which is self-sufficient), verifies with automated checks, and updates status. Supports targeted execution: `/crispy-implement phase-N`.
 
-**Reads:** all prior artifacts + `plan.md` + `manifest.json` + `tasks/phase-N.md`
+**Reads:** `manifest.json` + `phases/phase-N.md`
 
 ---
 
@@ -59,7 +59,7 @@ CRISPY_FEATURE=my-feature claude
 
 # Session 2: Surface research questions → research-questions.md
 > /crispy-research-questions
-# Review, fill in Hint: fields if you know where to look, confirm, reset
+# Review, confirm, reset
 > /clear
 
 # Session 3: Answer research questions → research.md
@@ -77,9 +77,9 @@ CRISPY_FEATURE=my-feature claude
 # Review structure-outline.md, confirm, reset
 > /clear
 
-# Session 6: Write the detailed plan → plan.md + tasks/
+# Session 6: Write the detailed plan → plan.md + phases/
 > /crispy-plan
-# Review plan.md, confirm → tasks generated automatically
+# Review plan.md and phase docs, confirm
 > /clear
 
 # Session 7+: Implement one phase at a time
@@ -96,56 +96,36 @@ You can also use separate terminal sessions or `claude --resume` instead of `/cl
 
 ---
 
-## Quick Plan Workflow
+## Prerequisite Enforcement
 
-For cases where you already know what to build — a small UI tweak, a well-scoped bug fix, a one-off change:
+Every phase requires all prior phases to be complete. The pipeline is strict:
 
-```bash
-# Session 1: Capture intent → intent.md
-CRISPY_FEATURE=my-feature claude
-> /crispy-intent
-> /clear
-
-# Session 2: Write the plan directly (skips research, design, structure)
-> /crispy-plan
-# Skill does its own codebase research pass, surfaces all assumed decisions,
-# and writes plan.md. Review assumptions before confirming.
-> /clear
-
-# Session 3+: Implement one phase at a time
-> /crispy-implement
-> /clear
-> /crispy-implement
+```
+intent → research-questions → research → design → structure → plan → implement
 ```
 
-`/crispy-plan` handles missing intermediate artifacts — when called with only `intent.md`, it does its own research pass and surfaces all design decisions and phase breakdown as explicit assumptions. Review those in `plan.md` before confirming. If any are wrong, fix them before running `/implement`.
+When you invoke a skill and prior phases are missing, the skill will:
 
-**Trade-off:** Faster start, but you're compressing research, design, and structure into a single step. If the plan comes back with too many unknowns, consider running the full flow or a subset (e.g., `/crispy-research` → `/crispy-plan`). See [Flexible Entry Points](#flexible-entry-points) below.
+1. **Hard-stop if intent is missing** — intent always requires human input and cannot be skipped or auto-advanced. You must run `/crispy-intent` first.
+2. **Offer auto-advance for other missing phases** — if intent is done but intermediate phases are missing, you'll be offered two choices:
+   - **Auto-advance** — runs each missing phase automatically via `claude -p` (no human review between them)
+   - **Stop** — run the missing phases manually with their slash commands
 
----
+This means you can jump to any phase — e.g., run `/crispy-plan` right after intent — and auto-advance will fill in the gaps. But there's a trade-off.
 
-## Flexible Entry Points
+### Auto-Advance Trade-offs
 
-You don't have to start at `/crispy-intent`. Start wherever you have context:
+Auto-advance uses `claude -p` to run each missing phase as a separate non-interactive agent. This is fast but means **the model makes all decisions for you** — research focus areas, design choices, structure breakdown. You won't review intermediate artifacts before they feed into the next phase.
 
-| If you have... | Start at |
-|---|---|
-| Nothing yet | `/crispy-intent` |
-| A rough description | `/crispy-intent` or pass it to `/crispy-research-questions` |
-| An intent doc already written | `/crispy-research-questions` |
-| Intent + research done | `/crispy-design` |
-| Intent + enough context to skip research | `/crispy-plan` |
-| A confirmed plan | `/crispy-implement` |
+**When auto-advance is fine:**
+- Well-scoped work where defaults are likely correct
+- You plan to review the final plan carefully before implementing
+- Speed matters more than precision in intermediate steps
 
-When prior phases are missing, skills warn you and proceed with what's available — making explicit any assumptions they have to fill in. The more complete your prior phase artifacts, the less the agent has to guess.
-
-**Best results come from the full flow.** Skipping phases is a trade-off: faster start, more assumptions, higher chance of needing to backtrack.
-
----
-
-## Skipping Phases
-
-You don't have to run every phase. Skills adapt and flag any assumptions they have to make.
+**When you should run phases manually:**
+- Complex features touching multiple systems
+- Work where design decisions have significant trade-offs
+- The cost of getting it wrong is high
 
 ---
 

@@ -11,56 +11,21 @@ User's request: $ARGUMENTS
 
 You are tasked with creating a precise, mechanical implementation plan. A good plan leaves nothing to interpretation — when implementation begins, every decision has already been made.
 
-When prior artifacts exist, lean on them: the **structure outline drives the phases**, the **design document drives the decisions**, and the **research document provides the exact file paths, types, and code references**. When some or all are missing, you fill those gaps yourself through codebase research and surface your assumptions explicitly (see "Initial Response" below).
+The **structure outline drives the phases**, the **design document drives the decisions**, and the **research document provides the exact file paths, types, and code references**. All prior artifacts are required.
 
 ## Input Resolution
 
-Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `plan` to resolve `$FEATURE_PATH`. Note which prior phases are complete but **do not stop** if any are missing — work with what's available.
+Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `plan` to resolve `$FEATURE_PATH`.
 
-None of the prior artifacts are strictly required. When called with just a description or ticket reference as `$ARGUMENTS`, that request IS the intent. Work with whatever is available and surface assumptions where prior work is missing.
+**After feature discovery**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `plan`. If the check halts, stop here.
 
-**Case 1 — No feature folder** (called with a request or description directly):
-- Treat `$ARGUMENTS` as the intent
-- Do a full codebase research pass to understand the relevant code
-- Derive design decisions and phase breakdown yourself
-- Surface all assumptions explicitly as "Assumed Decisions" and "Assumed Phase Breakdown"
-- Determine the feature name (ticket ID → kebab-case from request), then run `FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-name>")` to create the folder and write the plan there
-- Proceed to Step 1
+Once all prerequisites are confirmed, read all four artifacts completely:
+- `$FEATURE_PATH/intent.md`
+- `$FEATURE_PATH/research.md`
+- `$FEATURE_PATH/design.md`
+- `$FEATURE_PATH/structure-outline.md`
 
-**Case 2 — Feature folder exists but some documents are missing**, present what's available and what's missing before proceeding:
-
-```
-Found: [list of documents that exist]
-Missing: [list of documents that don't exist]
-
-Without [missing doc], I'll need to [what you'll do instead — e.g., "derive phases from the intent and design", "assume file paths and flag them", "make design decisions and surface them as Assumed Decisions"].
-
-Want me to proceed, or would you prefer to run [relevant phase] first?
-```
-
-If the user says proceed, continue to Step 1. Adapt as follows:
-- **No structure outline** → derive phases from design or intent; flag assumptions about phase breakdown
-- **No design doc** → derive decisions from research and intent; flag as "Assumed Decisions"
-- **No research doc** → do a targeted codebase research pass before planning
-- **Only intent** (doc or arguments) → do research, derive design assumptions, and propose a phase breakdown; surface all assumptions explicitly
-
-**Case 3 — All four documents exist** → read them completely and proceed to Step 1.
-
-In all cases, if `$ARGUMENTS` contains additional context alongside feature folder artifacts, incorporate it as supplementary input.
-
-If there is truly nothing to work with — no feature folder, no arguments, no description — respond with:
-
-```
-To create a plan, I need to understand what you're building.
-Share any of the following — whatever you have:
-- A ticket reference or feature name
-- A path to intent, design, or research documents
-- A description of what you want to implement
-
-Even a rough description is enough to get started.
-```
-
-Then wait for input.
+If `$ARGUMENTS` contains additional context alongside feature folder artifacts, incorporate it as supplementary input.
 
 ## Process Steps
 
@@ -88,55 +53,86 @@ Read `${CLAUDE_SKILL_DIR}/references/deep-research-triggers.md` for the full lis
 ### Step 2: Gather Metadata
 
 Before writing, collect:
-- Current git branch: `git branch --show-current`
-- Current git SHA: `git rev-parse HEAD`
-- Repo name: `git remote get-url origin`
 - Task/ticket identifier from the intent or design doc (e.g. `tn-3459`). If none exists, derive a kebab-case name from the request (e.g. `add-dark-mode-toggle`).
 
 ### Step 3: Self-Review Before Writing
 
 Read and run through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. If any item fails, do more research (Step 1b) or tighten the step. If decisions were assumed (due to missing prior phase artifacts), list them clearly as "Assumed Decisions" at the top of the plan.
 
-### Step 4: Write the Plan to File
+### Step 4: Write the Plan and Phase Docs (Single Pass)
 
-Read the template and step entry guidelines from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the plan to `$FEATURE_PATH/plan.md` (the directory is already created via `ensure-feature.sh`).
+This step produces **all plan artifacts at once**: the master index (`plan.md`) and individual phase docs (`phases/phase-N.md`).
+
+#### 4a. Create the phases directory
+
+Create `$FEATURE_PATH/phases/` if it doesn't exist.
+
+#### 4b. Write the phase docs first
+
+Read the phase template from `${CLAUDE_SKILL_DIR}/references/phase-template.md`. For each phase, write a self-sufficient phase doc to `$FEATURE_PATH/phases/phase-{N}.md`.
+
+Each phase doc must contain:
+- All implementation details for that phase (exact file paths, code blocks, function signatures, design decisions applied)
+- References linking back to `plan.md`, `intent.md`, `research.md`, `design.md`
+- Dependency references as file paths to other phase docs (e.g., `[Phase 1: <title>](phases/phase-1.md)`)
+- Per-phase success criteria (automated + manual)
+
+**An agent reading only the phase doc must have everything it needs to implement the phase.**
+
+#### 4c. Write the master plan index
+
+Read the plan template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the plan to `$FEATURE_PATH/plan.md`.
+
+The plan is a **lightweight master index** — it contains the overview, dependency graph, phase summary table with links to phase docs, and global success criteria. It does **not** contain implementation details or checkboxes.
 
 Then say:
 
 ```
-Written to $FEATURE_PATH/plan.md — please review.
-Does this look correct and complete? Any steps that need more detail,
-anything to add or remove, or phases to reorder?
+Written to $FEATURE_PATH/plan.md and {N} phase docs in $FEATURE_PATH/phases/ — please review.
 ```
-
-Wait for the user's response.
 
 ### Step 5: Iterate Until Confirmed
 
 If the user requests changes:
-- Do a targeted lookup if more detail is needed, then edit the file with the Edit tool.
+- Do a targeted lookup if more detail is needed, then edit the relevant file (plan.md or the specific phase doc) with the Edit tool.
 - If a step is added, check it against "What We're NOT Doing" — flag if it conflicts with a resolved decision.
 - If phases are reordered, flag any dependency that makes the reorder unsafe.
 - Re-prompt for review after each change. Do not reprint the full plan to the conversation.
 
-Once the user explicitly confirms, update the manifest's `plan` phase to `done` with today's date and the file path. Then proceed to Step 6.
+Once the user explicitly confirms, proceed to Step 6.
 
-### Step 6: Generate Implementation Tasks
+### Step 6: Update Manifest
 
-Spawn a **subagent** to generate the task files and update the manifest. This keeps the main context focused on the plan while the subagent handles the mechanical task breakdown.
+Update `manifest.json` directly:
 
-**Subagent instructions:**
+1. Set the `plan` phase to `done` with today's date and file path.
+2. Add (or replace) the `"implementation"` key with one entry per phase:
 
-> Read `${CLAUDE_SKILL_DIR}/references/generate-tasks.md` and follow its instructions exactly. Use these inputs:
-> - Plan path: `$FEATURE_PATH/plan.md`
-> - Feature directory: `$FEATURE_PATH/`
-> - Feature name: `<feature>` (from manifest.json)
-> - Structure outline: `$FEATURE_PATH/structure-outline.md` (if it exists)
+```json
+{
+  "implementation": {
+    "phase-1": {
+      "name": "Phase 1: <title>",
+      "status": "pending",
+      "dependencies": [],
+      "file": "<FEATURE_PATH>/phases/phase-1.md"
+    },
+    "phase-2": {
+      "name": "Phase 2: <title>",
+      "status": "pending",
+      "dependencies": ["phase-1"],
+      "file": "<FEATURE_PATH>/phases/phase-2.md"
+    }
+  }
+}
+```
 
-Wait for the subagent to complete, then say:
+Dependencies come from the structure outline's dependency chart (if it exists), otherwise assume sequential.
+
+Then say:
 
 ```
-Plan confirmed. {N} implementation tasks generated in $FEATURE_PATH/tasks/.
+Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
 
 Run /crispy-implement to execute the next ready phase, or:
 - `/crispy-implement phase-N` to target a specific phase

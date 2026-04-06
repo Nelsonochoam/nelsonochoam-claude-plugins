@@ -16,7 +16,7 @@ When you run `/crispy-init`, choose a storage path. Crispy will organize artifac
       design.md
       structure-outline.md
       plan.md
-      tasks/
+      phases/
         phase-1.md
         ...
 ```

@@ -37,12 +37,12 @@
       "updated": null
     }
   },
-  "tasks": {
+  "implementation": {
     "phase-N": {
       "name": "Phase N: <title from plan>",
       "status": "pending",
       "dependencies": [],
-      "file": "<base_dir>/<repo-name>/<feature>/tasks/phase-N.md"
+      "file": "<base_dir>/<repo-name>/<feature>/phases/phase-N.md"
     }
   }
 }

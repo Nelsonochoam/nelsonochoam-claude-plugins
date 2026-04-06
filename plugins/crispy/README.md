@@ -40,12 +40,14 @@ CRISPY_FEATURE=my-feature claude
 
 **4. Run skills in order**
 
-Each phase produces a file that feeds into the next:
+Each phase produces a file that feeds into the next. **Intent is always required first** — no other phase will proceed without it:
 
 ```
 /crispy-intent → /crispy-research-questions → /crispy-research → 
 /crispy-design → /crispy-structure → /crispy-plan → /crispy-implement
 ```
+
+Each phase enforces that all prior phases are complete. If you jump ahead (e.g., run `/crispy-plan` with only intent done), you'll be offered two choices: **auto-advance** through missing phases automatically, or **stop** and run them manually.
 
 Start a fresh session between phases (use `/clear` or `claude --resume`).
 
@@ -74,14 +76,14 @@ Crispy is for deep work — use it when the cost of getting it wrong is high.
 6. **Plan** — Write the mechanical implementation plan
 7. **Implement** — Execute one phase at a time
 
-Each phase reads prior artifacts and writes its output. See [Usage Guide](./docs/usage.md) for detailed workflows and examples.
+Each phase reads prior artifacts and writes its output. Prerequisites are enforced — every phase requires all prior phases to be complete. See [Usage Guide](./docs/usage.md) for detailed workflows and examples.
 
 ## Documentation
 
-- **[Usage Guide](./docs/usage.md)** — Detailed workflow examples, flexible entry points, when to skip phases
+- **[Usage Guide](./docs/usage.md)** — Detailed workflow examples, auto-advance, prerequisite enforcement
 - **[Artifact Storage](./docs/artifacts.md)** — How files are organized, choosing storage locations, write-first review pattern
 - **[Markdown Reader Integration](./docs/markdown-readers.md)** — Store in Obsidian, Logseq, Dendron, or any note app
-- **[Implementation Details](./docs/implementation.md)** — Task metadata, execution strategies, Ralph loop integration
+- **[Implementation Details](./docs/implementation.md)** — Phase documents, execution strategies, Ralph loop integration
 - **[Troubleshooting](./docs/README.md#troubleshooting)** — Common issues and solutions
 
 ## License

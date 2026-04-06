@@ -4,8 +4,6 @@
 ---
 task: <ticket-id-kebab-description>
 type: structure-outline
-branch: <current branch>
-sha: <short git SHA>
 ---
 
 ### Status

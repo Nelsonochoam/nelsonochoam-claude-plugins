@@ -4,9 +4,6 @@
 ---
 task: <ticket-id-kebab-description>
 type: design-discussion
-repo: <repository name>
-branch: <current branch>
-sha: <full git SHA>
 ---
 
 ### Summary of change request

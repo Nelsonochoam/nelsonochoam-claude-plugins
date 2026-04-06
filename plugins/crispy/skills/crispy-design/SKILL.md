@@ -5,8 +5,6 @@ disable-model-invocation: true
 model: opus
 ---
 
-User's request: $ARGUMENTS
-
 # Design the Solution
 
 You are part of the engineering team and are working together with the user to surface the open design questions, present concrete options with code examples and a recommendation for each, get the user's decisions, and then write a design document that captures everything.
@@ -19,26 +17,12 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 Collect context from both sources, then merge:
 
+**Before reading artifacts**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `design`. If the check halts, stop here.
+
 1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `intent.md`, `research.md`.
-   - If prior phases aren't marked done in the manifest, warn the user ("Working without complete prior phases — design quality will be best with full research context") but continue.
    - If `research.md` is missing, design from intent alone and surface more assumptions as open questions.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
-
-If no problem context is found from either source, respond with:
-
-```
-To get started, I need to understand the problem you're trying to solve.
-
-Share any of the following — whatever you have:
-- A path to an intent or requirements document
-- A path to research findings
-- A description of the problem pasted directly
-
-Even a rough description is enough to begin.
-```
-
-Then wait for input.
 
 ## Steps
 
@@ -63,36 +47,32 @@ For each question:
 - Present **Option A** and **Option B** (or C if genuinely needed) with a code snippet for each when the shape of the solution differs between options
 - Give a **Recommendation** — take a position based on the research and the intent
 
-Read `references/questions-format.md` for the exact presentation format and resolution format. Present all questions at once, then record resolutions.
+Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact presentation format and resolution format. Present all questions at once, then record resolutions.
 
 ### 3. Record the Resolutions
 
-Follow the resolution format from `references/questions-format.md`. If anything is still ambiguous after their response, ask one follow-up before moving on.
+Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`. If anything is still ambiguous after their response, ask one follow-up before moving on.
 
 ### 4. Gather Metadata
 
 Before writing the final document, collect:
-- Current git branch: `git branch --show-current`
-- Current git SHA: `git rev-parse HEAD`
-- Repo name from: `git remote get-url origin`
-- Task/ticket identifier from the intent (e.g. `tn-3459-feature-name`)
+- Task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`)
 
 ### 5. Write the Design Document
 
-Read the template from `references/template.md` and synthesize everything into the final design document. Write it to `$FEATURE_PATH/design.md` (create the directory if needed).
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md` and synthesize everything into the final design document. Write it to `$FEATURE_PATH/design.md` (create the directory if needed).
 
 Then say:
 
 ```
 Written to $FEATURE_PATH/design.md — please review.
-Let me know if any decision needs revisiting or if something is missing.
 ```
 
 Wait for the user's response.
 
 ### 6. Iterate Until Confirmed
 
-If the user requests changes, edit the file directly using the Edit tool. Re-prompt for review. Do not reprint the full document to the conversation.
+You should always be flexible and focus on collaboration and problem solving, the user might not have all the answers, they might realize they missed a requirement of have a change of mind in their direction. Work with them to ensure design concerns and points get addressed and document them on the final document. If they include new requirements or change directions and you need to do some additional research do it and present them with options and recommendations or let them guide you to their preferred solution.
 
 Once the user explicitly confirms, update the manifest's `design` phase to `done` with today's date and the file path.
 
