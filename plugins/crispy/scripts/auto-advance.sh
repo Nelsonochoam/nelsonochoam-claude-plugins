@@ -38,24 +38,28 @@ PLUGIN_DIR="$(dirname "$PLUGIN_ROOT")"
 FEATURE_NAME=$(basename "$FEATURE_PATH")
 
 # --- Pipeline order ---
-# Maps phase keys to their skill slash-command names and artifact files
-declare -A PHASE_SKILL=(
-  [research-questions]="crispy-research-questions"
-  [research]="crispy-research"
-  [design]="crispy-design"
-  [structure]="crispy-structure-outline"
-  [plan]="crispy-plan"
-)
+# Bash 3 compatible — no associative arrays
+PIPELINE_ORDER="research-questions research design structure plan"
 
-declare -A PHASE_ARTIFACT=(
-  [research-questions]="research-questions.md"
-  [research]="research.md"
-  [design]="design.md"
-  [structure]="structure-outline.md"
-  [plan]="plan.md"
-)
+get_skill_name() {
+  case "$1" in
+    research-questions) echo "crispy-research-questions" ;;
+    research) echo "crispy-research" ;;
+    design) echo "crispy-design" ;;
+    structure) echo "crispy-structure-outline" ;;
+    plan) echo "crispy-plan" ;;
+  esac
+}
 
-PIPELINE_ORDER=(research-questions research design structure plan)
+get_artifact_name() {
+  case "$1" in
+    research-questions) echo "research-questions.md" ;;
+    research) echo "research.md" ;;
+    design) echo "design.md" ;;
+    structure) echo "structure-outline.md" ;;
+    plan) echo "plan.md" ;;
+  esac
+}
 
 # --- Get missing phases ---
 PREREQ_JSON=$(bash "$SCRIPTS_DIR/check-prerequisites.sh" "$FEATURE_PATH" "$TARGET_PHASE")
@@ -84,17 +88,17 @@ echo "Missing: $MISSING"
 echo ""
 
 # --- Run each missing phase in pipeline order ---
-for phase in "${PIPELINE_ORDER[@]}"; do
+for phase in $PIPELINE_ORDER; do
   # Skip phases that aren't missing
   if ! echo "$MISSING" | grep -qx "$phase"; then
     continue
   fi
 
-  SKILL_NAME="${PHASE_SKILL[$phase]}"
-  ARTIFACT="${PHASE_ARTIFACT[$phase]}"
+  SKILL_NAME=$(get_skill_name "$phase")
+  ARTIFACT=$(get_artifact_name "$phase")
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "Auto-advancing: $phase (via /crispy-$SKILL_NAME)"
+  echo "Auto-advancing: $phase (via /$SKILL_NAME)"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
   # Build the prompt for claude -p
@@ -113,9 +117,11 @@ IMPORTANT auto-advance rules:
 Run /$SKILL_NAME now."
 
   # Run claude -p with the crispy plugin loaded
+  # Uses bypassPermissions to allow writes to the feature path (which may be outside cwd)
   if ! CRISPY_FEATURE="$FEATURE_NAME" claude -p \
     --plugin-dir "$PLUGIN_DIR/crispy" \
-    --permission-mode auto \
+    --add-dir "$FEATURE_PATH" \
+    --permission-mode bypassPermissions \
     --model opus \
     "$PROMPT" 2>&1; then
     echo "" >&2
