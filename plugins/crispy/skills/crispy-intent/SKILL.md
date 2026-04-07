@@ -86,7 +86,7 @@ FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-
 
 Read the template from `references/intent-template.md`, then:
 
-1. Write the intent document to `$FEATURE_PATH/intent.md` — acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
+1. Write the intent document to `$FEATURE_PATH/intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
 
 Then say:
 
