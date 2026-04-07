@@ -18,6 +18,10 @@
 
 Run `/crispy-init --reset` to reconfigure and choose a new storage location.
 
+**`/crispy-init` fails with "directory does not exist"**
+
+The base directory you provide must already exist — crispy will not create it. Create the directory first (`mkdir -p /your/path`), then re-run `/crispy-init`.
+
 **I want to store artifacts in a markdown reader but already have them elsewhere**
 
 Run `/crispy-init --reset` and choose the new storage location. Existing artifacts in the old location remain there. You can move them manually if needed.

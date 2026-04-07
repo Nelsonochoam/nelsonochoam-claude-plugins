@@ -51,7 +51,11 @@ Use the `next-phase.sh` script to deterministically find the next workable phase
 NEXT=$(bash scripts/next-phase.sh "$FEATURE_PATH")
 ```
 
-Returns JSON with `found`, `id`, `name`, `file`, and `reason` fields. When `found` is `false`, `reason` tells you why: `"all_done"`, `"blocked"`, or `"no_implementation_key"`.
+Returns JSON with `found`, `id`, `name`, `file`, `reason`, and `blocked_by` fields. When `found` is `false`, `reason` tells you why:
+- `"all_done"` — every phase has `status: "done"`
+- `"blocked"` — all pending phases have unmet dependencies; `blocked_by` lists the blocking phase IDs
+- `"no_implementation_key"` — `manifest.json` exists but has no `implementation` section (plan not yet generated)
+- `"no_manifest"` — `manifest.json` does not exist yet
 
 ---
 
@@ -64,7 +68,7 @@ When you invoke a skill and prior phases are missing, crispy offers to **auto-ad
 1. `check-prerequisites.sh` reads `manifest.json` and identifies which phases are missing
 2. The skill presents the missing phases and asks if you want to auto-advance
 3. If you choose auto-advance, `auto-advance.sh` runs each missing phase in pipeline order:
-   - Sets `CRISPY_FEATURE` and invokes `claude -p --plugin-dir ... --permission-mode auto`
+   - Sets `CRISPY_FEATURE` and invokes `claude -p --plugin-dir ... --permission-mode bypassPermissions --model opus`
    - Each phase runs as a separate agent with full tool access
    - The agent writes the artifact and updates the manifest
 4. After all phases complete, the original skill continues with its normal workflow

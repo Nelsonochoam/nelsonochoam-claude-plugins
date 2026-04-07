@@ -92,6 +92,8 @@ CRISPY_FEATURE=my-feature claude
 
 Each `/clear` gives the next skill a fresh context window. A fresh agent reading a clean artifact follows instructions far better than a tired agent at turn 80.
 
+**`CRISPY_FEATURE` persists within a session.** Once the feature is resolved (either from the env variable or by answering the prompt), a `SessionStart` hook automatically restores it after every `/clear`. You only need to set `CRISPY_FEATURE=my-feature` when launching `claude` — subsequent `/clear` resets within the same session don't require re-entering the feature name.
+
 You can also use separate terminal sessions or `claude --resume` instead of `/clear` — the key is that each phase starts with a clean context.
 
 ---

@@ -21,7 +21,7 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
         ...
 ```
 
-`manifest.json` tracks which phases are done and contains implementation metadata (status, dependencies, file paths). Each skill reads it to know where you are and updates it when a phase is confirmed. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) reads the manifest and blocks any skill whose prior phases aren't marked `done`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
+`manifest.json` tracks implementation phase status (pending/done), dependencies, and file pointers. It is created by `/crispy-plan` and only contains `implementation` entries — it does not record planning phase status. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) checks planning phase completion by file existence (e.g., `intent.md`, `research.md`) and implementation phase completion via `manifest.json`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
 
 ## Choosing Your Storage Location
 
