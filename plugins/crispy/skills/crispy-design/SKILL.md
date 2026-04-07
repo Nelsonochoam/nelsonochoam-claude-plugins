@@ -51,54 +51,51 @@ For each question:
 
 Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact format.
 
-### 3. Present to the User
+### 3. Write Draft to File
 
-Present the proposed approach AND the design questions together. The user needs to see the overall direction to make informed decisions on individual questions.
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`). Write a draft design document to `$FEATURE_PATH/design.md` (create the directory if needed) that includes:
 
-Show the proposed approach first, then all design questions at once. Follow the presentation and resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`.
-
-### 4. Record the Resolutions
-
-Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`. If anything is still ambiguous after their response, ask one follow-up before moving on.
-
-### 5. Gather Metadata
-
-Before writing the final document, collect:
-- Task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`)
-
-### 6. Write the Design Document
-
-Read the template from `${CLAUDE_SKILL_DIR}/references/template.md` and synthesize everything into the final design document. Write it to `$FEATURE_PATH/design.md` (create the directory if needed).
-
-The document must include:
 - **Summary** — what we're building
 - **Motivation** — why it matters, who's affected, cost of inaction
 - **Current State** — factual findings from research with `file:line` references
 - **Desired End State** — what's true when done
 - **What we're not doing** — explicit scope boundaries
 - **Proposed Approach** — the narrative core: how the solution works, with code and inline pattern references
-- **Design Questions** — the original questions as presented
-- **Resolved Design Questions** — what was decided and why
+- **Design Questions** — the open questions with options, tradeoffs, and your recommendation (follow the format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`)
 - **Risks & Mitigations** — what could go wrong and how we handle it
 - **Validation** — how to verify the solution works
 
-Then say:
+Do NOT print the document content in the conversation. Once written, say:
 
 ```
-Written to $FEATURE_PATH/design.md — please review.
+Draft written to $FEATURE_PATH/design.md — open it and let me know your thoughts.
 ```
 
 Wait for the user's response.
 
-### 7. Iterate Until Confirmed
+### 4. Collaborate Until Confirmed
 
-You should always be flexible and focus on collaboration and problem solving, the user might not have all the answers, they might realize they missed a requirement or have a change of mind in their direction. Work with them to ensure design concerns and points get addressed and document them on the final document. If they include new requirements or change directions and you need to do some additional research do it and present them with options and recommendations or let them guide you to their preferred solution.
+Work with the user like two peers reviewing a document together. They may question decisions, prefer different options, surface new requirements, or want to change direction entirely.
+
+- Update `$FEATURE_PATH/design.md` after each meaningful exchange to reflect the current agreed state.
+- Do not re-print the document in the conversation — keep discussion focused and refer the user back to the file.
+- If they introduce new requirements or constraints, discuss the implications, update the approach, and surface any new design questions that arise.
+- If more research is needed, do it and return with updated options and a recommendation.
+- If anything is ambiguous, ask one focused follow-up before moving on.
+
+Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md` when recording decisions.
+
+Once all questions are resolved and the user is satisfied, do a final update to `$FEATURE_PATH/design.md`:
+
+- Move resolved questions into a **Resolved Design Questions** section
+- Ensure the Proposed Approach reflects all decisions made
 
 Then say:
 
 ```
 Design confirmed. Run /crispy-structure-outline to break this into vertical slices.
 ```
+
 
 ## Guidelines
 
