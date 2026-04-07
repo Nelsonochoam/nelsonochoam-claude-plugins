@@ -68,8 +68,6 @@ Written to $FEATURE_PATH/research-questions.md — please review.
 
 If the user requests changes, edit the file directly using the Edit tool. Re-prompt for review. Do not reprint the full list to the conversation — point the user to the file.
 
-Once the user explicitly confirms, update the manifest's `research-questions` phase to `done` with today's date and the file path.
-
 ## Important Guidelines
 
 1. **Light touch only**: You may do a quick scan to confirm specifics mentioned in the intent, but deep research happens later — stay shallow

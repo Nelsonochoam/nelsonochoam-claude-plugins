@@ -103,12 +103,9 @@ If the user requests changes:
 
 Once the user explicitly confirms, proceed to Step 6.
 
-### Step 6: Update Manifest
+### Step 6: Create Manifest
 
-Update `manifest.json` directly:
-
-1. Set the `plan` phase to `done` with today's date and file path.
-2. Add (or replace) the `"implementation"` key with one entry per phase:
+Once the user confirms the plan, create (or replace) `$FEATURE_PATH/manifest.json` with only the implementation phases:
 
 ```json
 {

@@ -15,7 +15,7 @@
 # The script:
 #   1. Runs check-prerequisites.sh to find missing phases
 #   2. For each missing phase (in pipeline order), invokes `claude -p` with the skill
-#   3. Re-checks prerequisites after each phase to confirm it completed
+#   3. Verifies the artifact file was written after each phase
 #   4. Exits 0 if all prerequisites are now met, 1 if any phase failed
 #
 # Output: Progress messages to stdout, errors to stderr.
@@ -51,13 +51,13 @@ get_skill_name() {
   esac
 }
 
-get_artifact_name() {
+get_artifact_file() {
   case "$1" in
-    research-questions) echo "research-questions.md" ;;
-    research) echo "research.md" ;;
-    design) echo "design.md" ;;
-    structure) echo "structure-outline.md" ;;
-    plan) echo "plan.md" ;;
+    research-questions) echo "$FEATURE_PATH/research-questions.md" ;;
+    research) echo "$FEATURE_PATH/research.md" ;;
+    design) echo "$FEATURE_PATH/design.md" ;;
+    structure) echo "$FEATURE_PATH/structure-outline.md" ;;
+    plan) echo "$FEATURE_PATH/plan.md" ;;
   esac
 }
 
@@ -95,29 +95,24 @@ for phase in $PIPELINE_ORDER; do
   fi
 
   SKILL_NAME=$(get_skill_name "$phase")
-  ARTIFACT=$(get_artifact_name "$phase")
+  ARTIFACT_PATH=$(get_artifact_file "$phase")
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "Auto-advancing: $phase (via /$SKILL_NAME)"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-  # Build the prompt for claude -p
-  # We tell it to run the skill in auto-advance mode (no user interaction)
   PROMPT="You are running in auto-advance mode. Execute the /$SKILL_NAME skill for feature '$FEATURE_NAME' at path '$FEATURE_PATH'.
 
 IMPORTANT auto-advance rules:
 - Do NOT ask the user any questions — make reasonable decisions yourself
-- Do NOT wait for user confirmation — write the artifact and mark the phase done
+- Do NOT wait for user confirmation — write the artifact and continue
 - Do NOT run the prerequisite check (prerequisites are being handled by the auto-advance pipeline)
 - DO execute the full analysis/research/writing workflow from the skill
-- DO write the artifact to $FEATURE_PATH/$ARTIFACT
-- DO update $FEATURE_PATH/manifest.json to mark the '$phase' phase as done with today's date
+- DO write the artifact to $ARTIFACT_PATH
 - Read $FEATURE_PATH/intent.md and any other existing artifacts in $FEATURE_PATH/ for context
 
 Run /$SKILL_NAME now."
 
-  # Run claude -p with the crispy plugin loaded
-  # Uses bypassPermissions to allow writes to the feature path (which may be outside cwd)
   if ! CRISPY_FEATURE="$FEATURE_NAME" claude -p \
     --plugin-dir "$PLUGIN_DIR/crispy" \
     --add-dir "$FEATURE_PATH" \
@@ -132,27 +127,13 @@ Run /$SKILL_NAME now."
 
   echo ""
 
-  # Verify the phase completed
-  VERIFY_JSON=$(bash "$SCRIPTS_DIR/check-prerequisites.sh" "$FEATURE_PATH" "$TARGET_PHASE")
-  PHASE_STATUS=$(jq -r ".phases[\"$phase\"].status // \"pending\"" "$FEATURE_PATH/manifest.json" 2>/dev/null || echo "pending")
-
-  if [ "$PHASE_STATUS" = "done" ]; then
-    echo "Auto-advanced: $phase — artifact written to $FEATURE_PATH/$ARTIFACT"
+  # Verify artifact was written
+  if [ -f "$ARTIFACT_PATH" ]; then
+    echo "Auto-advanced: $phase — artifact written to $ARTIFACT_PATH"
   else
-    # Check if the artifact file was created even if manifest wasn't updated
-    if [ -f "$FEATURE_PATH/$ARTIFACT" ]; then
-      echo "Warning: $phase artifact was written but manifest was not updated. Updating now..."
-      # Update manifest using jq
-      UPDATED=$(jq --arg phase "$phase" --arg file "$FEATURE_PATH/$ARTIFACT" --arg date "$(date +%Y-%m-%d)" \
-        '.phases[$phase].status = "done" | .phases[$phase].file = $file | .phases[$phase].updated = $date' \
-        "$FEATURE_PATH/manifest.json")
-      echo "$UPDATED" > "$FEATURE_PATH/manifest.json"
-      echo "Auto-advanced: $phase — artifact written to $FEATURE_PATH/$ARTIFACT"
-    else
-      echo "Error: Auto-advance for '$phase' did not produce the expected artifact." >&2
-      echo "You can run /$SKILL_NAME manually to complete this phase." >&2
-      exit 1
-    fi
+    echo "Error: Auto-advance for '$phase' did not produce the expected artifact at $ARTIFACT_PATH." >&2
+    echo "You can run /$SKILL_NAME manually to complete this phase." >&2
+    exit 1
   fi
 
   echo ""

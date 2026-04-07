@@ -78,8 +78,6 @@ Wait for the user's response.
 
 If the user requests changes, edit the file directly using the Edit tool. Re-prompt for review. Do not reprint the full outline to the conversation.
 
-Once the user explicitly confirms, update the manifest's `structure` phase to `done` with today's date and the file path.
-
 Then say:
 
 ```

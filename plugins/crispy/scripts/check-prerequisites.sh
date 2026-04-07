@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # check-prerequisites.sh — Deterministic prerequisite check for crispy phases.
 #
-# Reads manifest.json and checks whether the required prerequisite phases
-# are marked "done" for a given target phase.
+# Checks whether the required prerequisite phase artifact files exist on disk
+# for a given target phase. No manifest read needed for planning phases —
+# done is determined by file existence alone.
 #
 # Usage:
 #   PREREQ_RESULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh" "$FEATURE_PATH" "<phase>")
@@ -13,11 +14,10 @@
 #
 # Output: JSON object to stdout with:
 #   ok              — true if all prerequisites are met
-#   intent_missing  — true if intent phase is not done (always checked first)
-#   missing         — array of prerequisite phase keys that are not done
-#   done            — array of prerequisite phase keys that are done
+#   intent_missing  — true if intent.md does not exist (always checked first)
+#   missing         — array of prerequisite phase keys whose artifact files are absent
+#   done            — array of prerequisite phase keys whose artifact files exist
 #   current_phase   — echo of the requested phase
-#   manifest_exists — whether manifest.json was found
 #
 # Exit code is always 0. The script reports facts; it does not make decisions.
 
@@ -31,37 +31,39 @@ if [ -z "$FEATURE_PATH" ] || [ -z "$CURRENT_PHASE" ]; then
   exit 1
 fi
 
-MANIFEST="$FEATURE_PATH/manifest.json"
-
-# --- Prerequisite map ---
-# Each phase lists the prerequisite phase keys (as they appear in manifest.json).
-# Intent is always implicitly required and checked separately.
-get_prerequisites() {
+# --- Phase → artifact file map ---
+get_artifact_file() {
   local phase="$1"
   case "$phase" in
-    research-questions) echo "" ;;                                    # only intent
-    research)           echo "research-questions" ;;                  # + intent
-    design)             echo "research-questions research" ;;         # + intent
-    structure)          echo "research-questions research design" ;;  # + intent
-    plan)               echo "research-questions research design structure" ;; # all prior phases
-    implement)          echo "research-questions research design structure plan" ;; # all phases
+    intent)             echo "$FEATURE_PATH/intent.md" ;;
+    research-questions) echo "$FEATURE_PATH/research-questions.md" ;;
+    research)           echo "$FEATURE_PATH/research.md" ;;
+    design)             echo "$FEATURE_PATH/design.md" ;;
+    structure)          echo "$FEATURE_PATH/structure-outline.md" ;;
+    plan)               echo "$FEATURE_PATH/plan.md" ;;
     *)                  echo "" ;;
   esac
 }
 
-# --- Check manifest existence ---
-if [ ! -f "$MANIFEST" ]; then
-  cat <<EOF
-{"ok":false,"intent_missing":true,"missing":[],"done":[],"current_phase":"$CURRENT_PHASE","manifest_exists":false}
-EOF
-  exit 0
-fi
+# --- Prerequisite map ---
+# Intent is always implicitly required and checked separately.
+get_prerequisites() {
+  local phase="$1"
+  case "$phase" in
+    research-questions) echo "" ;;
+    research)           echo "research-questions" ;;
+    design)             echo "research-questions research" ;;
+    structure)          echo "research-questions research design" ;;
+    plan)               echo "research-questions research design structure" ;;
+    implement)          echo "research-questions research design structure plan" ;;
+    *)                  echo "" ;;
+  esac
+}
 
-# --- Read intent status ---
-INTENT_STATUS=$(jq -r '.phases.intent.status // "pending"' "$MANIFEST" 2>/dev/null || echo "pending")
-
+# --- Check intent ---
+INTENT_FILE=$(get_artifact_file "intent")
 INTENT_MISSING=false
-if [ "$INTENT_STATUS" != "done" ]; then
+if [ ! -f "$INTENT_FILE" ]; then
   INTENT_MISSING=true
 fi
 
@@ -73,8 +75,8 @@ DONE_JSON="[]"
 
 if [ -n "$PREREQS" ]; then
   for prereq in $PREREQS; do
-    STATUS=$(jq -r ".phases[\"$prereq\"].status // \"pending\"" "$MANIFEST" 2>/dev/null || echo "pending")
-    if [ "$STATUS" = "done" ]; then
+    FILE=$(get_artifact_file "$prereq")
+    if [ -f "$FILE" ]; then
       DONE_JSON=$(echo "$DONE_JSON" | jq --arg p "$prereq" '. + [$p]')
     else
       MISSING_JSON=$(echo "$MISSING_JSON" | jq --arg p "$prereq" '. + [$p]')
@@ -83,7 +85,7 @@ if [ -n "$PREREQS" ]; then
 fi
 
 # Always include intent in the done list if it's done
-if [ "$INTENT_STATUS" = "done" ]; then
+if [ "$INTENT_MISSING" = "false" ]; then
   DONE_JSON=$(echo "$DONE_JSON" | jq '. + ["intent"]')
 fi
 
@@ -109,6 +111,5 @@ jq -n \
     intent_missing: $intent_missing,
     missing: $missing,
     done: $done_phases,
-    current_phase: $current_phase,
-    manifest_exists: true
+    current_phase: $current_phase
   }'

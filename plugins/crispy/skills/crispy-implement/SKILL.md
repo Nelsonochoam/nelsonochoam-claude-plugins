@@ -99,7 +99,6 @@ After completing each phase:
 1. **Run the success criteria checks** specified in the phase doc — fix any failures before proceeding
 2. **Update the manifest**:
    - Set `implementation.phase-N.status` to `"done"` in `manifest.json`
-   - Update the `implement` phase status to reflect progress (e.g., `in-progress (Phase 2/4)`)
 3. **Pause for manual verification**:
 
 ```
@@ -147,8 +146,6 @@ When all phases are complete (all entries in `manifest.json` `implementation` ha
    Manual verification required:
    - [ ] <from plan>
    ```
-
-2. **Update the manifest**: Set the `implement` phase to `done` with today's date.
 
 
 ## Guidelines

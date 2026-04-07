@@ -94,8 +94,6 @@ Wait for the user's response.
 
 You should always be flexible and focus on collaboration and problem solving, the user might not have all the answers, they might realize they missed a requirement or have a change of mind in their direction. Work with them to ensure design concerns and points get addressed and document them on the final document. If they include new requirements or change directions and you need to do some additional research do it and present them with options and recommendations or let them guide you to their preferred solution.
 
-Once the user explicitly confirms, update the manifest's `design` phase to `done` with today's date and the file path.
-
 Then say:
 
 ```

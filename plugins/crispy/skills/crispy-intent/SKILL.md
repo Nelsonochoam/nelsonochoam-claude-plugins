@@ -17,7 +17,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 - **Current phase**: `intent`
 - **No-args fallback**: ask the user to describe what they want to build or change.
-- **Manifest handling**: If the `intent` phase is already `done`, ask the user whether they want to start a fresh intent or continue editing the existing one. If `pending`, load the existing `intent.md` and skip to Step 4 (Iterate Until Confirmed).
+- **Manifest handling**: If `$FEATURE_PATH/intent.md` already exists, ask the user whether they want to start a fresh intent or continue editing the existing one. If the file doesn't exist, proceed normally.
 
 ## Initial Setup
 
@@ -87,7 +87,6 @@ FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-
 Read the template from `references/intent-template.md`, then:
 
 1. Write the intent document to `$FEATURE_PATH/intent.md` — acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
-2. Create the manifest at `$FEATURE_PATH/manifest.json` using the template from `references/manifest-template.json` — replace `<Feature Name>`, `<feature>`, and `<today's date>` with actual values.
 
 Then say:
 
@@ -100,11 +99,6 @@ Wait for the user's response.
 ### 4. Iterate Until Confirmed
 
 If the user requests changes, edit the file directly using the Edit tool and re-prompt for review. Do not print the full document to the conversation — point the user to the file.
-
-### 5. Update Manifest
-
-Once the user explicitly confirms the intent document is correct, update the manifest's `intent` phase to `done` with today's date.
-
 
 ## Guidelines
 

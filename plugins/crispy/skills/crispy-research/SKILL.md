@@ -70,8 +70,6 @@ Written to $FEATURE_PATH/research.md — please review.
 
 If the user requests more depth on a question, do a targeted sub-agent lookup and update the file with Edit. Re-prompt for review. Do not reprint the full document to the conversation.
 
-Once the user explicitly confirms, update the manifest's `research` phase to `done` with today's date and the file path.
-
 Then say:
 
 ```
