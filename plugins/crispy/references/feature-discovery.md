@@ -16,14 +16,17 @@ This returns the base directory path for the current repo . All feature folder r
 
 Resolve the feature folder. All subsequent artifact reads and writes use `$FEATURE_PATH`.
 
-1. **`CRISPY_FEATURE` env variable is set** → set `FEATURE_PATH` to `$BASE_DIR/$CRISPY_FEATURE`
+1. **`CRISPY_FEATURE` env variable is set** → use it as the feature name
 2. **`CRISPY_FEATURE` is not set** → use `AskUserQuestion` to ask: *"Which feature do you want to work on? Provide an existing feature name or a new one (use kebab-case or a ticket ID — e.g. `add-dark-mode-toggle` or `ticket-1234`)."*
 
-   Remember the feature name as `CRISPY_FEATURE` for this session, then create or resolve the folder:
+   Once the feature name is known, create or resolve the folder and **persist it for this session** so subsequent skills (after `/clear`) don't ask again:
 
    ```bash
    FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "$CRISPY_FEATURE")
+   echo "$CRISPY_FEATURE" > "/tmp/.crispy_session_${PPID}"
    ```
+
+   The session file is keyed to the current `claude` process PID (`$PPID`), so it is automatically scoped to this session and ignored by any future `claude` invocation.
 
 3. **Read `$FEATURE_PATH/manifest.json`** (if it exists) to understand phase status. Follow any **manifest handling** instructions in the skill file.
 
