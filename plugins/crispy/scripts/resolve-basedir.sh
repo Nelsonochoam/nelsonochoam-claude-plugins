@@ -11,7 +11,13 @@
 #   Feature folder: $BASE_DIR/<feature-name>/
 
 CONFIG_FILE="$HOME/.crispy/config.json"
-REPO_NAME=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "default")
+# Use git-common-dir to get the main repo root (handles worktrees correctly)
+GIT_COMMON=$(git rev-parse --git-common-dir 2>/dev/null)
+if [ -n "$GIT_COMMON" ] && [ "$GIT_COMMON" != ".git" ]; then
+  REPO_NAME=$(basename "$(dirname "$GIT_COMMON")" 2>/dev/null || echo "default")
+else
+  REPO_NAME=$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "default")
+fi
 
 BASE_DIR=""
 
