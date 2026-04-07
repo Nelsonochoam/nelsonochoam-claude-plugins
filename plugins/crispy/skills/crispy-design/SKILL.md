@@ -1,15 +1,15 @@
 ---
 name: crispy-design
-description: Interview the user to produce a high-level design document from intent and research context.
+description: Work with the user to produce a high-level design document for intent using the research as context.
 disable-model-invocation: true
 model: opus
 ---
 
 # Design the Solution
 
-You are part of the engineering team and are working together with the user to surface the open design questions, present concrete options with code examples and a recommendation for each, get the user's decisions, and then write a design document that captures everything.
+You are part of the engineering team and are working together with the user to design a solution. Your job is to develop a proposed approach, surface open design questions with concrete options and tradeoffs, get the user's decisions, and write a design document that any engineer can read and understand the full solution.
 
-The design questions are presented all at once — not one at a time. The user reviews them, picks options or overrides recommendations, and you write the final doc.
+The design document should read as a coherent technical narrative — not just a list of decisions. An engineer unfamiliar with the codebase should be able to understand the approach from the document alone.
 
 ## Input Resolution
 
@@ -23,44 +23,64 @@ Collect context from both sources, then merge:
    - If `research.md` is missing, design from intent alone and surface more assumptions as open questions.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
+   - The arguments might contain some initial direction the user wants you to take or consider, if so, ensure you
+     incorporate it as the starting assumption
 
 ## Steps
 
-### 1. Ask About Initial Direction
+### 1. Develop the Proposed Approach
 
-Before generating questions, ask:
+Before surfacing individual decisions, think through the overall direction. Draft the narrative of how the solution works:
 
-```
-Before I surface the design questions — do you have an initial direction in mind, or should I work from the research and surface the open decisions?
-```
+- What components are involved and how they interact
+- What the data or control flow looks like
+- Which existing patterns and code this builds on (reference with `file:line`)
+- Key technical details an implementer needs to understand
 
-If they have a direction: incorporate it as the starting assumption and only surface questions where there is still genuine ambiguity.
+Use pseudo-code for flows and interactions. Use real code for interfaces, APIs, and config shapes. Reference existing patterns inline where you're building on them — e.g., "We'll follow the service pattern at `src/services/baz.ts:1-15`."
 
-If they don't: proceed to surface all open questions.
+### 2. Identify Design Questions
 
-### 2. Generate the Design Questions Document
-
-Think through the intent and research carefully. Identify every decision that needs to be made — where there are 2+ meaningful options, where the research reveals ambiguity, or where the approach could meaningfully diverge.
+Surface every decision where the approach could meaningfully diverge — where there are 2+ meaningful options, where the research reveals ambiguity, or where a choice has significant tradeoffs.
 
 For each question:
-- Write a clear, specific question (not "how should we do X" — "should we extend `ServiceX` or create a new service?")
-- Present **Option A** and **Option B** (or C if genuinely needed) with a code snippet for each when the shape of the solution differs between options
-- Give a **Recommendation** — take a position based on the research and the intent
+- Write a context line explaining **why** this decision matters
+- Present **Option A** and **Option B** (or C if genuinely needed) with code snippets showing what each looks like in practice
+- Include explicit **Pros** and **Cons** for each option
+- Give a **Recommendation** that names the specific tradeoff being accepted
 
-Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact presentation format and resolution format. Present all questions at once, then record resolutions.
+Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact format.
 
-### 3. Record the Resolutions
+### 3. Present to the User
+
+Present the proposed approach AND the design questions together. The user needs to see the overall direction to make informed decisions on individual questions.
+
+Show the proposed approach first, then all design questions at once. Follow the presentation and resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`.
+
+### 4. Record the Resolutions
 
 Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`. If anything is still ambiguous after their response, ask one follow-up before moving on.
 
-### 4. Gather Metadata
+### 5. Gather Metadata
 
 Before writing the final document, collect:
 - Task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`)
 
-### 5. Write the Design Document
+### 6. Write the Design Document
 
 Read the template from `${CLAUDE_SKILL_DIR}/references/template.md` and synthesize everything into the final design document. Write it to `$FEATURE_PATH/design.md` (create the directory if needed).
+
+The document must include:
+- **Summary** — what we're building
+- **Motivation** — why it matters, who's affected, cost of inaction
+- **Current State** — factual findings from research with `file:line` references
+- **Desired End State** — what's true when done
+- **What we're not doing** — explicit scope boundaries
+- **Proposed Approach** — the narrative core: how the solution works, with code and inline pattern references
+- **Design Questions** — the original questions as presented
+- **Resolved Design Questions** — what was decided and why
+- **Risks & Mitigations** — what could go wrong and how we handle it
+- **Validation** — how to verify the solution works
 
 Then say:
 
@@ -70,9 +90,9 @@ Written to $FEATURE_PATH/design.md — please review.
 
 Wait for the user's response.
 
-### 6. Iterate Until Confirmed
+### 7. Iterate Until Confirmed
 
-You should always be flexible and focus on collaboration and problem solving, the user might not have all the answers, they might realize they missed a requirement of have a change of mind in their direction. Work with them to ensure design concerns and points get addressed and document them on the final document. If they include new requirements or change directions and you need to do some additional research do it and present them with options and recommendations or let them guide you to their preferred solution.
+You should always be flexible and focus on collaboration and problem solving, the user might not have all the answers, they might realize they missed a requirement or have a change of mind in their direction. Work with them to ensure design concerns and points get addressed and document them on the final document. If they include new requirements or change directions and you need to do some additional research do it and present them with options and recommendations or let them guide you to their preferred solution.
 
 Once the user explicitly confirms, update the manifest's `design` phase to `done` with today's date and the file path.
 
@@ -84,9 +104,13 @@ Design confirmed. Run /crispy-structure-outline to break this into vertical slic
 
 ## Guidelines
 
-- **All questions at once**: Don't drip questions one at a time — present the full set so the user can see the shape of the problem
-- **Always take a position**: Every question must have a recommendation grounded in research or the intent — don't present options without a view
-- **Options need code when shape differs**: If Option A and Option B result in meaningfully different code structure, show both
-- **Recommendations are opinionated**: "Option A — start simple, the pattern already exists at X" not "either could work"
-- **One question per decision**: If two things are actually separate decisions, split them
-- **Design is direction, not execution**: The document describes what and why — not step-by-step how
+- **Lead with the approach, not the questions**: The document should be readable as a design narrative even if you skip the questions section. The Proposed Approach is the core — questions refine it.
+- **Show how it works**: Include flows, sequences, or pseudo-code in the Proposed Approach. An engineer should be able to picture the full solution after reading this section alone.
+- **Patterns are evidence, not decoration**: Reference existing code inline to justify the approach ("following the pattern at `file:line`"), don't list patterns in a disconnected section.
+- **Code depth is contextual**: Use pseudo-code for flows and interactions, real code for interfaces/APIs/config shapes. Match the level of detail to what communicates the idea best.
+- **All questions at once**: Don't drip questions one at a time — present the full set so the user can see the shape of the problem.
+- **Every option needs Pros/Cons**: Make tradeoffs explicit so the reader can evaluate independently of your recommendation. "Simpler" is not a pro — "fewer moving parts: single file vs. three-file module" is.
+- **Always take a position**: Every question must have a recommendation that names the tradeoff being accepted — not "either could work."
+- **One question per decision**: If two things are actually separate decisions, split them.
+- **Name the risks**: Every design has risks. Surface them in the Risks & Mitigations section rather than leaving them implicit.
+- **Design is direction, not execution**: The document describes what and why — not step-by-step implementation instructions.

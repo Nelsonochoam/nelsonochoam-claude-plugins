@@ -135,9 +135,6 @@ Then say:
 
 ```
 Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
-
-Run /crispy-implement to execute the next ready phase, or:
-- `/crispy-implement phase-N` to target a specific phase
 ```
 
 ## Important Guidelines
