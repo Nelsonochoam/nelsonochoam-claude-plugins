@@ -43,22 +43,31 @@ Then say: "Before we proceed I have a few questions to make sure I understand yo
 
 Ask targeted questions across the following dimensions. Only ask what is genuinely unclear — do not ask about things already stated.
 
+**Background:**
+- What's the current system state relevant to this change?
+- Has this been attempted before? Are there relevant docs, threads, or prior art?
+
 **Scope:**
-- What exactly should change or be created? What is explicitly out of scope?
+- What exactly should change or be created? What is explicitly out of scope, and why?
 - Are there related areas that look similar but should NOT be touched?
 
 **Motivation:**
 - What problem does this solve, and who is affected by it?
 - Is this a user complaint, a business requirement, tech debt, or something else?
+- Why now? What's the cost of not doing this?
 
 **Acceptance:**
-- How will we know this is done? What does success look like to the user?
+- How will we know this is done? Describe scenarios: "Given X, when Y, then Z."
 - Are there edge cases or error states that must be handled?
 - Are there non-functional requirements (performance, security, accessibility)?
 
+**Risks:**
+- What could go wrong? Are there non-obvious edge cases or race conditions?
+- Is there legacy behavior or technical debt that could trip up the implementation?
+- Are there migration concerns or backwards-compatibility risks?
+
 **Constraints:**
 - Are there technical constraints, deadlines, or dependencies?
-- Must this be backwards compatible? Are there migration concerns?
 
 Present all questions in a single numbered list. Wait for the user's answers before continuing.
 
@@ -77,7 +86,7 @@ FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-
 
 Read the template from `references/intent-template.md`, then:
 
-1. Write the intent document to `$FEATURE_PATH/intent.md`
+1. Write the intent document to `$FEATURE_PATH/intent.md` — acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
 2. Create the manifest at `$FEATURE_PATH/manifest.json` using the template from `references/manifest-template.json` — replace `<Feature Name>`, `<feature>`, and `<today's date>` with actual values.
 
 Then say:
@@ -101,6 +110,8 @@ Once the user explicitly confirms the intent document is correct, update the man
 
 1. **Do not research code**: This phase is about understanding the ask, not the codebase
 2. **Do not suggest solutions**: Surface the problem space, not the answer
-3. **Be specific about acceptance criteria**: Vague criteria ("it should work well") should be pushed back on — ask for something testable
+3. **Acceptance criteria must be scenario-based**: Use Given/When/Then format. If a criterion can't be expressed as a scenario, it's likely a task, not a criterion. Vague criteria ("it should work well") should be pushed back on
 4. **No open questions in the final document**: If something is unresolved, either research it or flag it explicitly as an open question
 5. **Keep scope tight**: If the user's request seems to be expanding, note it and ask if that is intentional
+6. **Gotchas & Risks must have substance**: This section should contain things a developer would wish they knew before starting. If you can't identify any, ask the user — there are always risks
+7. **Out of scope needs rationale**: Each out-of-scope item should briefly explain why it's excluded, to prevent re-litigation

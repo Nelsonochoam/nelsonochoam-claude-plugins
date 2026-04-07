@@ -44,7 +44,19 @@ Wait for **all sub-agents to complete** before synthesizing.
 
 Compile all findings. Organize by question or component area, not by which agent found what. Verify critical claims by reading the relevant file sections yourself. When sources differ, prefer the live codebase.
 
-### 4. Write the Research Document
+### 4. Generate Permalinks
+
+Before writing the document, resolve the GitHub permalink base so all file references are clickable:
+
+```bash
+REPO=$(gh repo view --json owner,name --jq '"\(.owner.login)/\(.name)"')
+SHA=$(git rev-parse HEAD)
+```
+
+Every `file:line` reference in the document must be a markdown link using:
+`https://github.com/$REPO/blob/$SHA/$FILE_PATH#L$LINE` (or `#L$START-L$END` for ranges).
+
+### 5. Write the Research Document
 
 Read the document format from `${CLAUDE_SKILL_DIR}/references/template.md`. Write findings to `$FEATURE_PATH/research.md` (create the directory if needed).
 
@@ -54,7 +66,7 @@ Then say:
 Written to $FEATURE_PATH/research.md — please review.
 ```
 
-### 5. Iterate Until Confirmed
+### 6. Iterate Until Confirmed
 
 If the user requests more depth on a question, do a targeted sub-agent lookup and update the file with Edit. Re-prompt for review. Do not reprint the full document to the conversation.
 
@@ -70,6 +82,6 @@ Confirmed. Run /design with the intent and research docs to synthesize the solut
 
 - **Wait for all agents**: Never synthesize partial results
 - **Detailed Findings use bullets**: Each bullet is a factual observation with a `file:line` reference
-- **Use code snippets**: Include short, relevant snippets when they explain behavior better than prose
+- **Code snippets are selective**: Only include a snippet when prose alone cannot explain the behavior — most findings should be bullet text with a permalink
 - **Code References are a flat index**: Every file touched during research should appear here
 - **No recommendations**: If you notice something worth flagging, put it in Open Questions — not as a suggestion

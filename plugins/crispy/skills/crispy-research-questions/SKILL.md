@@ -46,6 +46,11 @@ If the intent already names specific things (a component, a flag, a field), you 
 Write the items directly to `$FEATURE_PATH/research-questions.md` (create the directory if needed). Use this format:
 
 ```
+---
+task: <ticket-id-kebab-description>
+type: research-questions
+---
+
 ### Research Questions
 
 - <question, directive, or focus area>
