@@ -17,7 +17,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 - **Current phase**: `implement`
 - **No-args fallback**: ask the user to provide a plan document to implement.
-- **Manifest handling**: Run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `implement`. If the check halts, stop here.
+- **Prerequisite check**: Run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `implement`. If the check halts, stop here.
 
 Once resolved, read `$FEATURE_PATH/plan.md` for an overview of the feature and its phases. The plan is a lightweight index — the detailed implementation steps are in the phase docs.
 

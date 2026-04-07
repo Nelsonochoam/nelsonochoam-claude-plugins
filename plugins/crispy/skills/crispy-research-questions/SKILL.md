@@ -19,7 +19,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 - **Current phase**: `research-questions`
 - **No-args fallback**: ask the user to share the intent document or feature description.
-- **Manifest handling**: Run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `research-questions`. If the check halts, stop here.
+- **Prerequisite check**: Run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `research-questions`. If the check halts, stop here.
 
 ## Process Steps
 

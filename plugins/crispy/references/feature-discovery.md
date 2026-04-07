@@ -28,6 +28,4 @@ Resolve the feature folder. All subsequent artifact reads and writes use `$FEATU
 
    The session file is keyed to the current `claude` process PID (`$PPID`), so it is automatically scoped to this session and ignored by any future `claude` invocation.
 
-3. **Read `$FEATURE_PATH/manifest.json`** (if it exists) to understand phase status. Follow any **manifest handling** instructions in the skill file.
-
-4. **If the user provided no task description** (only a feature name, or nothing at all), follow the skill's **no-args fallback** now.
+3. **If the user provided no task description** (only a feature name, or nothing at all), follow the skill's **no-args fallback** now.

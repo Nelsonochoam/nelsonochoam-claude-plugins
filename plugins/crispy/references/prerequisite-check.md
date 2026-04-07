@@ -8,7 +8,7 @@ Follow this protocol immediately after feature discovery resolves `$FEATURE_PATH
 PREREQ_RESULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh" "$FEATURE_PATH" "<phase>")
 ```
 
-The script reads `manifest.json` and returns a JSON object:
+The script checks artifact file existence and returns a JSON object:
 
 ```json
 {
@@ -16,14 +16,13 @@ The script reads `manifest.json` and returns a JSON object:
   "intent_missing": true|false,
   "missing": ["phase-key", ...],
   "done": ["phase-key", ...],
-  "current_phase": "<phase>",
-  "manifest_exists": true|false
+  "current_phase": "<phase>"
 }
 ```
 
 ## 2. Interpret the Result
 
-### If `manifest_exists` is false or `intent_missing` is true → HARD STOP
+### If `intent_missing` is true → HARD STOP
 
 Intent is required before any other phase can proceed. It cannot be auto-advanced because it requires human input (scope, motivation, acceptance criteria, constraints).
 
@@ -77,7 +76,7 @@ This script:
 1. Determines which phases are missing (using `check-prerequisites.sh`)
 2. Runs each missing phase in pipeline order via `claude -p` with the crispy plugin loaded
 3. Each phase runs as a separate `claude -p` invocation with `--permission-mode auto`
-4. Verifies each phase completed (artifact written + manifest updated)
+4. Verifies each phase completed (artifact file written)
 5. Reports progress and exits 0 on success, 1 on failure
 
 After the script completes successfully, continue with the current skill's normal workflow.

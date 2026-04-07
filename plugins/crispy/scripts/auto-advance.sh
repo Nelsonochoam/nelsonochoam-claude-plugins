@@ -15,7 +15,7 @@
 # The script:
 #   1. Runs check-prerequisites.sh to find missing phases
 #   2. For each missing phase (in pipeline order), invokes `claude -p` with the skill
-#   3. Verifies the artifact file was written after each phase
+#   3. Verifies the artifact file exists after each phase
 #   4. Exits 0 if all prerequisites are now met, 1 if any phase failed
 #
 # Output: Progress messages to stdout, errors to stderr.

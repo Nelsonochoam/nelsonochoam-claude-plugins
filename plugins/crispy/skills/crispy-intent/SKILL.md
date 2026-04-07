@@ -17,7 +17,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 - **Current phase**: `intent`
 - **No-args fallback**: ask the user to describe what they want to build or change.
-- **Manifest handling**: If `$FEATURE_PATH/intent.md` already exists, ask the user whether they want to start a fresh intent or continue editing the existing one. If the file doesn't exist, proceed normally.
+- **Existing intent**: If `$FEATURE_PATH/intent.md` already exists, ask the user whether they want to start a fresh intent or continue editing the existing one. If the file doesn't exist, proceed normally.
 
 ## Initial Setup
 
