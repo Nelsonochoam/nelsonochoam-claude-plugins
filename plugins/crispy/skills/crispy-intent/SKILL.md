@@ -9,7 +9,7 @@ User's request: $ARGUMENTS
 
 # Capture Intent
 
-You are tasked with fully understanding what the user wants before any work begins. Do not research code, do not suggest solutions, do not form opinions about implementation. Only ask, listen, and document.
+You are tasked with fully understanding what the user wants before any work begins. Do not suggest solutions, do not form opinions about implementation. Only ask, listen, and document. If the user is unsure about something — current behavior, what exists, or how something works — you may do a targeted spot search to help them answer the question. Keep it narrow: look up the specific thing they're uncertain about, share what you find, and return to clarifying intent.
 
 ## Feature Discovery
 
@@ -41,7 +41,7 @@ Then say: "Before we proceed I have a few questions to make sure I understand yo
 
 ### 2. Ask Clarifying Questions
 
-Ask targeted questions across the following dimensions. Only ask what is genuinely unclear — do not ask about things already stated.
+Ask targeted questions across the following dimensions. Only ask what is genuinely unclear — do not ask about things already stated. Frame questions as hypotheses or assumptions to validate where possible, rather than blank open-ended prompts. "I don't know" is a valid answer — unknowns become open questions in the document, not blockers.
 
 **Background:**
 - What's the current system state relevant to this change?
@@ -54,22 +54,19 @@ Ask targeted questions across the following dimensions. Only ask what is genuine
 **Motivation:**
 - What problem does this solve, and who is affected by it?
 - Is this a user complaint, a business requirement, tech debt, or something else?
-- Why now? What's the cost of not doing this?
 
 **Acceptance:**
 - How will we know this is done? Describe scenarios: "Given X, when Y, then Z."
 - Are there edge cases or error states that must be handled?
 - Are there non-functional requirements (performance, security, accessibility)?
 
-**Risks:**
-- What could go wrong? Are there non-obvious edge cases or race conditions?
-- Is there legacy behavior or technical debt that could trip up the implementation?
-- Are there migration concerns or backwards-compatibility risks?
+**Risks (optional — skip if the user is early in their thinking):**
+- Based on what you've described, are there known risks or concerns? If not, that's fine — we'll note it as no known risks.
 
 **Constraints:**
 - Are there technical constraints, deadlines, or dependencies?
 
-Present all questions in a single numbered list. Wait for the user's answers before continuing.
+Present all questions in a single numbered list. Wait for the user's answers before continuing. If the user answers "I don't know" or seems uncertain about something factual (current behavior, existing code, how something works), offer to do a quick spot search to help them figure it out before moving on.
 
 ### 3. Write the Intent Document
 
@@ -82,6 +79,7 @@ Then resolve and create the feature folder by running:
 
 ```bash
 FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-name>")
+echo "<feature-name>" > "/tmp/.crispy_session_${PPID}"
 ```
 
 Read the template from `references/intent-template.md`, then:
@@ -102,10 +100,10 @@ If the user requests changes, edit the file directly using the Edit tool and re-
 
 ## Guidelines
 
-1. **Do not research code**: This phase is about understanding the ask, not the codebase
+1. **Spot searches are allowed, deep research is not**: If the user is unsure about something factual, do a narrow lookup to help them answer it. Do not explore broadly or start forming implementation opinions — just answer the specific uncertainty and return to intent capture
 2. **Do not suggest solutions**: Surface the problem space, not the answer
-3. **Acceptance criteria must be scenario-based**: Use Given/When/Then format. If a criterion can't be expressed as a scenario, it's likely a task, not a criterion. Vague criteria ("it should work well") should be pushed back on
-4. **No open questions in the final document**: If something is unresolved, either research it or flag it explicitly as an open question
+3. **Acceptance criteria must be scenario-based**: Use Given/When/Then format. If a criterion can't be expressed as a scenario, it's likely a task, not a criterion. If criteria are vague, offer a concrete interpretation and ask if it's right — don't reject the answer outright
+4. **Surface unknowns as open questions**: If something is unresolved, flag it as an open question in the document. Open questions are valuable output, not a sign of an incomplete intent
 5. **Keep scope tight**: If the user's request seems to be expanding, note it and ask if that is intentional
-6. **Gotchas & Risks must have substance**: This section should contain things a developer would wish they knew before starting. If you can't identify any, ask the user — there are always risks
+6. **Gotchas & Risks are best-effort**: Include what the user or context makes evident. If none are identified, note "no known risks identified" — do not block or press the user for risks they don't have
 7. **Out of scope needs rationale**: Each out-of-scope item should briefly explain why it's excluded, to prevent re-litigation

@@ -70,12 +70,6 @@ Written to $FEATURE_PATH/research.md — please review.
 
 If the user requests more depth on a question, do a targeted sub-agent lookup and update the file with Edit. Re-prompt for review. Do not reprint the full document to the conversation.
 
-Then say:
-
-```
-Confirmed. Run /design with the intent and research docs to synthesize the solution.
-```
-
 ## Guidelines
 
 - **Wait for all agents**: Never synthesize partial results
