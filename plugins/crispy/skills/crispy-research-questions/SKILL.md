@@ -68,6 +68,18 @@ Written to $FEATURE_PATH/research-questions.md — please review.
 
 If the user requests changes, edit the file directly using the Edit tool. Re-prompt for review. Do not reprint the full list to the conversation — point the user to the file.
 
+Once the user confirms, say:
+
+```
+════════════════════════════════════════
+✓ Research questions confirmed.
+
+Next: /clear → /crispy-research
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
+```
+
 ## Important Guidelines
 
 1. **Light touch only**: You may do a quick scan to confirm specifics mentioned in the intent, but deep research happens later — stay shallow

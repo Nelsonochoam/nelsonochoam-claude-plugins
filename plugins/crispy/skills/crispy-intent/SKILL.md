@@ -21,7 +21,19 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 ## Initial Setup
 
-When this command is invoked:
+When this command is invoked, first output:
+
+```
+════════════════════════════════════════
+Crispy · Phase 1/7 — Intent
+Pipeline: Intent → Research Questions → Research → Design → Structure → Plan → Implement
+
+After each phase, run /clear before starting the next one.
+Each phase works best with a clean, focused context window.
+════════════════════════════════════════
+```
+
+Then:
 
 1. **Check if a description was provided as a parameter**:
    - If yes, restate it in your own words and proceed to Phase 2
@@ -97,6 +109,18 @@ Wait for the user's response.
 ### 4. Iterate Until Confirmed
 
 If the user requests changes, edit the file directly using the Edit tool and re-prompt for review. Do not print the full document to the conversation — point the user to the file.
+
+Once the user confirms, say:
+
+```
+════════════════════════════════════════
+✓ Intent confirmed.
+
+Next: /clear → /crispy-research-questions
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
+```
 
 ## Guidelines
 

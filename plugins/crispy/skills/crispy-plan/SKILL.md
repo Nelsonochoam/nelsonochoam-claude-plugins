@@ -131,7 +131,13 @@ Dependencies come from the structure outline's dependency chart (if it exists), 
 Then say:
 
 ```
-Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
+════════════════════════════════════════
+✓ Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
+
+Next: /clear → /crispy-implement
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
 ```
 
 ## Important Guidelines

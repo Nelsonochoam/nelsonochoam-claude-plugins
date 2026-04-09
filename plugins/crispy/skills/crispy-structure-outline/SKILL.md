@@ -81,7 +81,13 @@ If the user requests changes, edit the file directly using the Edit tool. Re-pro
 Then say:
 
 ```
-Structure confirmed. Run /crispy-plan to write the detailed implementation plan.
+════════════════════════════════════════
+✓ Structure confirmed.
+
+Next: /clear → /crispy-plan
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
 ```
 
 ## Guidelines

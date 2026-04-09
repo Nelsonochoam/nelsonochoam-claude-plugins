@@ -93,7 +93,13 @@ Once all questions are resolved and the user is satisfied, do a final update to 
 Then say:
 
 ```
-Design confirmed. Run /crispy-structure-outline to break this into vertical slices.
+════════════════════════════════════════
+✓ Design confirmed.
+
+Next: /clear → /crispy-structure-outline
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
 ```
 
 

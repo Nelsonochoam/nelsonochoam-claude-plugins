@@ -70,6 +70,18 @@ Written to $FEATURE_PATH/research.md — please review.
 
 If the user requests more depth on a question, do a targeted sub-agent lookup and update the file with Edit. Re-prompt for review. Do not reprint the full document to the conversation.
 
+Once the user confirms, say:
+
+```
+════════════════════════════════════════
+✓ Research confirmed.
+
+Next: /clear → /crispy-design
+
+Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+════════════════════════════════════════
+```
+
 ## Guidelines
 
 - **Wait for all agents**: Never synthesize partial results
