@@ -24,9 +24,14 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 **Before reading artifacts**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `research`. If the check halts, stop here.
 
-Read questions from `$FEATURE_PATH/research-questions.md` in full.
+**Auto-advance**: If `$ARGUMENTS` contains `--autoadvance`, follow the auto-advance protocol in the prerequisite check reference before proceeding. Strip `--autoadvance` from arguments before using them as context.
 
-Do NOT read `intent.md` or any other prior artifact — the research phase must stay unbiased about what is being built.
+### Resolve research input
+
+Try to read `$FEATURE_PATH/research-questions.md`.
+
+- **If it exists**: use it as the primary input. Do NOT read `intent.md` — the research phase stays unbiased about what is being built when research questions have been explicitly defined.
+- **If it does not exist**: read `$FEATURE_PATH/intent.md` instead. Derive 3–7 focused research questions from the intent — questions that help understand the current codebase state relevant to what the intent describes. These derived questions are internal and ephemeral; do NOT write them to a file. Proceed with these questions as if they came from research-questions.md.
 
 ## Steps
 
@@ -76,9 +81,8 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Research confirmed.
 
-Next: /clear → /crispy-design
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-design
+Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 

@@ -20,6 +20,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 - **Current phase**: `research-questions`
 - **No-args fallback**: ask the user to share the intent document or feature description.
 - **Prerequisite check**: Run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `research-questions`. If the check halts, stop here.
+- **Auto-advance**: If `$ARGUMENTS` contains `--autoadvance`, follow the auto-advance protocol in the prerequisite check reference before proceeding. Strip `--autoadvance` from arguments before using them as context.
 
 ## Process Steps
 
@@ -74,9 +75,8 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Research questions confirmed.
 
-Next: /clear → /crispy-research
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-research
+Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 

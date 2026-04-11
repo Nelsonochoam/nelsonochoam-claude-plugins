@@ -11,7 +11,7 @@ User's request: $ARGUMENTS
 
 You are tasked with creating a precise, mechanical implementation plan. A good plan leaves nothing to interpretation — when implementation begins, every decision has already been made.
 
-The **structure outline drives the phases**, the **design document drives the decisions**, and the **research document provides the exact file paths, types, and code references**. All prior artifacts are required.
+When all prior artifacts are available, the **structure outline drives the phases**, the **design document drives the decisions**, and the **research document provides the exact file paths, types, and code references**. When some are missing, you derive what you need through codebase exploration and user collaboration.
 
 ## Input Resolution
 
@@ -19,57 +19,45 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 **After feature discovery**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `plan`. If the check halts, stop here.
 
-Once all prerequisites are confirmed, read all four artifacts completely:
-- `$FEATURE_PATH/intent.md`
-- `$FEATURE_PATH/research.md`
-- `$FEATURE_PATH/design.md`
-- `$FEATURE_PATH/structure-outline.md`
+**Auto-advance**: If `$ARGUMENTS` contains `--autoadvance`, follow the auto-advance protocol in the prerequisite check reference before proceeding. Strip `--autoadvance` from arguments before using them as context.
 
 If `$ARGUMENTS` contains additional context alongside feature folder artifacts, incorporate it as supplementary input.
 
-## Process Steps
+## Check for Existing Plan
 
-### Step 1: Load All Context
+After resolving `$FEATURE_PATH`, check if `$FEATURE_PATH/plan.md` already exists.
 
-Read whatever exists, in this order:
-1. The Intent Document or user's request arguments (acceptance criteria, scope, what we're not doing)
-2. The Design Document (resolved design questions, patterns to follow)
-3. The Structure Outline Document (phase names, phase goals, key finding, open questions)
-4. The Research Document (exact file paths, types, existing code patterns, test locations)
+- **Existing plan**: If `plan.md` exists, ask the user whether they want to **re-plan from scratch** (deletes existing `plan.md`, `manifest.json`, and `phases/` directory) or **edit the existing plan** (read the current plan and phase docs, make targeted edits based on what changed). If the user chooses to edit, read the existing plan and phase docs, discuss changes with the user, apply edits, and skip to "Iterate Until Confirmed." If re-planning, delete the old artifacts and continue below.
 
-**Read all files completely** — no limit or offset parameters. If the intent is the user's arguments (no `intent.md`), treat the arguments as the source of truth for scope.
+## Load Context Based on Available Artifacts
 
-After reading, extract and hold in mind (skip items whose source doc doesn't exist):
-- **Phases**: Take the phase list verbatim from the structure outline. Do not add, remove, or reorder phases without flagging it first. If no structure outline exists, derive phases from the design or intent and flag as "Assumed Phase Breakdown."
-- **Resolved decisions**: From the design doc — every resolved question is a closed decision that must be reflected in the plan as-is. If no design doc exists, make design decisions through codebase research and flag as "Assumed Decisions."
-- **Patterns**: From the design doc's "Patterns to follow" section — each step should mirror these patterns, not invent new ones. If no design doc exists, discover patterns from the codebase directly.
-- **File references**: From the research doc — use these exact paths and line numbers in each step entry. If no research doc exists, resolve all file paths through direct codebase lookup before writing the plan.
-- **Out of scope**: From the intent doc's "What we're NOT doing" — anything listed there must not appear in the plan.
+Check whether `design.md` exists and read the matching reference:
 
-### Step 1b: Research to Complete the Plan
+- **`design.md` exists** → read and follow `${CLAUDE_SKILL_DIR}/references/with-design.md`
+- **No `design.md`** → read and follow `${CLAUDE_SKILL_DIR}/references/without-design.md`
 
-Research whatever is needed so that every phase doc can be written without placeholders. The goal is a plan complete enough that an agent can implement each phase without opening additional files or making judgment calls.
+Read **only** the reference that matches — do not read the other.
 
-Start from what the prior artifacts already provide. Look up anything they don't cover — exact file paths, function signatures, prop types, import lists, test patterns, data shapes. Use the Read tool for targeted file reads and spawn parallel sub-agents for independent lookups. Do not proceed to Step 2 until you have everything needed to write every step concretely.
+Follow the steps in that reference through context loading, research, and (if applicable) design decision resolution. Then continue with the steps below.
 
-### Step 2: Gather Metadata
+## Gather Metadata
 
 Before writing, collect:
 - Task/ticket identifier from the intent or design doc (e.g. `tn-3459`). If none exists, derive a kebab-case name from the request (e.g. `add-dark-mode-toggle`).
 
-### Step 3: Self-Review Before Writing
+## Self-Review Before Writing
 
-Read and run through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. If any item fails, do more research (Step 1b) or tighten the step. If decisions were assumed (due to missing prior phase artifacts), list them clearly as "Assumed Decisions" at the top of the plan.
+Read and run through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. If any item fails, do more research or tighten the step.
 
-### Step 4: Write the Plan and Phase Docs (Single Pass)
+## Write the Plan and Phase Docs (Single Pass)
 
 This step produces **all plan artifacts at once**: the master index (`plan.md`) and individual phase docs (`phases/phase-N.md`).
 
-#### 4a. Create the phases directory
+### Create the phases directory
 
 Create `$FEATURE_PATH/phases/` if it doesn't exist.
 
-#### 4b. Write the phase docs first
+### Write the phase docs first
 
 Read the phase template from `${CLAUDE_SKILL_DIR}/references/phase-template.md`. For each phase, write a self-sufficient phase doc to `$FEATURE_PATH/phases/phase-{N}.md`.
 
@@ -81,7 +69,7 @@ Each phase doc must contain:
 
 **An agent reading only the phase doc must have everything it needs to implement the phase.**
 
-#### 4c. Write the master plan index
+### Write the master plan index
 
 Read the plan template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the plan to `$FEATURE_PATH/plan.md`.
 
@@ -93,7 +81,7 @@ Then say:
 Written to $FEATURE_PATH/plan.md and {N} phase docs in $FEATURE_PATH/phases/ — please review.
 ```
 
-### Step 5: Iterate Until Confirmed
+## Iterate Until Confirmed
 
 If the user requests changes:
 - Do a targeted lookup if more detail is needed, then edit the relevant file (plan.md or the specific phase doc) with the Edit tool.
@@ -101,9 +89,9 @@ If the user requests changes:
 - If phases are reordered, flag any dependency that makes the reorder unsafe.
 - Re-prompt for review after each change. Do not reprint the full plan to the conversation.
 
-Once the user explicitly confirms, proceed to Step 6.
+Once the user explicitly confirms, proceed to Create Manifest.
 
-### Step 6: Create Manifest
+## Create Manifest
 
 Once the user confirms the plan, create (or replace) `$FEATURE_PATH/manifest.json` with only the implementation phases:
 
@@ -134,18 +122,17 @@ Then say:
 ════════════════════════════════════════
 ✓ Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
 
-Next: /clear → /crispy-implement
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-implement
+Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 
 ## Important Guidelines
 
-1. **Phases come from the structure outline when it exists**: Do not invent a different breakdown. If the outline has 3 phases, the plan has 3 phases. If you believe a phase should be split, flag it and ask before doing so. When no structure outline exists, derive phases yourself and flag as "Assumed Phase Breakdown."
-2. **Decisions come from the design doc when it exists**: Every resolved design question is closed. Reflect it in the plan; do not re-open it or substitute an alternative. When no design doc exists, make decisions through research and flag as "Assumed Decisions."
+1. **Phases come from the structure outline when it exists**: Do not invent a different breakdown. If the outline has 3 phases, the plan has 3 phases. If you believe a phase should be split, flag it and ask before doing so. When no structure outline exists, derive phases yourself.
+2. **Decisions come from the design doc when it exists**: Every resolved design question is closed. Reflect it in the plan; do not re-open it or substitute an alternative. When no design doc exists, surface decisions and resolve them with the user before writing the plan.
 3. **File paths must be verified**: Never guess a path. Use the research doc when available; otherwise do a direct codebase lookup. Every path in the plan must come from a verified source.
-4. **No gaps in the final plan**: Every step must be concrete enough to execute without opening another file. If something is unresolved, do a deep research pass (Step 1b) or ask the user. Do not write a plan with placeholders like "update the component" or "add the necessary props."
+4. **No gaps in the final plan**: Every step must be concrete enough to execute without opening another file. If something is unresolved, do a deep research pass or ask the user. Do not write a plan with placeholders like "update the component" or "add the necessary props."
 5. **Read files completely**: Never use limit/offset when reading files for this plan.
 6. **Separate automated from manual verification**: Every phase must have both categories.
 7. **Scope the targeted research**: Use sub-agents for gaps only — do not re-research what prior phases already covered.

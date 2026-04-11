@@ -8,14 +8,13 @@ Follow this protocol immediately after feature discovery resolves `$FEATURE_PATH
 PREREQ_RESULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/check-prerequisites.sh" "$FEATURE_PATH" "<phase>")
 ```
 
-The script checks artifact file existence and returns a JSON object:
+The script checks whether intent exists and reports which artifacts are available:
 
 ```json
 {
   "ok": true|false,
   "intent_missing": true|false,
-  "missing": ["phase-key", ...],
-  "done": ["phase-key", ...],
+  "available": ["intent", "research-questions", "research", "design", "structure", "plan"],
   "current_phase": "<phase>"
 }
 ```
@@ -24,7 +23,7 @@ The script checks artifact file existence and returns a JSON object:
 
 ### If `intent_missing` is true → HARD STOP
 
-Intent is required before any other phase can proceed. It cannot be auto-advanced because it requires human input (scope, motivation, acceptance criteria, constraints).
+Intent is required before any other phase can proceed.
 
 Respond with exactly:
 
@@ -35,36 +34,15 @@ Run `/crispy-intent` to capture the intent first.
 
 **Do not offer to continue. Do not offer auto-advance. Stop completely.**
 
-### If `ok` is true → PROCEED
+### Otherwise → PROCEED
 
-All prerequisites are met. Continue with the skill's normal workflow.
+All other phases are optional. Proceed with the current skill's normal workflow — it will work with whatever artifacts are available. Do not warn about missing phases, do not offer to fill gaps.
 
-### If `ok` is false and `missing` is non-empty → OFFER OPTIONS
+## 3. Auto-Advance (--autoadvance flag only)
 
-Prerequisites are missing. Use `AskUserQuestion` (not plain text) to present exactly two choices and wait for the user's selection:
+Auto-advance is triggered **only** when the user explicitly passes `--autoadvance` as part of their command (e.g., `/crispy-design --autoadvance`). It is never triggered automatically.
 
-```
-The following prerequisite phases are not yet complete:
-- <phase-1>
-- <phase-2>
-- ...
-
-How would you like to proceed?
-
-1. **Auto-advance** — run missing phases automatically using `claude -p` (each phase runs as a separate agent, no human review between them)
-2. **Stop** — I'll run the missing phases manually: /crispy-<phase-1>, /crispy-<phase-2>, ...
-
-⚠️ **Auto-advance warning**: Auto-advance will make decisions on your behalf for each missing phase (research focus areas, design choices, structure breakdown). This is faster but produces lower quality results than running each phase manually, where you can review and guide each step. Use auto-advance for well-scoped work where you trust the defaults.
-```
-
-**CRITICAL: Only two paths exist here.**
-- If the user picks 1, or says anything like "proceed", "yes", "go ahead", "auto", "auto-advance" → treat it as choosing **Auto-advance** and go to Section 3.
-- If the user picks 2, or says anything like "stop", "manual", "I'll do it" → stop completely and list the manual commands.
-- **There is no third option.** You cannot run the missing phases yourself inline. You cannot do your own research as a substitute. The only way missing prerequisites get fulfilled is via the auto-advance script or by the user running the phases manually.
-
-## 3. Auto-Advance Execution
-
-When the user chooses auto-advance, use the Bash tool to run the auto-advance script and wait for it to finish:
+When `--autoadvance` is active, run the auto-advance script before proceeding with the current skill's work:
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/auto-advance.sh" "$FEATURE_PATH" "<phase>" "${CLAUDE_PLUGIN_ROOT}"
@@ -73,7 +51,7 @@ bash "${CLAUDE_PLUGIN_ROOT}/scripts/auto-advance.sh" "$FEATURE_PATH" "<phase>" "
 **CRITICAL: Do NOT perform any research, writing, or skill work yourself.** Your only action is to run this one bash command and wait for it to complete. The script handles everything — it spawns a separate `claude -p` process for each missing phase, waits for each to finish, then moves to the next.
 
 This script:
-1. Determines which phases are missing (using `check-prerequisites.sh`)
+1. Determines which phases are missing
 2. Runs each missing phase in pipeline order via `claude -p` with the crispy plugin loaded
 3. Each phase runs as a separate `claude -p` invocation with `--permission-mode auto`
 4. Verifies each phase completed (artifact file written)
@@ -89,4 +67,4 @@ If the script fails, report the error and suggest the user run the failed phase 
 research-questions → research → design → structure-outline → plan
 ```
 
-Each phase requires all previous phases. The auto-advance script respects this order and only runs phases that are actually missing.
+The auto-advance script respects this order and only runs phases that are actually missing.

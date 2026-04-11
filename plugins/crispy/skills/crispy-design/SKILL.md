@@ -15,12 +15,14 @@ The design document should read as a coherent technical narrative — not just a
 
 Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `design` to resolve `$FEATURE_PATH`.
 
-Collect context from both sources, then merge:
-
 **Before reading artifacts**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `design`. If the check halts, stop here.
 
+**Auto-advance**: If `$ARGUMENTS` contains `--autoadvance`, follow the auto-advance protocol in the prerequisite check reference before proceeding. Strip `--autoadvance` from arguments before using them as context.
+
+Collect context from available sources, then merge:
+
 1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `intent.md`, `research.md`.
-   - If `research.md` is missing, design from intent alone and surface more assumptions as open questions.
+   - If `research.md` is missing, do a codebase exploration as part of the design process to ground the approach in reality. Otherwise use the `research.md` and only do research as needed.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
    - The arguments might contain some initial direction the user wants you to take or consider, if so, ensure you
@@ -96,9 +98,8 @@ Then say:
 ════════════════════════════════════════
 ✓ Design confirmed.
 
-Next: /clear → /crispy-structure-outline
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-structure-outline
+Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 

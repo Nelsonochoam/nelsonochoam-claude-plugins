@@ -25,18 +25,14 @@ When this command is invoked, first output:
 
 ```
 ════════════════════════════════════════
-Crispy · Phase 1/7 — Intent
-Pipeline: Intent → Research Questions → Research → Design → Structure → Plan → Implement
-
-After each phase, run /clear before starting the next one.
-Each phase works best with a clean, focused context window.
-════════════════════════════════════════
+Crispy · Intent
+═══════════════════════════════════════
 ```
 
 Then:
 
 1. **Check if a description was provided as a parameter**:
-   - If yes, restate it in your own words and proceed to Phase 2
+   - If yes, restate it in your own words and proceed to the Restate and Confirm step
    - If no, respond with:
    ```
    I'll help capture the intent before we start. Please describe what you want to build or change — as much or as little detail as you have.
@@ -49,7 +45,10 @@ Then:
 
 Restate the user's request in 2–3 sentences in your own words. This surfaces any initial misreading and gives the user a chance to correct it before questions are asked.
 
-Then say: "Before we proceed I have a few questions to make sure I understand your intent fully."
+Then ask: "Is this enough to capture the intent, or would you like me to ask clarifying questions to flesh it out further?"
+
+- **If the user says it's enough** (or words to that effect): proceed directly to Step 3 (Write the Intent Document) using a lightweight format — preserve the user's words under a Summary heading with front matter. Do not force structure the user does not want. If the user included implementation details, acceptance criteria, or constraints in their description, preserve those in the appropriate sections.
+- **If the user wants clarifying questions**: say "Before we proceed I have a few questions to make sure I understand your intent fully." and continue to Step 2.
 
 ### 2. Ask Clarifying Questions
 
@@ -82,7 +81,7 @@ Present all questions in a single numbered list. Wait for the user's answers bef
 
 ### 3. Write the Intent Document
 
-Once the user has answered, determine the feature name using this priority:
+Once the user has confirmed (either after restatement or after the Q&A), determine the feature name using this priority:
 
 1. **Ticket** — if the user mentioned a ticket, use it as the feature name.
 2. **Intent title** — otherwise, convert the intent title to kebab-case (e.g. "Add Dark Mode Toggle" → `add-dark-mode-toggle`).
@@ -94,9 +93,11 @@ FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-
 echo "<feature-name>" > "/tmp/.crispy_session_${PPID}"
 ```
 
-Read the template from `references/intent-template.md`, then:
+**If the user opted for the lightweight path** (confirmed at restatement without Q&A):
+- Write `$FEATURE_PATH/intent.md` with front matter (`task` and `type: intent` fields) and a Summary section preserving the user's words. Include any additional sections (Acceptance Criteria, Constraints, etc.) only if the user provided that information in their description.
 
-1. Write the intent document to `$FEATURE_PATH/intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
+**If the user went through the full Q&A flow**:
+- Read the template from `references/intent-template.md`, then write the intent document to `$FEATURE_PATH/intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
 
 Then say:
 
@@ -116,9 +117,8 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Intent confirmed.
 
-Next: /clear → /crispy-research-questions
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-research-questions
+Any phase can follow intent — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 

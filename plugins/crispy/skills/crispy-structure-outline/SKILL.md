@@ -9,18 +9,21 @@ User's request: $ARGUMENTS
 
 # Structure the Work
 
-You are tasked with reading the design document and breaking the work into clear phases — each one a coherent chunk of work with a specific goal. This is not a detailed plan. It is a breakdown of the order and shape of the work before implementation details are written.
+You are tasked with breaking the work into clear phases — each one a coherent chunk of work with a specific goal. This is not a detailed plan. It is a breakdown of the order and shape of the work before implementation details are written.
 
 ## Input Resolution
 
 Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) with current phase `structure` to resolve `$FEATURE_PATH`.
 
-Collect context from both sources, then merge:
-
 **Before reading artifacts**, run prerequisite check per `${CLAUDE_PLUGIN_ROOT}/references/prerequisite-check.md` for phase `structure`. If the check halts, stop here.
 
+**Auto-advance**: If `$ARGUMENTS` contains `--autoadvance`, follow the auto-advance protocol in the prerequisite check reference before proceeding. Strip `--autoadvance` from arguments before using them as context.
+
+Collect context from available sources, then merge:
+
 1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `design.md`, `intent.md`, `research.md`.
-   - `design.md` is the primary input. `intent.md` and `research.md` provide supporting context — include them when present.
+   - `design.md` is the primary input when present. `intent.md` and `research.md` provide supporting context.
+   - If `design.md` is missing, derive the structure directly from `intent.md` and quick codebase exploration.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is in the feature folder.
 
@@ -28,10 +31,10 @@ Collect context from both sources, then merge:
 
 ### 1. Identify the Phases
 
-Read all three documents:
-- **Intent**: use the acceptance criteria to understand what "done" looks like and what's explicitly out of scope
-- **Research**: use the file references and codebase findings to identify which files are actually involved and how they connect — this determines the realistic shape of each phase
-- **Design**: use the resolved decisions and patterns to understand what approach each phase must follow
+Read all available artifacts:
+- **Intent** (if available): use the acceptance criteria to understand what "done" looks like and what's explicitly out of scope
+- **Research** (if available): use the file references and codebase findings to identify which files are actually involved and how they connect — this determines the realistic shape of each phase
+- **Design** (if available): use the resolved decisions and patterns to understand what approach each phase must follow
 
 Determine the natural breakdown of work. Each phase should:
 - Represent a coherent, focused chunk of work with a single goal
@@ -51,7 +54,7 @@ The right level of detail: "Update `continueSession` action to pass `interrupt: 
 
 ### 2. Identify the Key Finding
 
-Look across all three documents for the most important orienting fact — the thing that most changes how you think about the scope or approach. This might be:
+Look across all available artifacts for the most important orienting fact — the thing that most changes how you think about the scope or approach. This might be:
 - Existing infrastructure that reduces the work significantly
 - A dependency or constraint that shapes the phases
 - A risk or unknown that needs to be resolved early
@@ -59,7 +62,7 @@ Look across all three documents for the most important orienting fact — the th
 ### 3. Gather Metadata
 
 Collect:
-- Ticket/task identifier from the design document (e.g. `ticket-1234`)
+- Ticket/task identifier from the available artifacts (e.g. `ticket-1234`)
 
 ### 4. Write the Structure Outline
 
@@ -84,9 +87,8 @@ Then say:
 ════════════════════════════════════════
 ✓ Structure confirmed.
 
-Next: /clear → /crispy-plan
-
-Each crispy phase works best with a clean context window — run /clear before starting the next phase.
+Recommended next: /crispy-plan
+Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 
