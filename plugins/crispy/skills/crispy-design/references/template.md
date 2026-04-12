@@ -71,7 +71,7 @@ User invokes /foo
 
 <Questions about decisions where the approach could meaningfully diverge. See questions-format.md for the exact format.>
 
-**1. <Decision Title>**
+**D1. <Decision Title>**
 
 <Why this decision matters — what depends on it>
 
@@ -93,15 +93,15 @@ User invokes /foo
 
 ---
 
-**2. <Next question>**
+**D2. <Next question>**
 ...
 
 ### Resolved Design Questions
 
-#### 1. <Decision Title>
+#### D1. <Decision Title>
 **Chosen**: Option X — <rationale and any deviations from recommendation>
 
-#### 2. <Next decision>
+#### D2. <Next decision>
 **Chosen**: <resolution>
 
 ### Risks & Mitigations
@@ -115,4 +115,26 @@ User invokes /foo
 
 - <How we verify the solution works end-to-end — not just pass/fail, but what to check and how>
 - ..
+
+### AC Coverage
+
+<!-- Use the format that matches the intent. If the intent defines explicit ACs (AC-1, AC-2, etc.), use the table. If not, use the inferred checklist. Delete the format you don't use. -->
+
+#### When the intent has explicit ACs:
+
+| AC | Description | Decisions |
+|----|-------------|-----------|
+| AC-1 | <short name from intent> | D1, D3 |
+| AC-2 | <short name from intent> | D2 |
+
+- [ ] All acceptance criteria from the intent are covered
+- [ ] No design section introduces behavior outside the stated ACs without justification
+
+#### When the intent has no explicit ACs:
+
+**What this design solves:**
+
+- [ ] <Key outcome inferred from the intent's summary/motivation — e.g., "Users can filter results by date range"> → Proposed Approach, paragraph 2
+- [ ] <Another outcome> → Proposed Approach, paragraph 4; Validation, item 1
+- [ ] <Edge case or constraint addressed> → Risks & Mitigations, row 1
 ```

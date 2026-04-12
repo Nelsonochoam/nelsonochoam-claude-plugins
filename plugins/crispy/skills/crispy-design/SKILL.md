@@ -39,6 +39,8 @@ Before surfacing individual decisions, think through the overall direction. Draf
 - Which existing patterns and code this builds on (reference with `file:line`)
 - Key technical details an implementer needs to understand
 
+For complex flows, use your judgment on whether a mermaid diagram (sequence, flowchart, or state diagram) would help explain the approach more clearly than prose alone. If visualizing the flow makes it easier for an engineer to understand component interactions, branching logic, or state transitions — include one. Don't add diagrams for the sake of it; they should earn their place by clarifying something that text struggles to convey.
+
 Use pseudo-code for flows and interactions. Use real code for interfaces, APIs, and config shapes. Reference existing patterns inline where you're building on them — e.g., "We'll follow the service pattern at `src/services/baz.ts:1-15`."
 
 ### 2. Identify Design Questions
@@ -66,6 +68,12 @@ Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the
 - **Design Questions** — the open questions with options, tradeoffs, and your recommendation (follow the format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`)
 - **Risks & Mitigations** — what could go wrong and how we handle it
 - **Validation** — how to verify the solution works
+- **AC Coverage** — traceability from acceptance criteria to design sections (see template)
+
+Before writing the draft, review the intent's acceptance criteria:
+- If the intent contains explicit ACs (AC-1, AC-2, etc.), verify that every AC is addressed by at least one design decision (D1, D2, etc.). Map each AC to the decisions that cover it in the AC Coverage table.
+- If the intent has no explicit ACs, infer the key outcomes the design is meant to achieve from the intent's summary, motivation, and scope. List these as coverage items in the AC Coverage section using the checklist format from the template.
+- If any AC is not covered by the design, either expand the design to address it or note it as intentionally deferred with a reason.
 
 Do NOT print the document content in the conversation. Once written, say:
 
