@@ -17,7 +17,18 @@ This returns the base directory path for the current repo . All feature folder r
 Resolve the feature folder. All subsequent artifact reads and writes use `$FEATURE_PATH`.
 
 1. **`CRISPY_FEATURE` env variable is set** → use it as the feature name
-2. **`CRISPY_FEATURE` is not set** → use `AskUserQuestion` to ask: *"Which feature do you want to work on? Provide an existing feature name or a new one (use kebab-case or a ticket ID — e.g. `add-dark-mode-toggle` or `ticket-1234`)."*
+2. **`CRISPY_FEATURE` is not set** → check the session file:
+
+   ```bash
+   SESSION_FILE="/tmp/.crispy_session_${PPID}"
+   if [ -f "$SESSION_FILE" ]; then
+     CRISPY_FEATURE=$(cat "$SESSION_FILE")
+   fi
+   ```
+
+   If the session file exists and contains a feature name, use it — skip asking the user.
+
+3. **Neither env var nor session file** → use `AskUserQuestion` to ask: *"Which feature do you want to work on? Provide an existing feature name or a new one (use kebab-case or a ticket ID — e.g. `add-dark-mode-toggle` or `ticket-1234`)."*
 
    Once the feature name is known, create or resolve the folder and **persist it for this session** so subsequent skills (after `/clear`) don't ask again:
 

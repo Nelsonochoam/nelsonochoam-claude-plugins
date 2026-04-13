@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+### Bug Fixes
+
+- **Feature discovery reads session file.** `feature-discovery.md` now checks `/tmp/.crispy_session_${PPID}` before prompting the user. Skills triggered after a `/clear` (e.g. `/crispy-research`) will pick up the active feature from the session instead of asking for it again.
+
 ## 1.3.0
 
 ### Flexible Workflow — Intent as the Only Hard Gate
