@@ -9,8 +9,8 @@
 #   $2 — Current phase name (research-questions, research, design, structure, plan, implement)
 #
 # Output: JSON object to stdout with:
-#   ok              — true if intent.md exists (the only hard gate)
-#   intent_missing  — true if intent.md does not exist
+#   ok              — true if 1-intent.md exists (the only hard gate)
+#   intent_missing  — true if 1-intent.md does not exist
 #   available       — array of artifact keys whose files exist
 #   current_phase   — echo of the requested phase
 #
@@ -28,7 +28,7 @@ fi
 
 # --- Check intent (the only hard gate) ---
 INTENT_MISSING=true
-if [ -f "$FEATURE_PATH/intent.md" ]; then
+if [ -f "$FEATURE_PATH/1-intent.md" ]; then
   INTENT_MISSING=false
 fi
 
@@ -36,11 +36,11 @@ fi
 AVAILABLE_JSON="[]"
 
 declare -A ARTIFACTS=(
-  ["research-questions"]="$FEATURE_PATH/research-questions.md"
-  ["research"]="$FEATURE_PATH/research.md"
-  ["design"]="$FEATURE_PATH/design.md"
-  ["structure"]="$FEATURE_PATH/structure-outline.md"
-  ["plan"]="$FEATURE_PATH/plan.md"
+  ["research-questions"]="$FEATURE_PATH/2-research-questions.md"
+  ["research"]="$FEATURE_PATH/3-research.md"
+  ["design"]="$FEATURE_PATH/4-design.md"
+  ["structure"]="$FEATURE_PATH/5-structure-outline.md"
+  ["plan"]="$FEATURE_PATH/6-plan.md"
 )
 
 for key in research-questions research design structure plan; do

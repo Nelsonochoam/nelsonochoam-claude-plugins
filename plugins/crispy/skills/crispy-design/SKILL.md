@@ -21,8 +21,8 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 Collect context from available sources, then merge:
 
-1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `intent.md`, `research.md`.
-   - If `research.md` is missing, do a codebase exploration as part of the design process to ground the approach in reality. Otherwise use the `research.md` and only do research as needed.
+1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `1-intent.md`, `3-research.md`.
+   - If `3-research.md` is missing, do a codebase exploration as part of the design process to ground the approach in reality. Otherwise use the `3-research.md` and only do research as needed.
    - If `$FEATURE_PATH/artifacts/` exists, note available images. Reference them in the design document where they add context (e.g., screenshots of current UI in Current State, mockups in Desired End State). Use relative markdown links: `![description](artifacts/filename.png)`.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
@@ -58,7 +58,7 @@ Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact format.
 
 ### 3. Write Draft to File
 
-Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`). Write a draft design document to `$FEATURE_PATH/design.md` (create the directory if needed) that includes:
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`). Write a draft design document to `$FEATURE_PATH/4-design.md` (create the directory if needed) that includes:
 
 - **Summary** — what we're building
 - **Motivation** — why it matters, who's affected, cost of inaction
@@ -79,7 +79,7 @@ Before writing the draft, review the intent's acceptance criteria:
 Do NOT print the document content in the conversation. Once written, say:
 
 ```
-Draft written to $FEATURE_PATH/design.md — open it and let me know your thoughts.
+Draft written to $FEATURE_PATH/4-design.md — open it and let me know your thoughts.
 ```
 
 Wait for the user's response.
@@ -88,16 +88,16 @@ Wait for the user's response.
 
 Work with the user like two peers reviewing a document together. They may question decisions, prefer different options, surface new requirements, or want to change direction entirely.
 
-- Update `$FEATURE_PATH/design.md` after each meaningful exchange to reflect the current agreed state.
+- Update `$FEATURE_PATH/4-design.md` after each meaningful exchange to reflect the current agreed state.
 - Do not re-print the document in the conversation — keep discussion focused and refer the user back to the file.
 - If they introduce new requirements or constraints, discuss the implications, update the approach, and surface any new design questions that arise.
 - If more research is needed, do it and return with updated options and a recommendation.
 - If anything is ambiguous, ask one focused follow-up before moving on.
-- **If the user shares images** (screenshots, mockups, diagrams): copy them from the image cache (not the temp paths — see intent skill's Image Handling section for the `~/.claude/image-cache/` approach) to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `design.md` using `![description](artifacts/name.png)`, and confirm what you see.
+- **If the user shares images** (screenshots, mockups, diagrams): copy them from the image cache (not the temp paths — see intent skill's Image Handling section for the `~/.claude/image-cache/` approach) to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `4-design.md` using `![description](artifacts/name.png)`, and confirm what you see.
 
 Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md` when recording decisions.
 
-Once all questions are resolved and the user is satisfied, do a final update to `$FEATURE_PATH/design.md`:
+Once all questions are resolved and the user is satisfied, do a final update to `$FEATURE_PATH/4-design.md`:
 
 - Move resolved questions into a **Resolved Design Questions** section
 - Ensure the Proposed Approach reflects all decisions made

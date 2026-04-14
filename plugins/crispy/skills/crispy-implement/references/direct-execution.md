@@ -1,11 +1,11 @@
 # Direct Execution
 
-No `plan.md` exists — work directly from the intent and whatever other artifacts are available or information the user might have
+No `6-plan.md` exists — work directly from the intent and whatever other artifacts are available or information the user might have
 provided, follow codebase conventions and common patterns you find.
 
 ## Setup
 
-Read `$FEATURE_PATH/intent.md` and whatever other artifacts are available (`design.md`, `research.md`).
+Read `$FEATURE_PATH/1-intent.md` and whatever other artifacts are available (`4-design.md`, `3-research.md`).
 
 ## Execution
 
@@ -14,7 +14,7 @@ Read `$FEATURE_PATH/intent.md` and whatever other artifacts are available (`desi
 3. Break the work into logical chunks internally
 4. Implement chunk by chunk, pausing between chunks to present what was done and what comes next — give the user a chance to steer
 
-Do not create plan.md, manifest.json, or phase docs. Work in a condensed, iterative style guided by the available artifacts.
+Do not create 6-plan.md, manifest.json, or phase docs. Work in a condensed, iterative style guided by the available artifacts.
 
 ## Resuming Work
 

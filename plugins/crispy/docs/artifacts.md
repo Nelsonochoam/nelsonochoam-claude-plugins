@@ -9,12 +9,12 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
   my-repo/
     my-feature/
       manifest.json          ← phase status + implementation metadata
-      intent.md
-      research-questions.md
-      research.md
-      design.md
-      structure-outline.md
-      plan.md                ← master index (overview, dependency graph, links to phase docs)
+      1-intent.md
+      2-research-questions.md
+      3-research.md
+      4-design.md
+      5-structure-outline.md
+      6-plan.md                ← master index (overview, dependency graph, links to phase docs)
       artifacts/             ← images, screenshots, mockups shared during any phase
         current-ui.png
         proposed-mockup.jpg
@@ -27,7 +27,7 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
 
 The `artifacts/` subfolder stores images shared during any phase — screenshots of current UI, mockups, whiteboard photos, diagrams, etc. These are referenced from markdown documents using relative links like `![description](artifacts/filename.png)`, which renders natively in Obsidian, Logseq, and most markdown viewers.
 
-`manifest.json` tracks implementation phase status (pending/done), dependencies, and file pointers. It is created by `/crispy-plan` and only contains `implementation` entries — it does not record planning phase status. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) checks planning phase completion by file existence (e.g., `intent.md`, `research.md`) and implementation phase completion via `manifest.json`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
+`manifest.json` tracks implementation phase status (pending/done), dependencies, and file pointers. It is created by `/crispy-plan` and only contains `implementation` entries — it does not record planning phase status. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) checks planning phase completion by file existence (e.g., `1-intent.md`, `3-research.md`) and implementation phase completion via `manifest.json`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
 
 ## Choosing Your Storage Location
 

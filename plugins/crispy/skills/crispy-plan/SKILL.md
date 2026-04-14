@@ -25,16 +25,16 @@ If `$ARGUMENTS` contains additional context alongside feature folder artifacts, 
 
 ## Check for Existing Plan
 
-After resolving `$FEATURE_PATH`, check if `$FEATURE_PATH/plan.md` already exists.
+After resolving `$FEATURE_PATH`, check if `$FEATURE_PATH/6-plan.md` already exists.
 
-- **Existing plan**: If `plan.md` exists, ask the user whether they want to **re-plan from scratch** (deletes existing `plan.md`, `manifest.json`, and `phases/` directory) or **edit the existing plan** (read the current plan and phase docs, make targeted edits based on what changed). If the user chooses to edit, read the existing plan and phase docs, discuss changes with the user, apply edits, and skip to "Iterate Until Confirmed." If re-planning, delete the old artifacts and continue below.
+- **Existing plan**: If `6-plan.md` exists, ask the user whether they want to **re-plan from scratch** (deletes existing `6-plan.md`, `manifest.json`, and `phases/` directory) or **edit the existing plan** (read the current plan and phase docs, make targeted edits based on what changed). If the user chooses to edit, read the existing plan and phase docs, discuss changes with the user, apply edits, and skip to "Iterate Until Confirmed." If re-planning, delete the old artifacts and continue below.
 
 ## Load Context Based on Available Artifacts
 
-Check whether `design.md` exists and read the matching reference:
+Check whether `4-design.md` exists and read the matching reference:
 
-- **`design.md` exists** → read and follow `${CLAUDE_SKILL_DIR}/references/with-design.md`
-- **No `design.md`** → read and follow `${CLAUDE_SKILL_DIR}/references/without-design.md`
+- **`4-design.md` exists** → read and follow `${CLAUDE_SKILL_DIR}/references/with-4-design.md`
+- **No `4-design.md`** → read and follow `${CLAUDE_SKILL_DIR}/references/without-4-design.md`
 
 Read **only** the reference that matches — do not read the other.
 
@@ -51,7 +51,7 @@ Read and run through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. 
 
 ## Write the Plan and Phase Docs (Single Pass)
 
-This step produces **all plan artifacts at once**: the master index (`plan.md`) and individual phase docs (`phases/phase-N.md`).
+This step produces **all plan artifacts at once**: the master index (`6-plan.md`) and individual phase docs (`phases/phase-N.md`).
 
 ### Create the phases directory
 
@@ -63,7 +63,7 @@ Read the phase template from `${CLAUDE_SKILL_DIR}/references/phase-template.md`.
 
 Each phase doc must contain:
 - All implementation details for that phase (exact file paths, code blocks, function signatures, design decisions applied)
-- References linking back to `plan.md`, `intent.md`, `research.md`, `design.md`
+- References linking back to `6-plan.md`, `1-intent.md`, `3-research.md`, `4-design.md`
 - Dependency references as file paths to other phase docs (e.g., `[Phase 1: <title>](phases/phase-1.md)`)
 - Per-phase success criteria (automated + manual)
 
@@ -71,20 +71,20 @@ Each phase doc must contain:
 
 ### Write the master plan index
 
-Read the plan template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the plan to `$FEATURE_PATH/plan.md`.
+Read the plan template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the plan to `$FEATURE_PATH/6-plan.md`.
 
 The plan is a **lightweight master index** — it contains the overview, dependency graph, phase summary table with links to phase docs, and global success criteria. It does **not** contain implementation details or checkboxes.
 
 Then say:
 
 ```
-Written to $FEATURE_PATH/plan.md and {N} phase docs in $FEATURE_PATH/phases/ — please review.
+Written to $FEATURE_PATH/6-plan.md and {N} phase docs in $FEATURE_PATH/phases/ — please review.
 ```
 
 ## Iterate Until Confirmed
 
 If the user requests changes:
-- Do a targeted lookup if more detail is needed, then edit the relevant file (plan.md or the specific phase doc) with the Edit tool.
+- Do a targeted lookup if more detail is needed, then edit the relevant file (6-plan.md or the specific phase doc) with the Edit tool.
 - If a step is added, check it against "What We're NOT Doing" — flag if it conflicts with a resolved decision.
 - If phases are reordered, flag any dependency that makes the reorder unsafe.
 - Re-prompt for review after each change. Do not reprint the full plan to the conversation.

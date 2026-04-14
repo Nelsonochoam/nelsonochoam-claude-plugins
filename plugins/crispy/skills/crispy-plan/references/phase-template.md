@@ -16,10 +16,10 @@ dependencies: {dependencies_yaml}
 <What this phase accomplishes — expand on the structure outline's summary if available, otherwise write from scratch>
 
 ## References
-- [Plan](plan.md) — master index with dependency graph and global success criteria
-- [Intent](intent.md) — scope, acceptance criteria, and what is out of scope
-- [Research](research.md) — codebase findings with exact file paths
-- [Design](design.md) — resolved design decisions and rationale
+- [Plan](6-plan.md) — master index with dependency graph and global success criteria
+- [Intent](1-intent.md) — scope, acceptance criteria, and what is out of scope
+- [Research](3-research.md) — codebase findings with exact file paths
+- [Design](4-design.md) — resolved design decisions and rationale
 
 ## Design Decisions Applied
 <List the resolved design questions relevant to this phase — from the design doc if available, otherwise document the decisions you made during planning and why.

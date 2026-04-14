@@ -1,10 +1,10 @@
 # Planned Execution
 
-`plan.md` and `manifest.json` exist — follow the planned execution path.
+`6-plan.md` and `manifest.json` exist — follow the planned execution path.
 
 ## Setup
 
-1. Read `plan.md` for the overview, dependency graph, and phase summary table
+1. Read `6-plan.md` for the overview, dependency graph, and phase summary table
 2. Read `manifest.json` and check for an `implementation` key
 3. Determine which phase to work on (see below)
 4. Read that phase's doc from `$FEATURE_PATH/phases/phase-N.md` — it contains all implementation details
@@ -32,7 +32,7 @@ If `found` is `true`:
 If `found` is `false`:
 - `reason: "all_done"` — all phases are complete, proceed to Completion
 - `reason: "blocked"` — report which dependencies are blocking and stop
-- `reason: "no_implementation_key"` — read `plan.md` and phase docs from `$FEATURE_PATH/phases/` directly, executing them sequentially. Track progress in the conversation rather than in a manifest file.
+- `reason: "no_implementation_key"` — read `6-plan.md` and phase docs from `$FEATURE_PATH/phases/` directly, executing them sequentially. Track progress in the conversation rather than in a manifest file.
 
 This is the ralph-loop style: one phase per invocation, clean context boundaries. The user decides whether to continue in this session, start a fresh session, or do something else entirely.
 

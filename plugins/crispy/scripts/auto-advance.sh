@@ -53,11 +53,11 @@ get_skill_name() {
 
 get_artifact_file() {
   case "$1" in
-    research-questions) echo "$FEATURE_PATH/research-questions.md" ;;
-    research) echo "$FEATURE_PATH/research.md" ;;
-    design) echo "$FEATURE_PATH/design.md" ;;
-    structure) echo "$FEATURE_PATH/structure-outline.md" ;;
-    plan) echo "$FEATURE_PATH/plan.md" ;;
+    research-questions) echo "$FEATURE_PATH/2-research-questions.md" ;;
+    research) echo "$FEATURE_PATH/3-research.md" ;;
+    design) echo "$FEATURE_PATH/4-design.md" ;;
+    structure) echo "$FEATURE_PATH/5-structure-outline.md" ;;
+    plan) echo "$FEATURE_PATH/6-plan.md" ;;
   esac
 }
 
@@ -109,7 +109,7 @@ IMPORTANT auto-advance rules:
 - Do NOT run the prerequisite check (prerequisites are being handled by the auto-advance pipeline)
 - DO execute the full analysis/research/writing workflow from the skill
 - DO write the artifact to $ARTIFACT_PATH
-- Read $FEATURE_PATH/intent.md and any other existing artifacts in $FEATURE_PATH/ for context
+- Read $FEATURE_PATH/1-intent.md and any other existing artifacts in $FEATURE_PATH/ for context
 
 Run /$SKILL_NAME now."
 

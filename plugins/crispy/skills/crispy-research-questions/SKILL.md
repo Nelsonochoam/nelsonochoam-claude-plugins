@@ -26,7 +26,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 ### Step 1: Read the Intent
 
-Read the intent document carefully at `$FEATURE_PATH/intent.md` as the input document. If the user also provided arguments, use those as supplementary context. Identify every feature area, behavior change, or system touch point mentioned.
+Read the intent document carefully at `$FEATURE_PATH/1-intent.md` as the input document. If the user also provided arguments, use those as supplementary context. Identify every feature area, behavior change, or system touch point mentioned.
 
 ### Step 2: Think Like a Developer
 
@@ -44,7 +44,7 @@ If the intent already names specific things (a component, a flag, a field), you 
 
 ### Step 3: Write Focus Items to File
 
-Write the items directly to `$FEATURE_PATH/research-questions.md` (create the directory if needed). Use this format:
+Write the items directly to `$FEATURE_PATH/2-research-questions.md` (create the directory if needed). Use this format:
 
 ```
 ---
@@ -62,7 +62,7 @@ Ground each item in something specific from the intent. The list should tell the
 Then say:
 
 ```
-Written to $FEATURE_PATH/research-questions.md — please review.
+Written to $FEATURE_PATH/2-research-questions.md — please review.
 ```
 
 ### Step 4: Iterate Until Confirmed

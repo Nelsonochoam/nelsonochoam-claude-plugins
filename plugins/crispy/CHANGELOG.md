@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.2
+
+### Changes
+
+- **Numbered artifact filenames.** Phase output files now carry a numeric prefix matching their position in the workflow: `1-intent.md`, `2-research-questions.md`, `3-research.md`, `4-design.md`, `5-structure-outline.md`, `6-plan.md`. Numbers are fixed per phase — skipped phases leave gaps, which makes the workflow path visible at a glance.
+
 ## 1.3.2
 
 ### Bug Fixes

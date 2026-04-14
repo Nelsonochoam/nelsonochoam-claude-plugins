@@ -1,6 +1,6 @@
 # Planning With Design Document
 
-A `design.md` exists — all design decisions are already resolved. Your job is to translate those decisions into a mechanical plan.
+A `4-design.md` exists — all design decisions are already resolved. Your job is to translate those decisions into a mechanical plan.
 
 ## Step 1: Load All Context
 

@@ -28,10 +28,10 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 ### Resolve research input
 
-Try to read `$FEATURE_PATH/research-questions.md`.
+Try to read `$FEATURE_PATH/2-research-questions.md`.
 
-- **If it exists**: use it as the primary input. Do NOT read `intent.md` — the research phase stays unbiased about what is being built when research questions have been explicitly defined.
-- **If it does not exist**: read `$FEATURE_PATH/intent.md` instead. Derive 3–7 focused research questions from the intent — questions that help understand the current codebase state relevant to what the intent describes. These derived questions are internal and ephemeral; do NOT write them to a file. Proceed with these questions as if they came from research-questions.md.
+- **If it exists**: use it as the primary input. Do NOT read `1-intent.md` — the research phase stays unbiased about what is being built when research questions have been explicitly defined.
+- **If it does not exist**: read `$FEATURE_PATH/1-intent.md` instead. Derive 3–7 focused research questions from the intent — questions that help understand the current codebase state relevant to what the intent describes. These derived questions are internal and ephemeral; do NOT write them to a file. Proceed with these questions as if they came from 2-research-questions.md.
 
 ## Steps
 
@@ -63,12 +63,12 @@ Every `file:line` reference in the document must be a markdown link using:
 
 ### 5. Write the Research Document
 
-Read the document format from `${CLAUDE_SKILL_DIR}/references/template.md`. Write findings to `$FEATURE_PATH/research.md` (create the directory if needed).
+Read the document format from `${CLAUDE_SKILL_DIR}/references/template.md`. Write findings to `$FEATURE_PATH/3-research.md` (create the directory if needed).
 
 Then say:
 
 ```
-Written to $FEATURE_PATH/research.md — please review.
+Written to $FEATURE_PATH/3-research.md — please review.
 ```
 
 ### 6. Iterate Until Confirmed
