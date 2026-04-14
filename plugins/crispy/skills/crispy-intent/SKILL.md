@@ -41,28 +41,23 @@ Then:
 
 ## Image Handling
 
-Users may share images at any point during intent capture — screenshots, mockups, diagrams, or photos of whiteboards. When this happens:
+Users may share images at any point — screenshots, mockups, diagrams, etc. Pasted images live in Claude Code's internal cache, **not** the temp paths shown in `[Image: source: ...]` tags (those are cleaned up immediately by macOS).
 
-1. **Create the artifacts folder** (if it doesn't exist):
-   ```bash
-   mkdir -p "$FEATURE_PATH/artifacts"
-   ```
+To copy images:
 
-2. **Copy the image** to the artifacts folder with a descriptive kebab-case name:
-   ```bash
-   cp "<source-path>" "$FEATURE_PATH/artifacts/<descriptive-name>.<ext>"
-   ```
-   Use a name that describes the content (e.g., `current-dashboard-layout.png`, `proposed-nav-mockup.jpg`, `whiteboard-flow.png`). If the user provides a description, derive the name from that. If not, ask briefly what the image shows before naming it.
+```bash
+mkdir -p "$FEATURE_PATH/artifacts"
+# Find the current session's image cache (most recently modified directory)
+SESSION_DIR=$(ls -td ~/.claude/image-cache/*/ 2>/dev/null | head -1)
+# Copy desired image(s) with descriptive kebab-case names
+cp "${SESSION_DIR}<N>.png" "$FEATURE_PATH/artifacts/<descriptive-name>.png"
+```
 
-3. **Embed in the intent document** using a relative markdown image link:
-   ```markdown
-   ![Description of what the image shows](artifacts/descriptive-name.png)
-   ```
-   Place images inline where they provide context — near the relevant section (Summary, Background, Acceptance Criteria, etc.). If multiple images are shared and don't belong to a specific section, collect them under a `## Visual References` section at the end of the document (before Open Questions).
+Where `<N>` is the image number (1, 2, etc. — sequential per session). Derive the descriptive name from what the image shows (e.g., `current-dashboard-layout.png`). If unclear, ask the user briefly.
 
-4. **Acknowledge the image**: When the user shares an image, briefly confirm what you see in it and how you'll reference it in the intent. This helps the user verify you interpreted it correctly.
+Embed in documents using relative links: `![Description](artifacts/descriptive-name.png)`. Place inline near relevant sections, or under a `## Visual References` section if they don't belong to a specific section.
 
-Images must be copied **before** writing the intent document so the relative links resolve correctly. If images arrive after the document is already written, update the document to embed them.
+Acknowledge each image to confirm your interpretation. Copy images **before** writing documents so links resolve correctly.
 
 ## Steps
 

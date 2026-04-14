@@ -93,7 +93,7 @@ Work with the user like two peers reviewing a document together. They may questi
 - If they introduce new requirements or constraints, discuss the implications, update the approach, and surface any new design questions that arise.
 - If more research is needed, do it and return with updated options and a recommendation.
 - If anything is ambiguous, ask one focused follow-up before moving on.
-- **If the user shares images** (screenshots, mockups, diagrams): copy them to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `design.md` using `![description](artifacts/name.png)`, and confirm what you see.
+- **If the user shares images** (screenshots, mockups, diagrams): copy them from the image cache (not the temp paths — see intent skill's Image Handling section for the `~/.claude/image-cache/` approach) to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `design.md` using `![description](artifacts/name.png)`, and confirm what you see.
 
 Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md` when recording decisions.
 
