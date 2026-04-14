@@ -1,10 +1,10 @@
 # Plan-Only Execution
 
-`plan.md` exists but no `manifest.json` — execute from the plan and phase docs directly.
+`6-plan.md` exists but no `manifest.json` — execute from the plan and phase docs directly.
 
 ## Setup
 
-Read `plan.md` for the overview. Check if phase docs exist under `$FEATURE_PATH/phases/`. Track progress in the conversation rather than in a manifest file.
+Read `6-plan.md` for the overview. Check if phase docs exist under `$FEATURE_PATH/phases/`. Track progress in the conversation rather than in a manifest file.
 
 ## Execution
 

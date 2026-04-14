@@ -21,9 +21,9 @@ Run feature-discovery (`${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`) 
 
 Collect context from available sources, then merge:
 
-1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `design.md`, `intent.md`, `research.md`.
-   - `design.md` is the primary input when present. `intent.md` and `research.md` provide supporting context.
-   - If `design.md` is missing, derive the structure directly from `intent.md` and quick codebase exploration.
+1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `4-design.md`, `1-intent.md`, `3-research.md`.
+   - `4-design.md` is the primary input when present. `1-intent.md` and `3-research.md` provide supporting context.
+   - If `4-design.md` is missing, derive the structure directly from `1-intent.md` and quick codebase exploration.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is in the feature folder.
 
@@ -66,12 +66,12 @@ Collect:
 
 ### 4. Write the Structure Outline
 
-Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the outline to `$FEATURE_PATH/structure-outline.md` (create the directory if needed).
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Write the outline to `$FEATURE_PATH/5-structure-outline.md` (create the directory if needed).
 
 Then say:
 
 ```
-Written to $FEATURE_PATH/structure-outline.md — please review.
+Written to $FEATURE_PATH/5-structure-outline.md — please review.
 Do these phases look right? Anything to reorder, split, or collapse before planning?
 ```
 

@@ -17,7 +17,7 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 - **Current phase**: `intent`
 - **No-args fallback**: ask the user to describe what they want to build or change.
-- **Existing intent**: If `$FEATURE_PATH/intent.md` already exists, ask the user whether they want to start a fresh intent or continue editing the existing one. If the file doesn't exist, proceed normally.
+- **Existing intent**: If `$FEATURE_PATH/1-intent.md` already exists, ask the user whether they want to start a fresh intent or continue editing the existing one. If the file doesn't exist, proceed normally.
 
 ## Initial Setup
 
@@ -116,15 +116,15 @@ echo "<feature-name>" > "/tmp/.crispy_session_${PPID}"
 If images were shared earlier (before the feature folder existed), copy them to `$FEATURE_PATH/artifacts/` now.
 
 **If the user opted for the lightweight path** (confirmed at restatement without Q&A):
-- Write `$FEATURE_PATH/intent.md` with front matter (`task` and `type: intent` fields) and a Summary section preserving the user's words. Include any additional sections (Acceptance Criteria, Constraints, etc.) only if the user provided that information in their description.
+- Write `$FEATURE_PATH/1-intent.md` with front matter (`task` and `type: intent` fields) and a Summary section preserving the user's words. Include any additional sections (Acceptance Criteria, Constraints, etc.) only if the user provided that information in their description.
 
 **If the user went through the full Q&A flow**:
-- Read the template from `references/intent-template.md`, then write the intent document to `$FEATURE_PATH/intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
+- Read the template from `references/intent-template.md`, then write the intent document to `$FEATURE_PATH/1-intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
 
 Then say:
 
 ```
-Written to $FEATURE_PATH/intent.md — please open it and review.
+Written to $FEATURE_PATH/1-intent.md — please open it and review.
 ```
 
 Wait for the user's response.

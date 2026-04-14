@@ -1,6 +1,6 @@
 # Planning Without Design Document
 
-No `design.md` exists — design decisions have not been made yet. Before writing a plan, you need to surface decision points and resolve them with the user.
+No `4-design.md` exists — design decisions have not been made yet. Before writing a plan, you need to surface decision points and resolve them with the user.
 
 ## Step 1: Load Context and Explore
 

@@ -7,7 +7,7 @@ type: structure-outline
 ---
 
 ### Status
-- Document: <base_dir>/<repo>/<feature>/structure-outline.md
+- Document: <base_dir>/<repo>/<feature>/5-structure-outline.md
 - Ticket: <ticket id>
 - Phases: <N> (<M> sequential, <K> parallel)
 - Open Questions: <none, or list them>

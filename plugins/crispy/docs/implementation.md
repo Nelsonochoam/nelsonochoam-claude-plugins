@@ -4,7 +4,7 @@
 
 When `/crispy-plan` is confirmed, it generates:
 
-1. **A master plan** (`plan.md`) — a lightweight index with the overview, dependency graph, phase summary table, and global success criteria. No implementation details live here.
+1. **A master plan** (`6-plan.md`) — a lightweight index with the overview, dependency graph, phase summary table, and global success criteria. No implementation details live here.
 2. **Phase docs** in `.crispy/<feature>/phases/` — one markdown file per phase (`phase-1.md`, `phase-2.md`, etc.). Each is a self-sufficient document containing all implementation details: exact file paths, code changes, design decisions, and success criteria. An agent reads only this file to implement the phase.
 3. **Implementation metadata** in `manifest.json` — status, dependencies, and a file pointer for each phase.
 

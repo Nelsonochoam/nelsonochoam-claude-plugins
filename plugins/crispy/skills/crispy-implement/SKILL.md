@@ -23,9 +23,9 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/feature-discovery.md`.
 
 After resolving `$FEATURE_PATH`, check what artifacts exist. If `$FEATURE_PATH/artifacts/` contains images, note them — they may show the target UI, current state, or mockups referenced in the intent or design docs. Read the matching reference:
 
-- **`plan.md` + `manifest.json` exist** → read and follow `${CLAUDE_SKILL_DIR}/references/planned-execution.md`
-- **`plan.md` exists but no `manifest.json`** → read and follow `${CLAUDE_SKILL_DIR}/references/plan-only-execution.md`
-- **No `plan.md`** → read and follow `${CLAUDE_SKILL_DIR}/references/direct-execution.md`
+- **`6-plan.md` + `manifest.json` exist** → read and follow `${CLAUDE_SKILL_DIR}/references/planned-execution.md`
+- **`6-plan.md` exists but no `manifest.json`** → read and follow `${CLAUDE_SKILL_DIR}/references/plan-only-execution.md`
+- **No `6-plan.md`** → read and follow `${CLAUDE_SKILL_DIR}/references/direct-execution.md`
 
 Read **only** the reference that matches — do not read the others.
 

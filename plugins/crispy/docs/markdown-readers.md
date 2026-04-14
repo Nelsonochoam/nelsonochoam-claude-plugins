@@ -10,12 +10,12 @@ When you run `/crispy-init`, choose a storage path. Crispy will organize artifac
 <your-chosen-path>/
   <repo-name>/
     <feature>/
-      intent.md
-      research-questions.md
-      research.md
-      design.md
-      structure-outline.md
-      plan.md
+      1-intent.md
+      2-research-questions.md
+      3-research.md
+      4-design.md
+      5-structure-outline.md
+      6-plan.md
       phases/
         phase-1.md
         ...
