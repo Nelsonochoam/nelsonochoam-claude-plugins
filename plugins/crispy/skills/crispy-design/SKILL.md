@@ -23,6 +23,7 @@ Collect context from available sources, then merge:
 
 1. **Feature folder** — read any available artifacts from `$FEATURE_PATH/`: `intent.md`, `research.md`.
    - If `research.md` is missing, do a codebase exploration as part of the design process to ground the approach in reality. Otherwise use the `research.md` and only do research as needed.
+   - If `$FEATURE_PATH/artifacts/` exists, note available images. Reference them in the design document where they add context (e.g., screenshots of current UI in Current State, mockups in Desired End State). Use relative markdown links: `![description](artifacts/filename.png)`.
 2. **Arguments** — if `$ARGUMENTS` contains file paths or additional context, read and incorporate them.
    - Treat arguments as supplementary context that extends or clarifies what is already in the feature folder.
    - The arguments might contain some initial direction the user wants you to take or consider, if so, ensure you
@@ -92,6 +93,7 @@ Work with the user like two peers reviewing a document together. They may questi
 - If they introduce new requirements or constraints, discuss the implications, update the approach, and surface any new design questions that arise.
 - If more research is needed, do it and return with updated options and a recommendation.
 - If anything is ambiguous, ask one focused follow-up before moving on.
+- **If the user shares images** (screenshots, mockups, diagrams): copy them to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `design.md` using `![description](artifacts/name.png)`, and confirm what you see.
 
 Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md` when recording decisions.
 

@@ -44,6 +44,10 @@ Then <observable outcome>
 ## Constraints
 - <technical, business, or timeline constraints>
 
+## Visual References
+<!-- Optional — include only if the user shared images (screenshots, mockups, diagrams, etc.) that don't belong inline in a specific section above. Images stored in the artifacts/ subfolder. -->
+![Description of what the image shows](artifacts/descriptive-name.png)
+
 ## Open Questions
 - <anything unresolved — to be answered during research or planning>
 ```

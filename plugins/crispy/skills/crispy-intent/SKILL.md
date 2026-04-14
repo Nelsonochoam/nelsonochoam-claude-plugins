@@ -39,6 +39,31 @@ Then:
    ```
    Then wait for the user's input.
 
+## Image Handling
+
+Users may share images at any point during intent capture — screenshots, mockups, diagrams, or photos of whiteboards. When this happens:
+
+1. **Create the artifacts folder** (if it doesn't exist):
+   ```bash
+   mkdir -p "$FEATURE_PATH/artifacts"
+   ```
+
+2. **Copy the image** to the artifacts folder with a descriptive kebab-case name:
+   ```bash
+   cp "<source-path>" "$FEATURE_PATH/artifacts/<descriptive-name>.<ext>"
+   ```
+   Use a name that describes the content (e.g., `current-dashboard-layout.png`, `proposed-nav-mockup.jpg`, `whiteboard-flow.png`). If the user provides a description, derive the name from that. If not, ask briefly what the image shows before naming it.
+
+3. **Embed in the intent document** using a relative markdown image link:
+   ```markdown
+   ![Description of what the image shows](artifacts/descriptive-name.png)
+   ```
+   Place images inline where they provide context — near the relevant section (Summary, Background, Acceptance Criteria, etc.). If multiple images are shared and don't belong to a specific section, collect them under a `## Visual References` section at the end of the document (before Open Questions).
+
+4. **Acknowledge the image**: When the user shares an image, briefly confirm what you see in it and how you'll reference it in the intent. This helps the user verify you interpreted it correctly.
+
+Images must be copied **before** writing the intent document so the relative links resolve correctly. If images arrive after the document is already written, update the document to embed them.
+
 ## Steps
 
 ### 1. Restate and Confirm
@@ -92,6 +117,8 @@ Then resolve and create the feature folder by running:
 FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "<feature-name>")
 echo "<feature-name>" > "/tmp/.crispy_session_${PPID}"
 ```
+
+If images were shared earlier (before the feature folder existed), copy them to `$FEATURE_PATH/artifacts/` now.
 
 **If the user opted for the lightweight path** (confirmed at restatement without Q&A):
 - Write `$FEATURE_PATH/intent.md` with front matter (`task` and `type: intent` fields) and a Summary section preserving the user's words. Include any additional sections (Acceptance Criteria, Constraints, etc.) only if the user provided that information in their description.
