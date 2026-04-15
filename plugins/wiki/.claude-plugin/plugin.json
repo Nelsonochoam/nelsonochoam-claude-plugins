@@ -1,0 +1,8 @@
+{
+  "name": "wiki",
+  "description": "Obsidian knowledge base curation using Karpathy's LLM Wiki pattern",
+  "version": "0.1.0",
+  "author": {
+    "name": "nelsonochoam"
+  }
+}

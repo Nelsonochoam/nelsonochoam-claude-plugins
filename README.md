@@ -25,3 +25,5 @@ Or browse for the plugin in `/plugin > Discover`.
 | Plugin | Description |
 |--------|-------------|
 | [crispy](./plugins/crispy) | A framework for agentic development |
+| [showboat](./plugins/showboat) | Agent self-verification and demo documentation |
+| [wiki](./plugins/wiki) | Obsidian knowledge base curation (Karpathy's LLM Wiki pattern) |
