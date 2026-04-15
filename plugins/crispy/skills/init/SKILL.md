@@ -1,5 +1,5 @@
 ---
-name: crispy-init
+name: init
 description: Initialize crispy configuration — set where artifacts are stored. Run once per machine; config is shared across all repos and worktrees.
 argument-hint: '[--reset to reconfigure]'
 disable-model-invocation: true
@@ -92,7 +92,7 @@ Crispy initialized.
   Artifacts stored at: <base_dir>/<repo-name>/<feature>/
   Config file: ~/.crispy/config.json
 
-Run /crispy-intent to start your first feature.
+Run /crispy:intent to start your first feature.
 ```
 
 ## Notes

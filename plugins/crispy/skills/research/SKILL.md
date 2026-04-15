@@ -1,5 +1,5 @@
 ---
-name: crispy-research
+name: research
 description: Answer research questions by exploring the codebase factually and writing findings to a document.
 disable-model-invocation: true
 model: opus
@@ -81,7 +81,7 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Research confirmed.
 
-Recommended next: /crispy-design
+Recommended next: /crispy:design
 Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```

@@ -1,5 +1,5 @@
 ---
-name: crispy-plan
+name: plan
 description: Create a detailed, mechanical implementation plan with exact file paths and success criteria. Works best with prior crispy artifacts (intent, research, design, structure outline) but can also be called directly with an intent or ticket description.
 disable-model-invocation: true
 model: opus
@@ -122,7 +122,7 @@ Then say:
 ════════════════════════════════════════
 ✓ Plan confirmed. {N} phase docs generated in $FEATURE_PATH/phases/.
 
-Recommended next: /crispy-implement
+Recommended next: /crispy:implement
 Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```

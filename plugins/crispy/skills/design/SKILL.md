@@ -1,5 +1,5 @@
 ---
-name: crispy-design
+name: design
 description: Work with the user to produce a high-level design document for intent using the research as context.
 disable-model-invocation: true
 model: opus
@@ -108,7 +108,7 @@ Then say:
 ════════════════════════════════════════
 ✓ Design confirmed.
 
-Recommended next: /crispy-structure-outline
+Recommended next: /crispy:structure-outline
 Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```

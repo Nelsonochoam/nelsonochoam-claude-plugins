@@ -1,7 +1,7 @@
 # Example Interaction Flow
 
 ```
-User: /crispy-implement
+User: /crispy:implement
 Assistant: Running next-phase.sh to find the next workable phase...
 
 Next phase: phase-1 — "Add status field to Questionnaire model"
@@ -31,7 +31,7 @@ Let me know when ready and I'll proceed to Phase 2.
 ## Targeted Phase Example
 
 ```
-User: /crispy-implement phase-3
+User: /crispy:implement phase-3
 Assistant: Reading manifest.json for phase-3...
 
 Checking dependencies: phase-1 (done), phase-2 (done) — all met.

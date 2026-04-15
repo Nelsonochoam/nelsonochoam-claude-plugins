@@ -27,7 +27,7 @@ Crispy tries to solve this by doing "intentional compaction" steering the contex
 **2. Configure (optional, one time)**
 
 ```bash
-/crispy-init
+/crispy:init
 ```
 
 Configures where artifacts are stored. Default is `~/.crispy/`, but you can choose any path (e.g., inside an Obsidian vault, Logseq graph, or notes directory). See [Storage & Integration](./docs/markdown-readers.md) for app-specific paths.
@@ -43,9 +43,9 @@ CRISPY_FEATURE=my-feature claude
 **Intent is always required first** — it's the only hard gate. After that, every phase works with whatever artifacts exist:
 
 ```
-/crispy-intent → then any combination of:
-  /crispy-research-questions → /crispy-research → /crispy-design →
-  /crispy-structure → /crispy-plan → /crispy-implement
+/crispy:intent → then any combination of:
+  /crispy:research-questions → /crispy:research → /crispy:design →
+  /crispy:structure → /crispy:plan → /crispy:implement
 ```
 
 The full flow produces the best results for complex work. But you can skip phases — each one adapts to what's available. Common shortcuts:
@@ -62,7 +62,7 @@ Start a fresh session between phases (use `/clear` or `claude --resume`).
 Want to jump ahead but still run the intermediate phases? Pass `--autoadvance` to any skill:
 
 ```bash
-/crispy-design --autoadvance
+/crispy:design --autoadvance
 ```
 
 This automatically runs all missing recommended upstream phases (research-questions, research) before starting design. Each missing phase runs as a separate `claude -p` agent — fast, but the model makes all intermediate decisions without your review. Best for well-scoped work where you trust the defaults.

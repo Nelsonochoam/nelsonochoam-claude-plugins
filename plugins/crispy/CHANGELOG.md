@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.5.0
+
+### Skill Naming — Namespace Format
+
+Skill names no longer carry the `crispy-` prefix. All skills are now invoked using the `crispy:` namespace format (e.g. `/crispy:intent`, `/crispy:research`, `/crispy:design`). This aligns with standard plugin naming conventions and keeps command names shorter.
+
+#### What changed
+
+- **Skill directories renamed.** `skills/crispy-intent` → `skills/intent`, and so on for all eight skills.
+- **Skill `name` fields updated.** Each `SKILL.md` frontmatter now declares the unprefixed name (e.g. `name: intent`).
+- **All command references updated.** Every "Recommended next" prompt, prerequisite check message, auto-advance script output, and doc example now uses the `/crispy:X` format.
+
 ## 1.4.3
 
 ### Bug Fixes

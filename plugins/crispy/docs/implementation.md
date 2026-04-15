@@ -2,7 +2,7 @@
 
 ## Phase Documents and Metadata
 
-When `/crispy-plan` is confirmed, it generates:
+When `/crispy:plan` is confirmed, it generates:
 
 1. **A master plan** (`6-plan.md`) — a lightweight index with the overview, dependency graph, phase summary table, and global success criteria. No implementation details live here.
 2. **Phase docs** in `.crispy/<feature>/phases/` — one markdown file per phase (`phase-1.md`, `phase-2.md`, etc.). Each is a self-sufficient document containing all implementation details: exact file paths, code changes, design decisions, and success criteria. An agent reads only this file to implement the phase.
@@ -35,9 +35,9 @@ The phase docs are data — how you execute them is your choice:
 
 | Strategy | How |
 |---|---|
-| **Sequential** | Run `/crispy-implement` repeatedly. Each invocation uses `next-phase.sh` to pick up the next ready phase, implements it, and stops. Ralph-loop style — fresh context per phase. |
-| **Targeted** | Run `/crispy-implement phase-N` to execute a specific phase. Useful when you know which phase to work on. |
-| **Multi-session** | Stop mid-feature, close the session, come back later. The manifest tracks which phases are done. `/crispy-implement` picks up where you left off. |
+| **Sequential** | Run `/crispy:implement` repeatedly. Each invocation uses `next-phase.sh` to pick up the next ready phase, implements it, and stops. Ralph-loop style — fresh context per phase. |
+| **Targeted** | Run `/crispy:implement phase-N` to execute a specific phase. Useful when you know which phase to work on. |
+| **Multi-session** | Stop mid-feature, close the session, come back later. The manifest tracks which phases are done. `/crispy:implement` picks up where you left off. |
 | **Parallel** | For phases with no dependency on each other, run their phase docs in separate worktrees or sessions simultaneously. The manifest's dependency data tells you which phases are independent. |
 | **External** | Copy a phase doc's contents into a Jira ticket, a Claude task, or any other orchestration system. The files are plain markdown referencing repo-relative paths — they work anywhere the repo is available. |
 
@@ -103,12 +103,12 @@ The prompt is intentionally minimal — each phase doc is self-sufficient with a
 3. Exits → ralph-loop intercepts → refeeds prompt → next iteration sees updated manifest
 4. When all phases are `"done"` → outputs `<promise>` → loop terminates
 
-**When to prefer ralph-loop over manual `/crispy-implement`:**
+**When to prefer ralph-loop over manual `/crispy:implement`:**
 - The plan has many small, straightforward phases
 - You trust the plan enough to run without pausing for manual verification between phases
 - You want unattended execution
 
-**When to prefer manual `/crispy-implement`:**
+**When to prefer manual `/crispy:implement`:**
 - Phases are complex and benefit from human review between them
 - You want to verify each phase manually before continuing
 - The plan has phases you might want to run in parallel instead of sequentially

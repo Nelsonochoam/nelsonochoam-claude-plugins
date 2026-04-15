@@ -43,11 +43,11 @@ PIPELINE_ORDER="research-questions research design structure plan"
 
 get_skill_name() {
   case "$1" in
-    research-questions) echo "crispy-research-questions" ;;
-    research) echo "crispy-research" ;;
-    design) echo "crispy-design" ;;
-    structure) echo "crispy-structure-outline" ;;
-    plan) echo "crispy-plan" ;;
+    research-questions) echo "research-questions" ;;
+    research) echo "research" ;;
+    design) echo "design" ;;
+    structure) echo "structure-outline" ;;
+    plan) echo "plan" ;;
   esac
 }
 
@@ -66,7 +66,7 @@ PREREQ_JSON=$(bash "$SCRIPTS_DIR/check-prerequisites.sh" "$FEATURE_PATH" "$TARGE
 
 INTENT_MISSING=$(echo "$PREREQ_JSON" | jq -r '.intent_missing')
 if [ "$INTENT_MISSING" = "true" ]; then
-  echo "Error: Intent is missing. Run /crispy-intent first — it cannot be auto-advanced." >&2
+  echo "Error: Intent is missing. Run /crispy:intent first — it cannot be auto-advanced." >&2
   exit 1
 fi
 
@@ -106,10 +106,10 @@ for phase in $PIPELINE_ORDER; do
   ARTIFACT_PATH=$(get_artifact_file "$phase")
 
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  echo "Auto-advancing: $phase (via /$SKILL_NAME)"
+  echo "Auto-advancing: $phase (via /crispy:$SKILL_NAME)"
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-  PROMPT="You are running in auto-advance mode. Execute the /$SKILL_NAME skill for feature '$FEATURE_NAME' at path '$FEATURE_PATH'.
+  PROMPT="You are running in auto-advance mode. Execute the /crispy:$SKILL_NAME skill for feature '$FEATURE_NAME' at path '$FEATURE_PATH'.
 
 IMPORTANT auto-advance rules:
 - Do NOT ask the user any questions — make reasonable decisions yourself
@@ -119,7 +119,7 @@ IMPORTANT auto-advance rules:
 - DO write the artifact to $ARTIFACT_PATH
 - Read $FEATURE_PATH/1-intent.md and any other existing artifacts in $FEATURE_PATH/ for context
 
-Run /$SKILL_NAME now."
+Run /crispy:$SKILL_NAME now."
 
   if ! CRISPY_FEATURE="$FEATURE_NAME" claude -p \
     --plugin-dir "$PLUGIN_DIR/crispy" \
@@ -129,7 +129,7 @@ Run /$SKILL_NAME now."
     "$PROMPT" 2>&1; then
     echo "" >&2
     echo "Error: Auto-advance failed for phase '$phase'." >&2
-    echo "You can run /$SKILL_NAME manually to complete this phase." >&2
+    echo "You can run /crispy:$SKILL_NAME manually to complete this phase." >&2
     exit 1
   fi
 
@@ -140,7 +140,7 @@ Run /$SKILL_NAME now."
     echo "Auto-advanced: $phase — artifact written to $ARTIFACT_PATH"
   else
     echo "Error: Auto-advance for '$phase' did not produce the expected artifact at $ARTIFACT_PATH." >&2
-    echo "You can run /$SKILL_NAME manually to complete this phase." >&2
+    echo "You can run /crispy:$SKILL_NAME manually to complete this phase." >&2
     exit 1
   fi
 

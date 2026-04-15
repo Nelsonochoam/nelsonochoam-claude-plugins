@@ -38,7 +38,7 @@ This is the ralph-loop style: one phase per invocation, clean context boundaries
 
 ## Targeted (`phase-N` argument)
 
-When the user passes a specific phase (e.g., `/crispy-implement phase-2`):
+When the user passes a specific phase (e.g., `/crispy:implement phase-2`):
 1. Read the matching entry from `manifest.json` (`implementation.phase-2`)
 2. Verify all its `dependencies` have status `"done"`. If not, report which dependencies are incomplete and **stop**.
 3. Read the phase doc from `implementation.phase-2.file` — it contains all implementation details

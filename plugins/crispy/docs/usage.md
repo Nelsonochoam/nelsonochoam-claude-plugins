@@ -59,40 +59,40 @@ The seven-phase flow with fresh context between each:
 ```bash
 # Session 1: Capture intent → 1-intent.md
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent
+> /crispy:intent
 # Review 1-intent.md, confirm, then reset
 > /clear
 
 # Session 2: Surface research questions → 2-research-questions.md
-> /crispy-research-questions
+> /crispy:research-questions
 # Review, confirm, reset
 > /clear
 
 # Session 3: Answer research questions → 3-research.md
-> /crispy-research
+> /crispy:research
 # Review 3-research.md, confirm, reset
 > /clear
 
 # Session 4: Resolve design decisions → 4-design.md
-> /crispy-design
+> /crispy:design
 # Review 4-design.md, confirm, reset
 > /clear
 
 # Session 5: Break into vertical phases → 5-structure-outline.md
-> /crispy-structure
+> /crispy:structure
 # Review 5-structure-outline.md, confirm, reset
 > /clear
 
 # Session 6: Write the detailed plan → 6-plan.md + phases/
-> /crispy-plan
+> /crispy:plan
 # Review 6-plan.md and phase docs, confirm
 > /clear
 
 # Session 7+: Implement one phase at a time
-> /crispy-implement
+> /crispy:implement
 # Implements next ready phase, stops. Review, then reset.
 > /clear
-> /crispy-implement
+> /crispy:implement
 # Next phase...
 ```
 
@@ -102,22 +102,22 @@ A shorter loop inspired by the traditional research-plan-implement pattern. The 
 
 ```bash
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent Add a dark mode toggle to the settings page
+> /crispy:intent Add a dark mode toggle to the settings page
 # Confirm intent, reset
 > /clear
 
-> /crispy-research
+> /crispy:research
 # Research explores the codebase, documents what exists
 # Review 3-research.md, confirm, reset
 > /clear
 
-> /crispy-plan
+> /crispy:plan
 # Surfaces design decision points since no 4-design.md exists
 # Collaborate on decisions, then plan is written
 # Review 6-plan.md and phase docs, confirm
 > /clear
 
-> /crispy-implement
+> /crispy:implement
 # Implements one phase at a time
 ```
 
@@ -125,16 +125,16 @@ CRISPY_FEATURE=my-feature claude
 
 ```bash
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent Add a dark mode toggle to the settings page
+> /crispy:intent Add a dark mode toggle to the settings page
 # Confirm lightweight intent, reset
 > /clear
 
-> /crispy-design
+> /crispy:design
 # Design explores the codebase itself since no research exists
 # Review 4-design.md, confirm, reset
 > /clear
 
-> /crispy-implement
+> /crispy:implement
 # Implements directly from intent + design
 ```
 
@@ -142,11 +142,11 @@ CRISPY_FEATURE=my-feature claude
 
 ```bash
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent Fix the race condition in the session refresh logic
+> /crispy:intent Fix the race condition in the session refresh logic
 # Confirm, reset
 > /clear
 
-> /crispy-implement
+> /crispy:implement
 # Works directly from intent, implements in chunks with pauses
 ```
 
@@ -154,16 +154,16 @@ CRISPY_FEATURE=my-feature claude
 
 ```bash
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent
+> /crispy:intent
 # Full intent capture, confirm, reset
 > /clear
 
-> /crispy-design --autoadvance
+> /crispy:design --autoadvance
 # Automatically runs research-questions + research, then starts design
 # Review 4-design.md, confirm, reset
 > /clear
 
-> /crispy-plan --autoadvance
+> /crispy:plan --autoadvance
 # Automatically runs structure-outline, then starts planning
 ```
 
@@ -174,32 +174,32 @@ For work that benefits from tight feedback loops. Implement a first pass, review
 ```bash
 # Round 1: Initial intent and plan
 CRISPY_FEATURE=my-feature claude
-> /crispy-intent Add user preferences API with dark mode toggle
+> /crispy:intent Add user preferences API with dark mode toggle
 # Confirm intent, reset
 > /clear
 
-> /crispy-plan
+> /crispy:plan
 # No 4-design.md — plan surfaces design decisions, you collaborate
 # Review 6-plan.md and phase docs, confirm
 > /clear
 
-> /crispy-implement
+> /crispy:implement
 # Implements phases, review the result
 > /clear
 
 # Round 2: Refine after reviewing implementation
-> /crispy-intent
+> /crispy:intent
 # Existing intent detected — choose to edit it
 # Add missed requirements or adjust scope based on what you learned
 > /clear
 
-> /crispy-plan
+> /crispy:plan
 # Existing plan detected — choose to re-plan or edit
 # Surfaces which prior phases are still valid
 # Collaborate on new decisions, write updated plan
 > /clear
 
-> /crispy-implement
+> /crispy:implement
 # Implements new/updated phases
 ```
 
@@ -229,8 +229,8 @@ Intent is the only hard gate. Every other phase adapts to what's available:
 Any phase accepts `--autoadvance` to automatically run missing upstream phases before proceeding:
 
 ```bash
-/crispy-plan --autoadvance    # runs research-questions → research → design → structure → plan
-/crispy-design --autoadvance  # runs research-questions → research → design
+/crispy:plan --autoadvance    # runs research-questions → research → design → structure → plan
+/crispy:design --autoadvance  # runs research-questions → research → design
 ```
 
 Each missing phase runs as a separate `claude -p` agent with `--permission-mode auto`. This is fast but means the model makes all intermediate decisions without your review.
@@ -251,10 +251,10 @@ Each missing phase runs as a separate `claude -p` agent with `--permission-mode 
 
 | Common failure | Crispy solution |
 |---|---|
-| Agent builds the wrong thing | `/crispy-intent` aligns on scope before anything else |
-| Research is unfocused | `/crispy-research-questions` scopes exactly what to find |
+| Agent builds the wrong thing | `/crispy:intent` aligns on scope before anything else |
+| Research is unfocused | `/crispy:research-questions` scopes exactly what to find |
 | LLM mixes facts with implementation opinions | Research questions act as a middle layer — research sees *where to look* but not *what we plan to build*, so it documents what exists instead of advocating for the intent |
-| Design decisions made silently | `/crispy-design` surfaces all decisions explicitly |
-| Implementation drifts or improvises | `/crispy-implement` follows a plan or pauses for review between chunks |
+| Design decisions made silently | `/crispy:design` surfaces all decisions explicitly |
+| Implementation drifts or improvises | `/crispy:implement` follows a plan or pauses for review between chunks |
 | Long context degrades instruction-following | Each phase is a fresh window — the model reads a clean artifact, not 80 turns of conversation |
 | Too much ceremony for simple work | Skip phases — each adapts to what's available |

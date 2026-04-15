@@ -1,5 +1,5 @@
 ---
-name: crispy-intent
+name: intent
 description: Capture intent, define acceptance criteria, and surface ambiguities before any research or planning begins.
 argument-hint: '<describe what you want to build or change>'
 model: opus
@@ -139,7 +139,7 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Intent confirmed.
 
-Recommended next: /crispy-research-questions
+Recommended next: /crispy:research-questions
 Any phase can follow intent — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
