@@ -4,7 +4,7 @@
 # Reads ~/.showboat/config.json and returns:
 #   <base_dir>/<repo-name>/
 #
-# Falls back to ~/.showboat/<repo-name>/ if showboat-init has not been run.
+# Falls back to ~/.showboat/<repo-name>/ if showboat:init has not been run.
 #
 # Usage:
 #   BASE_DIR=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh")

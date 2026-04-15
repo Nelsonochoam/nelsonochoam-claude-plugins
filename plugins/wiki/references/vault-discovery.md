@@ -7,7 +7,7 @@ Follow these steps to resolve the wiki vault path. Each skill that references th
 Check if `$ARGUMENTS` contains a `--wiki <name>` flag. If present, extract the wiki name.
 
 ```
-Example: /wiki-ingest --wiki testing article.md
+Example: /wiki:ingest --wiki testing article.md
          → wiki_name = "testing", remaining args = "article.md"
 ```
 
@@ -58,7 +58,7 @@ ls "$BASE_DIR/wiki/index.md" 2>/dev/null && echo "VAULT_OK" || echo "VAULT_MISSI
 
 **If vault structure is missing:** Tell the user:
 
-> Wiki vault not initialized. Run `/wiki-init` to set up the three-layer structure.
+> Wiki vault not initialized. Run `/wiki:init` to set up the three-layer structure.
 
 Then stop. Do not proceed without a properly initialized vault.
 

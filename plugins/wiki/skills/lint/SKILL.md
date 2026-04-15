@@ -1,5 +1,5 @@
 ---
-name: wiki-lint
+name: lint
 description: Health-check the wiki — find orphan pages, missing cross-references, contradictions, and stale content. Optionally auto-fix issues.
 argument-hint: '[--fix to auto-fix issues]'
 model: opus

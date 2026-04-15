@@ -166,7 +166,7 @@ Expected: number > 0
 
 ## Feature-Specific Testing
 
-<!-- This section grows over time as /showboat-demo creates demos.
+<!-- This section grows over time as /showboat:demo creates demos.
      Each entry links back to its demo for traceability.
      Do not modify existing entries when updating the context. -->
 ```

@@ -1,5 +1,5 @@
 ---
-name: showboat-introspect
+name: introspect
 description: Extract learnings from failed verifications, user corrections, and testing sessions. Writes structured learnings that the wiki can digest to improve future testing.
 argument-hint: '<optional: feature-name to scope introspection>'
 model: opus
@@ -150,7 +150,7 @@ Write the learnings to `$DEMO_BASE/learnings/<date>-introspect.md` (or `$DEMO_BA
 
 Read the template at `${CLAUDE_SKILL_DIR}/references/learnings-template.md`.
 
-The document must be structured so that `/wiki-ingest` can process it:
+The document must be structured so that `/wiki:ingest` can process it:
 - Obsidian frontmatter with type, date, repo, tags
 - Each learning is a self-contained section with category, what happened, what was learned, and the concrete fix
 - Wikilinks to related demos, verification reports, and testing context
@@ -167,7 +167,7 @@ For each learning that reveals a gap in the testing context, **update `testing-c
 
 Use `Edit` to make targeted changes. Do not rewrite the file.
 
-This is the direct feedback loop — introspect fixes the testing playbook so the next `/showboat-demo` gets it right.
+This is the direct feedback loop — introspect fixes the testing playbook so the next `/showboat:demo` gets it right.
 
 ## Append to Learnings Index
 
@@ -209,7 +209,7 @@ Learnings written to: $DEMO_BASE/learnings/<filename>.md
 Testing context updated with <N> corrections.
 
 To add these learnings to a knowledge base (e.g., via the wiki plugin):
-  /wiki-ingest $DEMO_BASE/learnings/<filename>.md
+  /wiki:ingest $DEMO_BASE/learnings/<filename>.md
 
 Or manually add a link to this file from your knowledge index so
 showboat can reference it in future testing sessions.

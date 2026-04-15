@@ -1,5 +1,5 @@
 ---
-name: showboat-init
+name: init
 description: Initialize showboat configuration — set where demo artifacts are stored. Run once per machine; config is shared across all repos.
 argument-hint: '[--reset to reconfigure]'
 disable-model-invocation: true
@@ -193,7 +193,7 @@ Showboat initialized.
     verifications/       — re-verification reports
     learnings/           — introspection learnings
 
-Run /showboat-context to create a testing playbook for this repo.
+Run /showboat:context to create a testing playbook for this repo.
 ```
 
 If Rodney or shot-scraper were missing during the prerequisites check, add a reminder:

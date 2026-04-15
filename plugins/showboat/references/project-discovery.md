@@ -47,7 +47,7 @@ Check if a showboat project session is already active:
 
 If `~/.showboat/config.json` does not exist, tell the user:
 
-> Showboat is not configured yet. Run `/showboat-init` to set your output directory.
+> Showboat is not configured yet. Run `/showboat:init` to set your output directory.
 >
 > I can proceed using the default location (`~/.showboat/<repo-name>/`) for now.
 

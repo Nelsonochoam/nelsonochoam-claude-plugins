@@ -1,5 +1,5 @@
 ---
-name: wiki-ingest
+name: ingest
 description: Ingest a source document into the wiki — read it, create/update wiki pages (entities, concepts, sources), update index and log.
 argument-hint: '<path to source file, URL, or topic to research>'
 model: opus

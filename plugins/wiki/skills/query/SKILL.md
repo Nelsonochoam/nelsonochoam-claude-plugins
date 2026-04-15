@@ -1,5 +1,5 @@
 ---
-name: wiki-query
+name: query
 description: Search the wiki, synthesize an answer with citations, and optionally create a new page if the answer reveals novel connections.
 argument-hint: '<your question about the knowledge base>'
 model: opus

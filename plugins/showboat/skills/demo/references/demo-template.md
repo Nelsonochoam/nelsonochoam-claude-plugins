@@ -115,7 +115,7 @@ $ <command>
 
 ## Verification Commands
 
-<!-- Machine-readable JSON block used by /showboat-verify to re-run all checks.
+<!-- Machine-readable JSON block used by /showboat:verify to re-run all checks.
      Only include re-runnable evidence (commands, HTTP calls, screenshots).
      Do NOT include diff entries or startup_failure entries. -->
 
@@ -157,5 +157,5 @@ $ <command>
 6. **The status field** in frontmatter:
    - `verified` — all checklist items pass
    - `partial` — no testing context, or some evidence types missing (e.g., no screenshots)
-   - `regression` — some checks failed (set by `/showboat-verify` on re-verification)
+   - `regression` — some checks failed (set by `/showboat:verify` on re-verification)
 7. **evidence_count** — total number of evidence items included in this demo.

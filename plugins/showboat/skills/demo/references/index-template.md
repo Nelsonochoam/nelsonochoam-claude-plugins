@@ -25,7 +25,7 @@ SORT date DESC
 
 ## Recent
 
-<!-- Static list maintained by showboat-demo. Most recent first. -->
+<!-- Static list maintained by showboat:demo. Most recent first. -->
 
 | Demo | Date | Status | Evidence |
 |------|------|--------|----------|
@@ -43,7 +43,7 @@ SORT date DESC
 
 ### Regression
 
-<!-- Demos where showboat-verify found issues -->
+<!-- Demos where showboat:verify found issues -->
 
 ## Testing Context
 

@@ -42,17 +42,17 @@ This creates an Obsidian-compatible knowledge graph where:
 - **Edges** = `[[wikilinks]]` between pages
 - **Clusters** = naturally forming topic groups visible in Obsidian's Graph View
 
-The core rule: **"A note without links is a bug."** Every page must have at least one outbound link. `/wiki-lint` enforces this — orphan pages get flagged, dead links get caught, and missing cross-references get surfaced.
+The core rule: **"A note without links is a bug."** Every page must have at least one outbound link. `/wiki:lint` enforces this — orphan pages get flagged, dead links get caught, and missing cross-references get surfaced.
 
 ## Skills
 
-### `/wiki-init`
+### `/wiki:init`
 
 One-time setup. Creates the three-layer vault structure and generates a `CLAUDE.md` schema.
 
 ```bash
-/wiki-init              # interactive wizard
-/wiki-init --reset      # reconfigure
+/wiki:init              # interactive wizard
+/wiki:init --reset      # reconfigure
 ```
 
 Creates:
@@ -65,22 +65,22 @@ Creates:
 
 The schema (`CLAUDE.md`) is the brain of the vault — it tells the LLM how pages should be formatted, how to ingest sources, and what conventions to follow. You can customize it to fit your domain.
 
-### `/wiki-ingest`
+### `/wiki:ingest`
 
 The core operation. Reads a source, extracts knowledge, and compiles it into wiki pages. A single source typically touches 10-15 pages.
 
 ```bash
 # Ingest a local file
-/wiki-ingest path/to/article.md
+/wiki:ingest path/to/article.md
 
 # Ingest a URL
-/wiki-ingest https://simonwillison.net/2026/Feb/10/showboat-and-rodney/
+/wiki:ingest https://simonwillison.net/2026/Feb/10/showboat-and-rodney/
 
 # Ingest inline text/topic
-/wiki-ingest "The key differences between transformers and RNNs are..."
+/wiki:ingest "The key differences between transformers and RNNs are..."
 
 # Ingest showboat learnings (auto-detected, creates testing pattern concept pages)
-/wiki-ingest path/to/learnings/2026-04-20-introspect.md
+/wiki:ingest path/to/learnings/2026-04-20-introspect.md
 ```
 
 What happens during ingest:
@@ -97,14 +97,14 @@ What happens during ingest:
 
 When the source is a **showboat learnings file** (auto-detected by `type: learnings` in frontmatter), the ingest follows a specialized path: it parses the structured learnings, creates testing pattern concept pages (e.g., `wiki/concepts/auth-testing-patterns.md`), and creates repo-specific knowledge pages.
 
-### `/wiki-query`
+### `/wiki:query`
 
 Search the wiki and synthesize an answer grounded in wiki pages with `[[wikilink]]` citations.
 
 ```bash
-/wiki-query "What are the key approaches to agent verification?"
-/wiki-query "How does Karpathy's wiki pattern compare to RAG?"
-/wiki-query "Who is working on browser automation for LLM agents?"
+/wiki:query "What are the key approaches to agent verification?"
+/wiki:query "How does Karpathy's wiki pattern compare to RAG?"
+/wiki:query "Who is working on browser automation for LLM agents?"
 ```
 
 What it does:
@@ -114,13 +114,13 @@ What it does:
 3. **Synthesize** — composes an answer that cites wiki pages with `[[wikilinks]]`, synthesizes across multiple sources, and acknowledges gaps
 4. **Optionally create synthesis page** — if the answer reveals novel connections not captured in any existing page, offers to create a new synthesis page
 
-### `/wiki-lint`
+### `/wiki:lint`
 
 Health-check the wiki for structural issues, missing connections, and content problems.
 
 ```bash
-/wiki-lint          # report issues
-/wiki-lint --fix    # auto-fix structural issues
+/wiki:lint          # report issues
+/wiki:lint --fix    # auto-fix structural issues
 ```
 
 | Check | Severity | Auto-fixable |
@@ -188,8 +188,8 @@ Set the prompt to:
 Run wiki maintenance on my knowledge base at /path/to/vault:
 
 1. Check for new files in raw/ that haven't been ingested
-2. For each new file, run the wiki-ingest workflow
-3. Run wiki-lint --fix to repair structural issues
+2. For each new file, run the wiki:ingest workflow
+3. Run wiki:lint --fix to repair structural issues
 4. Check for stale pages (not updated in 90+ days) and flag them in the log
 5. Update the index with any new pages
 ```
@@ -208,8 +208,8 @@ If you use the showboat plugin, learnings accumulate in `<showboat-base>/*/learn
 Find all showboat learnings files that haven't been ingested into the wiki yet:
 
 1. Scan <showboat-base>/*/learnings/*.md for files not in wiki/sources/
-2. For each new learnings file, run wiki-ingest
-3. After ingesting, run wiki-lint to check for new orphans or missing links
+2. For each new learnings file, run wiki:ingest
+3. After ingesting, run wiki:lint to check for new orphans or missing links
 4. Log what was synced
 ```
 
@@ -221,10 +221,10 @@ For maintenance during an active session, use `/loop`:
 
 ```bash
 # Lint every 30 minutes while you work
-/loop 30m /wiki-lint
+/loop 30m /wiki:lint
 
 # Ingest any new files dropped in raw/ every hour
-/loop 1h check raw/ for new files and run /wiki-ingest on each
+/loop 1h check raw/ for new files and run /wiki:ingest on each
 ```
 
 ### Desktop scheduled tasks
@@ -238,11 +238,11 @@ For local automation that needs access to your files but should survive session 
 
 ### Drop files in raw/ for batch ingest
 
-The simplest workflow: save articles and papers to `raw/articles/` or `raw/papers/` (via Obsidian Web Clipper, manual download, or any tool). Then periodically run `/wiki-ingest` on each, or let a routine handle it.
+The simplest workflow: save articles and papers to `raw/articles/` or `raw/papers/` (via Obsidian Web Clipper, manual download, or any tool). Then periodically run `/wiki:ingest` on each, or let a routine handle it.
 
 ```bash
 # Ingest everything new in raw/articles
-for f in raw/articles/*.md; do /wiki-ingest "$f"; done
+for f in raw/articles/*.md; do /wiki:ingest "$f"; done
 ```
 
 ### Use the wiki as showboat's knowledge index
@@ -264,19 +264,19 @@ The wiki works for any domain, not just testing knowledge:
 
 ```bash
 # Research domain
-/wiki-ingest paper-on-transformers.pdf
-/wiki-ingest paper-on-attention.pdf
-/wiki-query "How has attention mechanism evolved across these papers?"
+/wiki:ingest paper-on-transformers.pdf
+/wiki:ingest paper-on-attention.pdf
+/wiki:query "How has attention mechanism evolved across these papers?"
 
 # Product domain
-/wiki-ingest competitor-analysis.md
-/wiki-ingest user-interview-notes.md
-/wiki-query "What features do users want that competitors don't offer?"
+/wiki:ingest competitor-analysis.md
+/wiki:ingest user-interview-notes.md
+/wiki:query "What features do users want that competitors don't offer?"
 
 # Incident response
-/wiki-ingest postmortem-2026-04-10.md
-/wiki-ingest runbook-database-failover.md
-/wiki-query "What patterns repeat across our incidents?"
+/wiki:ingest postmortem-2026-04-10.md
+/wiki:ingest runbook-database-failover.md
+/wiki:query "What patterns repeat across our incidents?"
 ```
 
 ### Generate reports from wiki knowledge
@@ -284,7 +284,7 @@ The wiki works for any domain, not just testing knowledge:
 Ask the wiki to compile what it knows into a structured report:
 
 ```bash
-/wiki-query "Compile a summary of everything we know about authentication patterns across all projects. Format as a report with sections."
+/wiki:query "Compile a summary of everything we know about authentication patterns across all projects. Format as a report with sections."
 ```
 
 The synthesis pages that result from these queries are the wiki's most valuable output — they represent accumulated understanding that no single source contains.
@@ -295,8 +295,8 @@ The wiki pattern works differently at different sizes:
 
 | Pages | Index Strategy | Search | Maintenance |
 |-------|---------------|--------|-------------|
-| < 100 | `index.md` is enough | Grep + follow links | Manual `/wiki-lint` |
-| 100-500 | Categorized index with sections | Grep + Dataview queries | Weekly `/wiki-lint --fix` |
+| < 100 | `index.md` is enough | Grep + follow links | Manual `/wiki:lint` |
+| 100-500 | Categorized index with sections | Grep + Dataview queries | Weekly `/wiki:lint --fix` |
 | 500+ | Add [QMD](https://github.com/tobiasbueschel/qmd) for hybrid search | BM25 + vector + graph traversal | Automated routine |
 
 As recommended by Karpathy: QMD (by Tobi Lutke) provides hybrid BM25/vector search with LLM re-ranking, all on-device. It's available as both a CLI and an MCP server, making it a natural complement to this plugin for larger wikis.
@@ -309,38 +309,38 @@ Append-only wikis eventually grow unwieldy. Periodically:
 - Consolidate synthesis pages that cover the same ground
 - Keep `log.md` manageable (archive entries older than 90 days)
 
-A weekly `/wiki-lint` catches most structural issues. For deeper maintenance, review the lint report's "Stale pages" and "Contradictions" sections manually.
+A weekly `/wiki:lint` catches most structural issues. For deeper maintenance, review the lint report's "Stale pages" and "Contradictions" sections manually.
 
 ## Typical Workflows
 
 ### Building a knowledge base on a topic
 
 ```bash
-/wiki-init                            # set up vault
+/wiki:init                            # set up vault
 
 # Ingest sources one at a time
-/wiki-ingest https://article-1.com
-/wiki-ingest path/to/paper.pdf
-/wiki-ingest https://article-2.com
+/wiki:ingest https://article-1.com
+/wiki:ingest path/to/paper.pdf
+/wiki:ingest https://article-2.com
 
 # Ask questions to synthesize understanding
-/wiki-query "What are the key themes across these sources?"
+/wiki:query "What are the key themes across these sources?"
 
 # Periodically maintain
-/wiki-lint --fix
+/wiki:lint --fix
 ```
 
 ### Research project
 
 ```bash
 # Ingest all your research materials
-/wiki-ingest paper-1.md
-/wiki-ingest paper-2.md
-/wiki-ingest paper-3.md
+/wiki:ingest paper-1.md
+/wiki:ingest paper-2.md
+/wiki:ingest paper-3.md
 
 # Ask analytical questions
-/wiki-query "Where do these papers agree and disagree?"
-/wiki-query "What gaps exist in the current research?"
+/wiki:query "Where do these papers agree and disagree?"
+/wiki:query "What gaps exist in the current research?"
 
 # The synthesis pages capture accumulated insight
 ```
@@ -351,14 +351,14 @@ Point the vault at a shared Obsidian vault (synced via git or Obsidian Sync). Mu
 
 ```bash
 # Agent ingests meeting notes
-/wiki-ingest meeting-notes-2026-04-15.md
+/wiki:ingest meeting-notes-2026-04-15.md
 
 # Human adds a research paper via Obsidian Web Clipper
 # Agent ingests it on next session
-/wiki-ingest raw/articles/new-paper.md
+/wiki:ingest raw/articles/new-paper.md
 
 # Anyone can query
-/wiki-query "What decisions were made about the API redesign?"
+/wiki:query "What decisions were made about the API redesign?"
 ```
 
 ### Showboat feedback loop
@@ -367,11 +367,11 @@ The wiki pairs with the showboat plugin to build testing knowledge that compound
 
 ```bash
 # Agent tests a feature, makes mistakes, user corrects
-/showboat-demo my-feature
-/showboat-introspect my-feature     # writes learnings file
+/showboat:demo my-feature
+/showboat:introspect my-feature     # writes learnings file
 
 # Wiki ingests the learnings, creates concept pages
-/wiki-ingest path/to/learnings/2026-04-20-introspect.md
+/wiki:ingest path/to/learnings/2026-04-20-introspect.md
 
 # Showboat points knowledge_index at wiki/index.md
 # Next test session benefits from accumulated knowledge
@@ -415,10 +415,10 @@ Config file: `~/.wiki/config.json`
 Use `--wiki <name>` on any command to target a specific wiki:
 
 ```bash
-/wiki-init testing                                  # create a new wiki called "testing"
-/wiki-ingest --wiki testing path/to/runbook.md      # ingest into the testing wiki
-/wiki-query --wiki research "What do the papers say about X?"
-/wiki-lint --wiki personal --fix
+/wiki:init testing                                  # create a new wiki called "testing"
+/wiki:ingest --wiki testing path/to/runbook.md      # ingest into the testing wiki
+/wiki:query --wiki research "What do the papers say about X?"
+/wiki:lint --wiki personal --fix
 ```
 
 When you omit `--wiki`, the default wiki is used. You can also set `WIKI_VAULT` as an env var to override for a session.
@@ -427,19 +427,19 @@ When you omit `--wiki`, the default wiki is used. You can also set `WIKI_VAULT` 
 
 ```bash
 # Set up a personal knowledge base
-/wiki-init personal
+/wiki:init personal
 
 # Set up a testing knowledge wiki for showboat
-/wiki-init testing
+/wiki:init testing
 
 # Point showboat at the testing wiki
 # In ~/.showboat/config.json: "knowledge_index": "/path/to/testing-vault/wiki/index.md"
 
 # Personal research goes to personal wiki
-/wiki-ingest --wiki personal https://interesting-article.com
+/wiki:ingest --wiki personal https://interesting-article.com
 
 # Testing learnings go to testing wiki
-/wiki-ingest --wiki testing path/to/showboat/learnings/2026-04-20-introspect.md
+/wiki:ingest --wiki testing path/to/showboat/learnings/2026-04-20-introspect.md
 ```
 
 ## Installation
@@ -455,13 +455,13 @@ This plugin implements [Karpathy's LLM Wiki](https://gist.github.com/karpathy/44
 | Karpathy's Pattern | This Plugin |
 |---|---|
 | Three layers: raw, wiki, schema | `raw/`, `wiki/`, `CLAUDE.md` |
-| Ingest: read source, create/update pages, cross-link | `/wiki-ingest` — touches 10-15 pages per source |
-| Query: search wiki, synthesize with citations | `/wiki-query` — answers with `[[wikilink]]` citations |
-| Lint: find contradictions, orphans, stale pages | `/wiki-lint` — 10 checks, auto-fix for structural issues |
+| Ingest: read source, create/update pages, cross-link | `/wiki:ingest` — touches 10-15 pages per source |
+| Query: search wiki, synthesize with citations | `/wiki:query` — answers with `[[wikilink]]` citations |
+| Lint: find contradictions, orphans, stale pages | `/wiki:lint` — 10 checks, auto-fix for structural issues |
 | Index as content catalog | `wiki/index.md` with Dataview queries |
 | Log as append-only changelog | `wiki/log.md` with timestamped entries |
 | Obsidian for graph visualization | All output is Obsidian-compatible (frontmatter, wikilinks, tags) |
-| "A note without links is a bug" | `/wiki-lint` enforces outbound links and flags orphans |
+| "A note without links is a bug" | `/wiki:lint` enforces outbound links and flags orphans |
 | Schema drives conventions | `CLAUDE.md` defines page formats, operations, linting rules |
 | QMD for search at scale | Recommended in docs for 100+ page wikis |
 

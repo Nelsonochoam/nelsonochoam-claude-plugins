@@ -1,5 +1,5 @@
 ---
-name: showboat-capture
+name: capture
 description: Capture a single piece of evidence — run a command, take a screenshot, or make an HTTP call. Appends to the feature's evidence log.
 argument-hint: '<feature-name> <command or URL to capture>'
 disable-model-invocation: true

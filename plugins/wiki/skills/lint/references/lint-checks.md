@@ -24,7 +24,7 @@ Detailed specification for each wiki health check.
 
 **Why it matters**: Dead links break navigation and indicate incomplete work.
 
-**Auto-fix**: Create a stub page with minimal frontmatter and a note: "This page was created as a stub by wiki-lint. Please add content."
+**Auto-fix**: Create a stub page with minimal frontmatter and a note: "This page was created as a stub by wiki:lint. Please add content."
 
 ## 3. Missing Frontmatter
 

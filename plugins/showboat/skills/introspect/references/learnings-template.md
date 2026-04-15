@@ -1,6 +1,6 @@
 # Learnings Template
 
-Use this template when writing introspection learnings documents. The format is designed to be ingestible by `/wiki-ingest`.
+Use this template when writing introspection learnings documents. The format is designed to be ingestible by `/wiki:ingest`.
 
 ---
 

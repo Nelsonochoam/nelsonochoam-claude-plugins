@@ -1,5 +1,5 @@
 ---
-name: showboat-context
+name: context
 description: Create or update the testing playbook for the current repo — describes how to run, test, and verify the application.
 argument-hint: '<optional: --update to refresh an existing context>'
 model: opus
@@ -69,7 +69,7 @@ This accumulated knowledge should inform the testing context you write — don't
 
 ### Use Inline Details from User
 
-If `$ARGUMENTS` contains testing details (e.g., `/showboat-context "app runs on port 8080, uses JWT auth, needs redis"`), incorporate those details directly into the testing context. Inline details take priority over code-inferred values.
+If `$ARGUMENTS` contains testing details (e.g., `/showboat:context "app runs on port 8080, uses JWT auth, needs redis"`), incorporate those details directly into the testing context. Inline details take priority over code-inferred values.
 
 ## Explore the Repository
 
@@ -171,5 +171,5 @@ Discovered:
   Routes/pages: <count> found
   API endpoints: <count> found
 
-Run /showboat-demo <feature-name> after implementing a feature to generate a demo with evidence.
+Run /showboat:demo <feature-name> after implementing a feature to generate a demo with evidence.
 ```

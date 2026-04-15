@@ -14,32 +14,32 @@ This plugin makes the agent **show its work**. Every piece of evidence comes fro
 
 Showboat follows a five-step workflow:
 
-1. **Configure** (`/showboat-init`) — Tell showboat where to write output (an Obsidian vault, a notes directory, anywhere)
-2. **Describe** (`/showboat-context`) — Create a testing playbook for the repo: how to start the dev server, what pages exist, what APIs to hit, what tests to run
-3. **Demonstrate** (`/showboat-demo`) — After implementing a feature, capture evidence and assemble a demo document
-4. **Re-verify** (`/showboat-verify`) — Re-run all checks from a demo to detect regressions over time
-5. **Learn** (`/showboat-introspect`) — When things go wrong, extract lessons from failures and your corrections, feed them back into the testing context and the wiki knowledge base
+1. **Configure** (`/showboat:init`) — Tell showboat where to write output (an Obsidian vault, a notes directory, anywhere)
+2. **Describe** (`/showboat:context`) — Create a testing playbook for the repo: how to start the dev server, what pages exist, what APIs to hit, what tests to run
+3. **Demonstrate** (`/showboat:demo`) — After implementing a feature, capture evidence and assemble a demo document
+4. **Re-verify** (`/showboat:verify`) — Re-run all checks from a demo to detect regressions over time
+5. **Learn** (`/showboat:introspect`) — When things go wrong, extract lessons from failures and your corrections, feed them back into the testing context and the wiki knowledge base
 
 ## Skills
 
-### `/showboat-init`
+### `/showboat:init`
 
 One-time setup per machine. Configures where demo artifacts are stored.
 
 ```bash
-/showboat-init              # interactive wizard
-/showboat-init --reset      # reconfigure
+/showboat:init              # interactive wizard
+/showboat:init --reset      # reconfigure
 ```
 
 Writes `~/.showboat/config.json` with a `base_dir` path. The output directory can be an Obsidian vault, a Dropbox folder, or any path. All output uses Obsidian-compatible markdown regardless of where it's stored.
 
-### `/showboat-context`
+### `/showboat:context`
 
 Creates a testing playbook for the current repo. Run once per repo, update when the app changes.
 
 ```bash
-/showboat-context           # explore repo and create playbook
-/showboat-context --update  # refresh an existing playbook
+/showboat:context           # explore repo and create playbook
+/showboat:context --update  # refresh an existing playbook
 ```
 
 The skill explores your codebase to auto-discover:
@@ -54,7 +54,7 @@ The result is a `testing-context.md` file that agents use to know *how* to verif
 
 #### Skip context generation — bring your own
 
-If you already know how your app should be tested, you don't need `/showboat-context` at all. Just write a markdown file with the testing details and place it at `<base_dir>/<repo>/testing-context.md`. Showboat will pick it up.
+If you already know how your app should be tested, you don't need `/showboat:context` at all. Just write a markdown file with the testing details and place it at `<base_dir>/<repo>/testing-context.md`. Showboat will pick it up.
 
 This works the same way as the knowledge index — it's just a markdown file that showboat reads. The format is flexible, but at minimum include:
 
@@ -76,16 +76,16 @@ npm test
 - POST /api/users — creates a user, expects JSON body
 ```
 
-You can also point your `knowledge_index` (configured in `/showboat-init`) at this file or at any markdown index that links to testing runbooks, wiki pages, or other docs. Showboat treats both the same way — it reads the file, follows relevant links, and uses what it finds to inform testing. The only difference is that `/showboat-context` auto-generates the file from code inspection, while you can write one by hand in 30 seconds if you already know the answers.
+You can also point your `knowledge_index` (configured in `/showboat:init`) at this file or at any markdown index that links to testing runbooks, wiki pages, or other docs. Showboat treats both the same way — it reads the file, follows relevant links, and uses what it finds to inform testing. The only difference is that `/showboat:context` auto-generates the file from code inspection, while you can write one by hand in 30 seconds if you already know the answers.
 
-### `/showboat-capture`
+### `/showboat:capture`
 
-Captures a single piece of evidence. Use during development or let `/showboat-demo` auto-capture.
+Captures a single piece of evidence. Use during development or let `/showboat:demo` auto-capture.
 
 ```bash
-/showboat-capture add-user-search npm test
-/showboat-capture add-user-search http://localhost:3000/users
-/showboat-capture add-user-search "curl -s localhost:3000/api/users?q=test"
+/showboat:capture add-user-search npm test
+/showboat:capture add-user-search http://localhost:3000/users
+/showboat:capture add-user-search "curl -s localhost:3000/api/users?q=test"
 ```
 
 Evidence types:
@@ -100,12 +100,12 @@ Evidence is stored as append-only JSONL at `evidence/<feature>.jsonl`. Each line
 {"id":"ev-001","type":"command","timestamp":"2026-04-15T10:30:00Z","command":"npm test","exit_code":0,"stdout":"42 passed, 0 failed","duration_ms":3200,"label":"Unit tests"}
 ```
 
-### `/showboat-demo`
+### `/showboat:demo`
 
 The core skill. Assembles a demo document from evidence, testing context, and git history.
 
 ```bash
-/showboat-demo add-user-search
+/showboat:demo add-user-search
 ```
 
 What it does:
@@ -176,12 +176,12 @@ Tests: 42 passed, 0 failed
 \`\`\`
 ```
 
-### `/showboat-verify`
+### `/showboat:verify`
 
 Re-runs all verification commands from an existing demo to check for regressions.
 
 ```bash
-/showboat-verify add-user-search
+/showboat:verify add-user-search
 ```
 
 What it does:
@@ -192,13 +192,13 @@ What it does:
 5. Writes a verification report to `verifications/<feature>-<date>.md`
 6. Updates the demo's status to `verified` or `regression`
 
-### `/showboat-introspect`
+### `/showboat:introspect`
 
 The learning loop. When testing fails or you correct the agent, introspect extracts structured learnings and feeds them back into the system.
 
 ```bash
-/showboat-introspect                    # extract learnings from all features
-/showboat-introspect add-user-search    # scope to a specific feature
+/showboat:introspect                    # extract learnings from all features
+/showboat:introspect add-user-search    # scope to a specific feature
 ```
 
 What it does:
@@ -208,10 +208,10 @@ What it does:
 4. Classifies each learning into a category: `navigation`, `auth`, `timing`, `interaction`, `data`, `environment`, `workflow`, `tooling`
 5. Writes a structured learnings document to `learnings/<date>-introspect.md`
 6. **Directly updates `testing-context.md`** with corrections — fixing wrong routes, adding auth steps, updating dev server commands
-7. Suggests running `/wiki-ingest` on the learnings to build long-term testing knowledge
+7. Suggests running `/wiki:ingest` on the learnings to build long-term testing knowledge
 
 This creates two feedback loops:
-- **Short loop**: introspect fixes the testing context, so the next `/showboat-demo` gets it right
+- **Short loop**: introspect fixes the testing context, so the next `/showboat:demo` gets it right
 - **Long loop**: the wiki ingests learnings, extracts patterns and pitfalls into concept pages, so testing knowledge compounds over time
 
 Example learnings:
@@ -287,23 +287,23 @@ pip install shot-scraper && shot-scraper install      # simpler — single-shot 
 
 ```bash
 # After any implementation workflow (crispy, manual, etc.)
-/showboat-demo my-feature           # agent proves it works
+/showboat:demo my-feature           # agent proves it works
 ```
 
 ### When the demo gets things wrong
 
 ```bash
-/showboat-demo my-feature           # demo fails — wrong routes, missing auth, etc.
+/showboat:demo my-feature           # demo fails — wrong routes, missing auth, etc.
 # You correct the agent: "the page is at /app/users not /users"
-/showboat-introspect my-feature     # extracts learnings, fixes testing context
-/showboat-demo my-feature           # retry — now it gets it right
+/showboat:introspect my-feature     # extracts learnings, fixes testing context
+/showboat:demo my-feature           # retry — now it gets it right
 ```
 
 ### Building long-term testing knowledge
 
 ```bash
-/showboat-introspect                                      # extract learnings
-/wiki-ingest <base_dir>/<repo>/learnings/2026-04-20-introspect.md  # wiki digests them
+/showboat:introspect                                      # extract learnings
+/wiki:ingest <base_dir>/<repo>/learnings/2026-04-20-introspect.md  # wiki digests them
 # Future testing sessions benefit from accumulated knowledge
 ```
 
@@ -311,22 +311,22 @@ pip install shot-scraper && shot-scraper install      # simpler — single-shot 
 
 ```bash
 # After any coding session
-/showboat-demo fix-login-bug
+/showboat:demo fix-login-bug
 
 # A week later, check it still works
-/showboat-verify fix-login-bug
+/showboat:verify fix-login-bug
 ```
 
 ### Incremental evidence capture
 
 ```bash
 # Capture evidence as you go during development
-/showboat-capture my-feature npm test
-/showboat-capture my-feature http://localhost:3000/my-page
-/showboat-capture my-feature "curl -s localhost:3000/api/health"
+/showboat:capture my-feature npm test
+/showboat:capture my-feature http://localhost:3000/my-page
+/showboat:capture my-feature "curl -s localhost:3000/api/health"
 
 # Assemble everything at the end
-/showboat-demo my-feature
+/showboat:demo my-feature
 ```
 
 ## Knowledge Index
@@ -338,13 +338,13 @@ Showboat can optionally point to a **knowledge index** — a markdown file that 
 - A runbook or testing playbook directory index
 - Any markdown file with links to relevant docs
 
-Configure it during `/showboat-init` or edit the config directly. Showboat loads from the index **progressively** — it reads the index, follows links relevant to the current feature, and stops. It doesn't load the entire knowledge base into context.
+Configure it during `/showboat:init` or edit the config directly. Showboat loads from the index **progressively** — it reads the index, follows links relevant to the current feature, and stops. It doesn't load the entire knowledge base into context.
 
 This is how the memory layer works:
-1. `/showboat-introspect` writes learnings files
+1. `/showboat:introspect` writes learnings files
 2. You (or the wiki plugin) organize those learnings into a knowledge base
 3. You point showboat's `knowledge_index` at that knowledge base
-4. Next time `/showboat-demo` runs, it reads the index and follows relevant links before testing
+4. Next time `/showboat:demo` runs, it reads the index and follows relevant links before testing
 
 No specific knowledge base structure is required. Showboat follows whatever links it finds. In practice, the knowledge index and the testing context serve the same purpose — they're both markdown files that tell showboat how to test things. The difference is scope:
 

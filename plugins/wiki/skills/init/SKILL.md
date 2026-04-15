@@ -1,5 +1,5 @@
 ---
-name: wiki-init
+name: init
 description: Initialize a wiki vault — set up the three-layer structure (raw sources, compiled wiki, schema) for an LLM-maintained knowledge base. Supports multiple named wikis.
 argument-hint: '[wiki-name] [--reset to reconfigure]'
 disable-model-invocation: true
@@ -45,7 +45,7 @@ Use `AskUserQuestion` to ask for a name:
 
 > What should this wiki be called?
 >
-> The name is used to switch between wikis (e.g., `/wiki-ingest --wiki testing <source>`).
+> The name is used to switch between wikis (e.g., `/wiki:ingest --wiki testing <source>`).
 > Use a short, descriptive kebab-case name.
 >
 > Examples:
@@ -54,7 +54,7 @@ Use `AskUserQuestion` to ask for a name:
 > - **research** — research papers and notes
 > - **team** — shared team knowledge
 
-If `$ARGUMENTS` already contains a name (e.g., `/wiki-init testing`), use that and skip this question.
+If `$ARGUMENTS` already contains a name (e.g., `/wiki:init testing`), use that and skip this question.
 
 If this is the first wiki being configured (no existing config), suggest "default" as the name.
 
@@ -143,7 +143,7 @@ Wiki "<wiki_name>" initialized.
       synthesis/   — Cross-cutting analysis
     CLAUDE.md      — Schema and conventions
 
-Run /wiki-ingest <source> to add your first source document.
+Run /wiki:ingest <source> to add your first source document.
 Use --wiki <wiki_name> on any wiki command to target this wiki.
 
 To use this wiki as showboat's knowledge index:

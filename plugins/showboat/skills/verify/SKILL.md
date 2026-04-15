@@ -1,5 +1,5 @@
 ---
-name: showboat-verify
+name: verify
 description: Re-execute a demo's verification steps to check for regressions. Compares current results against original evidence and produces a verification report.
 argument-hint: '<feature-name>'
 disable-model-invocation: true
@@ -37,7 +37,7 @@ If the file doesn't exist, stop and tell the user:
 
 > No demo found for `<feature-name>`. Available demos: <list>
 >
-> Run `/showboat-demo <feature-name>` to create a demo first.
+> Run `/showboat:demo <feature-name>` to create a demo first.
 
 ## Extract Verification Commands
 

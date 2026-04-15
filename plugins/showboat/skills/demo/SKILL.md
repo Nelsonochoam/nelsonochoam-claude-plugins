@@ -1,5 +1,5 @@
 ---
-name: showboat-demo
+name: demo
 description: Assemble a demo document from captured evidence — proves that a feature works with real command outputs, screenshots, and test results.
 argument-hint: '<feature-name>'
 model: opus
@@ -37,9 +37,9 @@ cat "$DEMO_BASE/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
 
 > No testing context found for this repo. I can proceed with a partial demo using git diff and any evidence you've captured, but the demo will be marked as `partial`.
 >
-> Run `/showboat-context` first for a more complete demo.
+> Run `/showboat:context` first for a more complete demo.
 
-Use `AskUserQuestion` to offer: `Proceed with partial demo` / `Run /showboat-context first`
+Use `AskUserQuestion` to offer: `Proceed with partial demo` / `Run /showboat:context first`
 
 If proceeding without context, set `status: partial` in the demo frontmatter.
 
@@ -115,7 +115,7 @@ Incorporate this knowledge into your testing approach. For example, if the knowl
 
 ### Use Inline Details from User
 
-If `$ARGUMENTS` contains testing details beyond just the feature name (e.g., `/showboat-demo add-search "app runs on port 8080, login at /auth with admin@test.com"`), use those details directly. Inline details take highest priority — they override testing context, learnings, and wiki.
+If `$ARGUMENTS` contains testing details beyond just the feature name (e.g., `/showboat:demo add-search "app runs on port 8080, login at /auth with admin@test.com"`), use those details directly. Inline details take highest priority — they override testing context, learnings, and wiki.
 
 ### Merge Knowledge
 
@@ -227,5 +227,5 @@ Evidence included:
 
 Open in Obsidian to see the full demo with embedded images and wikilinks.
 
-Run /showboat-verify <feature-name> to re-run all verification steps and check for regressions.
+Run /showboat:verify <feature-name> to re-run all verification steps and check for regressions.
 ```
