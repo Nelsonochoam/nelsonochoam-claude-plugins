@@ -16,13 +16,20 @@ This returns the base directory path for the current repo . All feature folder r
 
 Resolve the feature folder. All subsequent artifact reads and writes use `$FEATURE_PATH`.
 
-1. **`CRISPY_FEATURE` env variable is set** → use it as the feature name
+1. **`CRISPY_FEATURE` env variable is set** → use it as the feature name, then resolve the feature folder:
+
+   ```bash
+   FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "$CRISPY_FEATURE")
+   echo "$CRISPY_FEATURE" > "/tmp/.crispy_session_${PPID}"
+   ```
+
 2. **`CRISPY_FEATURE` is not set** → check the session file:
 
    ```bash
    SESSION_FILE="/tmp/.crispy_session_${PPID}"
    if [ -f "$SESSION_FILE" ]; then
      CRISPY_FEATURE=$(cat "$SESSION_FILE")
+     FEATURE_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-feature.sh" "$CRISPY_FEATURE")
    fi
    ```
 

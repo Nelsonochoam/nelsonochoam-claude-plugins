@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.4.3
+
+### Bug Fixes
+
+- **Auto-advance now correctly detects missing pipeline phases.** `auto-advance.sh` previously relied on `ok` from `check-prerequisites.sh`, which is `true` whenever intent exists — causing auto-advance to exit immediately without running any missing phases. The script now computes missing phases by comparing the pipeline order against the `available` artifact list, so phases like `research-questions` are correctly detected and run before the target phase.
+
 ## 1.4.2
 
 ### Changes

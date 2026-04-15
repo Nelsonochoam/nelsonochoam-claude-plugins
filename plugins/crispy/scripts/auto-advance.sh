@@ -70,13 +70,21 @@ if [ "$INTENT_MISSING" = "true" ]; then
   exit 1
 fi
 
-OK=$(echo "$PREREQ_JSON" | jq -r '.ok')
-if [ "$OK" = "true" ]; then
-  echo "All prerequisites for '$TARGET_PHASE' are already met."
-  exit 0
-fi
+# Compute which phases before the target are missing by comparing pipeline order vs available artifacts.
+# check-prerequisites.sh only hard-gates on intent (ok=true whenever intent exists), so we cannot
+# rely on its `ok` field to determine whether pipeline phases are missing.
+AVAILABLE=$(echo "$PREREQ_JSON" | jq -r '.available[]' 2>/dev/null || true)
 
-MISSING=$(echo "$PREREQ_JSON" | jq -r '.missing[]')
+MISSING=""
+for phase in $PIPELINE_ORDER; do
+  if [ "$phase" = "$TARGET_PHASE" ]; then
+    break
+  fi
+  if ! echo "$AVAILABLE" | grep -qx "$phase"; then
+    MISSING="${MISSING}${MISSING:+
+}${phase}"
+  fi
+done
 
 if [ -z "$MISSING" ]; then
   echo "All prerequisites for '$TARGET_PHASE' are already met."
@@ -141,15 +149,24 @@ done
 
 # --- Final verification ---
 FINAL_JSON=$(bash "$SCRIPTS_DIR/check-prerequisites.sh" "$FEATURE_PATH" "$TARGET_PHASE")
-FINAL_OK=$(echo "$FINAL_JSON" | jq -r '.ok')
+FINAL_AVAILABLE=$(echo "$FINAL_JSON" | jq -r '.available[]' 2>/dev/null || true)
 
-if [ "$FINAL_OK" = "true" ]; then
+STILL_MISSING=""
+for phase in $PIPELINE_ORDER; do
+  if [ "$phase" = "$TARGET_PHASE" ]; then
+    break
+  fi
+  if ! echo "$FINAL_AVAILABLE" | grep -qx "$phase"; then
+    STILL_MISSING="${STILL_MISSING}${STILL_MISSING:+, }${phase}"
+  fi
+done
+
+if [ -z "$STILL_MISSING" ]; then
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "All prerequisites for '$TARGET_PHASE' are now met."
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   exit 0
 else
-  STILL_MISSING=$(echo "$FINAL_JSON" | jq -r '.missing | join(", ")')
   echo "Warning: Some prerequisites are still missing after auto-advance: $STILL_MISSING" >&2
   exit 1
 fi
