@@ -1,5 +1,5 @@
 ---
-name: crispy-structure-outline
+name: structure-outline
 description: Break the approved design into phases and write a structure outline document.
 disable-model-invocation: true
 model: opus
@@ -87,7 +87,7 @@ Then say:
 ════════════════════════════════════════
 ✓ Structure confirmed.
 
-Recommended next: /crispy-plan
+Recommended next: /crispy:plan
 Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```

@@ -4,7 +4,7 @@ Crispy artifacts are plain markdown files. You can store them anywhere, includin
 
 ## How It Works
 
-When you run `/crispy-init`, choose a storage path. Crispy will organize artifacts as:
+When you run `/crispy:init`, choose a storage path. Crispy will organize artifacts as:
 
 ```
 <your-chosen-path>/
@@ -32,7 +32,7 @@ Examples:
 - `/Users/you/Obsidian/main-vault/crispy`
 
 **Steps:**
-1. Run `/crispy-init`
+1. Run `/crispy:init`
 2. When asked for storage location, provide: `/path/to/your/vault/crispy`
 3. Artifacts now appear in your vault under `crispy/<repo-name>/<feature>/`
 
@@ -42,7 +42,7 @@ Examples:
 - Backlinks from other vault notes to crispy artifacts
 - Automatic backup/sync of all artifacts with your vault
 
-**Switching vaults:** Run `/crispy-init --reset` and provide the path to your new vault.
+**Switching vaults:** Run `/crispy:init --reset` and provide the path to your new vault.
 
 ## Logseq
 
@@ -53,7 +53,7 @@ Examples:
 - `/Users/you/.logseq/my-graph/crispy`
 
 **Steps:**
-1. Run `/crispy-init`
+1. Run `/crispy:init`
 2. When asked for storage location, provide the path to your graph directory
 3. Artifacts appear in your graph alongside other notes
 
@@ -65,13 +65,13 @@ Example:
 - `/Users/you/Dendron/vault/crispy`
 
 **Steps:**
-1. Run `/crispy-init`
+1. Run `/crispy:init`
 2. When asked for storage location, provide your Dendron vault root + `/crispy`
 3. Artifacts integrate as standard Dendron files
 
 ## Other Markdown Readers
 
-Any tool that watches a directory and supports markdown will work. Just point `/crispy-init` to a path inside that tool's directory.
+Any tool that watches a directory and supports markdown will work. Just point `/crispy:init` to a path inside that tool's directory.
 
 Tools that work well:
 - Note-taking apps
@@ -84,18 +84,18 @@ Tools that work well:
 If you don't want artifacts in a markdown reader, use the default:
 
 ```bash
-/crispy-init
+/crispy:init
 # Choose: Default (~/.crispy/)
 ```
 
-Artifacts stay in `~/.crispy/` and won't appear in any external app. You can always change this later with `/crispy-init --reset`.
+Artifacts stay in `~/.crispy/` and won't appear in any external app. You can always change this later with `/crispy:init --reset`.
 
 ## Changing Storage Location
 
 If you want to move artifacts to a different location or app:
 
 ```bash
-/crispy-init --reset
+/crispy:init --reset
 ```
 
 Choose a new path. Existing artifacts in the old location remain there.

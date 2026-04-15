@@ -29,7 +29,7 @@ Respond with exactly:
 
 ```
 Intent is required before any other phase can proceed.
-Run `/crispy-intent` to capture the intent first.
+Run `/crispy:intent` to capture the intent first.
 ```
 
 **Do not offer to continue. Do not offer auto-advance. Stop completely.**
@@ -40,7 +40,7 @@ All other phases are optional. Proceed with the current skill's normal workflow 
 
 ## 3. Auto-Advance (--autoadvance flag only)
 
-Auto-advance is triggered **only** when the user explicitly passes `--autoadvance` as part of their command (e.g., `/crispy-design --autoadvance`). It is never triggered automatically.
+Auto-advance is triggered **only** when the user explicitly passes `--autoadvance` as part of their command (e.g., `/crispy:design --autoadvance`). It is never triggered automatically.
 
 When `--autoadvance` is active, run the auto-advance script before proceeding with the current skill's work:
 

@@ -27,11 +27,11 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
 
 The `artifacts/` subfolder stores images shared during any phase — screenshots of current UI, mockups, whiteboard photos, diagrams, etc. These are referenced from markdown documents using relative links like `![description](artifacts/filename.png)`, which renders natively in Obsidian, Logseq, and most markdown viewers.
 
-`manifest.json` tracks implementation phase status (pending/done), dependencies, and file pointers. It is created by `/crispy-plan` and only contains `implementation` entries — it does not record planning phase status. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) checks planning phase completion by file existence (e.g., `1-intent.md`, `3-research.md`) and implementation phase completion via `manifest.json`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
+`manifest.json` tracks implementation phase status (pending/done), dependencies, and file pointers. It is created by `/crispy:plan` and only contains `implementation` entries — it does not record planning phase status. **Prerequisites are enforced** — a deterministic script (`check-prerequisites.sh`) checks planning phase completion by file existence (e.g., `1-intent.md`, `3-research.md`) and implementation phase completion via `manifest.json`. The `phases/` directory contains one markdown file per implementation phase — each is a self-sufficient document with all the details an agent needs to implement that phase.
 
 ## Choosing Your Storage Location
 
-During `/crispy-init`, you choose where to store artifacts:
+During `/crispy:init`, you choose where to store artifacts:
 
 **Default location:**
 ```
@@ -61,7 +61,7 @@ When working on multiple repos, each gets its own folder under `<base_dir>/<repo
 To change where artifacts are stored:
 
 ```bash
-/crispy-init --reset
+/crispy:init --reset
 ```
 
 Answer the prompts to specify a new base directory. Existing artifacts in the old location are not affected.

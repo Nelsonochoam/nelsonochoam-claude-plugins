@@ -1,5 +1,5 @@
 ---
-name: crispy-research-questions
+name: research-questions
 description: Generate focused research questions a developer would naturally need to answer before starting work on a feature.
 disable-model-invocation: true
 model: opus
@@ -75,7 +75,7 @@ Once the user confirms, say:
 ════════════════════════════════════════
 ✓ Research questions confirmed.
 
-Recommended next: /crispy-research
+Recommended next: /crispy:research
 Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```

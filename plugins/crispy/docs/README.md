@@ -14,17 +14,17 @@
 
 ### Configuration Issues
 
-**I already ran `/crispy-init` and want to change my setup**
+**I already ran `/crispy:init` and want to change my setup**
 
-Run `/crispy-init --reset` to reconfigure and choose a new storage location.
+Run `/crispy:init --reset` to reconfigure and choose a new storage location.
 
-**`/crispy-init` fails with "directory does not exist"**
+**`/crispy:init` fails with "directory does not exist"**
 
-The base directory you provide must already exist — crispy will not create it. Create the directory first (`mkdir -p /your/path`), then re-run `/crispy-init`.
+The base directory you provide must already exist — crispy will not create it. Create the directory first (`mkdir -p /your/path`), then re-run `/crispy:init`.
 
 **I want to store artifacts in a markdown reader but already have them elsewhere**
 
-Run `/crispy-init --reset` and choose the new storage location. Existing artifacts in the old location remain there. You can move them manually if needed.
+Run `/crispy:init --reset` and choose the new storage location. Existing artifacts in the old location remain there. You can move them manually if needed.
 
 ### Artifact Issues
 
@@ -47,7 +47,7 @@ See [Ralph Loop Integration](./implementation.md#ralph-loop-integration) — it 
 
 **Auto-advance failed for a phase**
 
-If auto-advance fails mid-way, run the failed phase manually with its slash command (e.g., `/crispy-research`). The manifest tracks which phases completed, so subsequent phases will pick up where auto-advance left off.
+If auto-advance fails mid-way, run the failed phase manually with its slash command (e.g., `/crispy:research`). The manifest tracks which phases completed, so subsequent phases will pick up where auto-advance left off.
 
 **I want to skip a phase but crispy won't let me**
 
