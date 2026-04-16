@@ -103,8 +103,9 @@ Present all questions in a single numbered list. Wait for the user's answers bef
 
 Once the user has confirmed (either after restatement or after the Q&A), determine the feature name using this priority:
 
-1. **Ticket** — if the user mentioned a ticket, use it as the feature name.
-2. **Intent title** — otherwise, convert the intent title to kebab-case (e.g. "Add Dark Mode Toggle" → `add-dark-mode-toggle`).
+1. **`CRISPY_FEATURE` env var** — if already set, use it as-is. Do not derive a new name from the title.
+2. **Ticket** — if the user mentioned a ticket, use it as the feature name.
+3. **Intent title** — otherwise, convert the intent title to kebab-case (e.g. "Add Dark Mode Toggle" → `add-dark-mode-toggle`).
 
 Then resolve and create the feature folder by running:
 
