@@ -23,6 +23,40 @@
         "rpi",
         "qrdspi"
       ]
+    },
+    {
+      "name": "showboat",
+      "description": "Agent self-verification and demo documentation",
+      "version": "0.1.0",
+      "author": {
+        "name": "nelsonochoam",
+        "url": "https://github.com/nelsonochoam"
+      },
+      "source": "./plugins/showboat",
+      "category": "development",
+      "homepage": "https://github.com/nelsonochoam/nelsonochoam-plugins",
+      "tags": [
+        "verification",
+        "demo",
+        "obsidian"
+      ]
+    },
+    {
+      "name": "wiki",
+      "description": "Obsidian knowledge base curation using Karpathy's LLM Wiki pattern",
+      "version": "0.1.0",
+      "author": {
+        "name": "nelsonochoam",
+        "url": "https://github.com/nelsonochoam"
+      },
+      "source": "./plugins/wiki",
+      "category": "knowledge",
+      "homepage": "https://github.com/nelsonochoam/nelsonochoam-plugins",
+      "tags": [
+        "obsidian",
+        "knowledge-base",
+        "wiki"
+      ]
     }
   ]
 }
