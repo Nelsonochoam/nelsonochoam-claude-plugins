@@ -4,56 +4,68 @@ Follow these steps to resolve the wiki vault path. Each skill that references th
 
 ## 1. Parse Wiki Name
 
-Check if `$ARGUMENTS` contains a `--wiki <name>` flag. If present, extract the wiki name.
+Check if `$ARGUMENTS` contains a `--wiki <name>` flag. If present, extract the wiki name and remove it from the remaining arguments.
 
 ```
 Example: /wiki:ingest --wiki testing article.md
          → wiki_name = "testing", remaining args = "article.md"
 ```
 
-If no `--wiki` flag, set `wiki_name` to empty (use default wiki).
+If no `--wiki` flag, set `wiki_name` to empty.
 
-## 2. Resolve Base Directory
+## 2. Resolve Vault
 
-Run:
+Resolve the vault path in this priority order:
+
+**If `--wiki <name>` was provided** — named wiki takes highest priority:
 
 ```bash
-BASE_DIR=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh" "<wiki_name or empty>")
+VAULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh" "<wiki_name>")
 ```
 
-This returns the vault root path for the requested wiki. If `wiki_name` is empty, it returns the default wiki. If the config has multiple wikis, it resolves the named one.
+**Else if `WIKI` env var is set** — supports both direct paths and wiki names:
 
-If the script exits with an error (wiki name not found), show the error message (which lists available wikis) and stop.
+```bash
+# Direct path (starts with / or ~)
+if [[ "$WIKI" == /* ]] || [[ "$WIKI" == ~* ]]; then
+  VAULT="${WIKI/#\~/$HOME}"
+else
+  # Wiki name — look up in config
+  VAULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh" "$WIKI")
+fi
+```
 
-## 3. Resolve Vault
+**Else check session file** — for persistence across `/clear` within the same session:
 
-Check if a wiki vault session is already active:
+```bash
+SESSION_FILE="/tmp/.wiki_session_${PPID}"
+if [ -f "$SESSION_FILE" ]; then
+  VAULT=$(cat "$SESSION_FILE")
+fi
+```
 
-1. **`WIKI_VAULT` env variable is set** -> use it:
+**Else use config default:**
 
-   ```bash
-   echo "$WIKI_VAULT" > "/tmp/.wiki_session_${PPID}"
-   ```
+```bash
+VAULT=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh")
+```
 
-2. **`WIKI_VAULT` is not set** -> check the session file:
+If `resolve-basedir.sh` exits with an error (wiki name not found in config), show the error and stop.
 
-   ```bash
-   SESSION_FILE="/tmp/.wiki_session_${PPID}"
-   if [ -f "$SESSION_FILE" ]; then
-     WIKI_VAULT=$(cat "$SESSION_FILE")
-   fi
-   ```
+## 3. Persist Session
 
-   If the session file exists and contains a vault path, use it.
+Write the resolved vault path to the session file so subsequent commands in this session (and recovery after `/clear`) use the same wiki:
 
-3. **Neither env var nor session file** -> use the path from config (`$BASE_DIR`).
+```bash
+echo "$VAULT" > "/tmp/.wiki_session_${PPID}"
+```
 
 ## 4. Verify Vault Structure
 
 Check that the vault has the expected structure:
 
 ```bash
-ls "$BASE_DIR/wiki/index.md" 2>/dev/null && echo "VAULT_OK" || echo "VAULT_MISSING"
+ls "$VAULT/wiki/index.md" 2>/dev/null && echo "VAULT_OK" || echo "VAULT_MISSING"
 ```
 
 **If vault structure is missing:** Tell the user:
@@ -67,7 +79,7 @@ Then stop. Do not proceed without a properly initialized vault.
 If a `CLAUDE.md` exists at the vault root, read it for vault-specific conventions:
 
 ```bash
-cat "$BASE_DIR/CLAUDE.md" 2>/dev/null || echo "NO_SCHEMA"
+cat "$VAULT/CLAUDE.md" 2>/dev/null || echo "NO_SCHEMA"
 ```
 
 If found, the schema overrides default page conventions. Follow the schema's rules for page formats, frontmatter, and wikilink conventions.

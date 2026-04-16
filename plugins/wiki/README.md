@@ -389,6 +389,10 @@ For the best experience with the wiki vault:
 - **[QMD](https://github.com/tobiasbueschel/qmd)** — Local hybrid search engine (BM25 + vector + LLM re-ranking). Recommended for wikis with 100+ pages. Available as CLI and MCP server.
 - **[Marp](https://marp.app/)** — Optional. Generate presentations from wiki pages.
 
+## Docs
+
+- [Multiple wikis](docs/multiple-wikis.md) — configuring multiple named vaults, the `WIKI` env var, and typical workflows
+
 ## Configuration
 
 Config file: `~/.wiki/config.json`
@@ -421,7 +425,7 @@ Use `--wiki <name>` on any command to target a specific wiki:
 /wiki:lint --wiki personal --fix
 ```
 
-When you omit `--wiki`, the default wiki is used. You can also set `WIKI_VAULT` as an env var to override for a session.
+When you omit `--wiki`, the default wiki is used. Set `WIKI=<name>` or `WIKI=<path>` as an env var to override for a session. See [Multiple wikis](docs/multiple-wikis.md) for full examples.
 
 ### Example: personal wiki + testing wiki
 
@@ -440,6 +444,12 @@ When you omit `--wiki`, the default wiki is used. You can also set `WIKI_VAULT` 
 
 # Testing learnings go to testing wiki
 /wiki:ingest --wiki testing path/to/showboat/learnings/2026-04-20-introspect.md
+
+# Or set WIKI for a focused session on one wiki
+export WIKI=testing
+/wiki:ingest path/to/runbook.md
+/wiki:ingest path/to/more-learnings.md
+/wiki:lint --fix
 ```
 
 ## Installation

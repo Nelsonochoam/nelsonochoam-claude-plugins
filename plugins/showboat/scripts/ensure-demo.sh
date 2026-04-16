@@ -11,11 +11,7 @@
 #   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
 #
 # Creates:
-#   <BASE_DIR>/<feature>/demo/demos/
-#   <BASE_DIR>/<feature>/demo/evidence/
-#   <BASE_DIR>/<feature>/demo/evidence/assets/
-#   <BASE_DIR>/<feature>/demo/verifications/
-#   <BASE_DIR>/<feature>/demo/learnings/
+#   <BASE_DIR>/<feature>/demo/
 #
 # Prints: <BASE_DIR>/<feature>/demo  (or <BASE_DIR> if no feature)
 
@@ -44,10 +40,7 @@ else
   DEMO_BASE="$BASE_DIR"
 fi
 
-# Create directory structure
-mkdir -p "$DEMO_BASE/demos"
-mkdir -p "$DEMO_BASE/evidence/assets"
-mkdir -p "$DEMO_BASE/verifications"
-mkdir -p "$DEMO_BASE/learnings"
+# Create directory — demo docs and introspection.md live directly here
+mkdir -p "$DEMO_BASE"
 
 printf '%s\n' "$DEMO_BASE"

@@ -79,6 +79,22 @@ Use `AskUserQuestion` to ask for the vault path:
 
 Store the final result as `base_dir`.
 
+## Step 2.5: Set as Default (only when adding to an existing config)
+
+**Skip this step** if this is the first wiki being configured (no existing config) — the first wiki is always the default.
+
+If there is an existing config with other wikis, use `AskUserQuestion` to ask:
+
+> Should **<wiki_name>** be set as the default wiki?
+>
+> The default wiki is used when `--wiki` is not specified and `WIKI` env var is not set.
+>
+> Current default: `<current_default_wiki_name>` (`<current_default_path>`)
+
+Options: `Yes, set as default` / `No, keep <current_default_wiki_name> as default`
+
+Store result as `set_as_default` (`"default"` or `""`).
+
 ## Step 3: Confirm
 
 Use `AskUserQuestion` to show a summary and ask for confirmation:
@@ -87,6 +103,7 @@ Use `AskUserQuestion` to show a summary and ask for confirmation:
 >
 >   Wiki name: `<wiki_name>`
 >   Vault path: `<base_dir>`
+>   Default wiki: `<yes — this will be the default | no — keeping <current_default> as default>`
 >   Config file: `~/.wiki/config.json`
 >
 >   Three-layer structure:
@@ -105,8 +122,10 @@ If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 Call the helper script to create the vault structure:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/scripts/setup-wiki.sh" "<base_dir>" "<wiki_name>"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-wiki.sh" "<base_dir>" "<wiki_name>" "<set_as_default>"
 ```
+
+Pass `"default"` as the third argument if the user chose to set this wiki as default. Pass `""` otherwise.
 
 This creates:
 - `~/.wiki/config.json` (creates or merges into existing — preserves other wikis)
@@ -127,6 +146,7 @@ Once everything succeeds, say:
 Wiki "<wiki_name>" initialized.
 
   Vault path: <base_dir>
+  Default: <yes | no — run /wiki:init <wiki_name> to change>
   Config file: ~/.wiki/config.json
 
   Structure:
@@ -144,7 +164,11 @@ Wiki "<wiki_name>" initialized.
     CLAUDE.md      — Schema and conventions
 
 Run /wiki:ingest <source> to add your first source document.
-Use --wiki <wiki_name> on any wiki command to target this wiki.
+
+To target this wiki from any command:
+  --wiki <wiki_name>              flag on any /wiki: command
+  WIKI=<wiki_name>                env var (name lookup)
+  WIKI=<base_dir>                 env var (direct path)
 
 To use this wiki as showboat's knowledge index:
   Set knowledge_index to: <base_dir>/wiki/index.md

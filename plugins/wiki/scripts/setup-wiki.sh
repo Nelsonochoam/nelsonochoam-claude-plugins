@@ -2,8 +2,9 @@
 # setup-wiki.sh — Bootstraps a wiki vault with the three-layer structure.
 #
 # Usage:
-#   bash setup-wiki.sh "<base_dir>"                    # single wiki (backward compatible)
-#   bash setup-wiki.sh "<base_dir>" "<wiki-name>"      # named wiki (multi-wiki support)
+#   bash setup-wiki.sh "<base_dir>"                         # single wiki (backward compatible)
+#   bash setup-wiki.sh "<base_dir>" "<wiki-name>"           # named wiki
+#   bash setup-wiki.sh "<base_dir>" "<wiki-name>" "default" # named wiki, set as default
 #
 # Creates:
 #   ~/.wiki/config.json (creates or merges into existing)
@@ -16,6 +17,7 @@ set -euo pipefail
 
 BASE_DIR="$1"
 WIKI_NAME="${2:-}"
+SET_DEFAULT="${3:-}"
 
 if [ -z "$BASE_DIR" ]; then
   echo "Usage: setup-wiki.sh <base_dir> [<wiki-name>]" >&2
@@ -132,21 +134,28 @@ if [ -n "$WIKI_NAME" ]; then
     HAS_WIKIS=$(echo "$EXISTING" | jq -r '.wikis // empty' 2>/dev/null || true)
     if [ -n "$HAS_WIKIS" ]; then
       # Add to existing wikis object
-      echo "$EXISTING" | jq --arg name "$WIKI_NAME" --arg path "$BASE_DIR" '.wikis[$name] = $path' > "$CONFIG_FILE"
+      UPDATED=$(echo "$EXISTING" | jq --arg name "$WIKI_NAME" --arg path "$BASE_DIR" '.wikis[$name] = $path')
+      # Optionally set as default
+      if [ "$SET_DEFAULT" = "default" ]; then
+        UPDATED=$(echo "$UPDATED" | jq --arg name "$WIKI_NAME" '.default = $name')
+      fi
+      echo "$UPDATED" > "$CONFIG_FILE"
     else
       # Migrate from single-wiki to multi-wiki format
       OLD_DIR=$(echo "$EXISTING" | jq -r '.base_dir // empty' 2>/dev/null || true)
       if [ -n "$OLD_DIR" ]; then
         # Keep old wiki as "default", add new named wiki
-        jq -n --arg old "$OLD_DIR" --arg name "$WIKI_NAME" --arg path "$BASE_DIR" \
-          '{"wikis": {"default": $old, ($name): $path}, "default": "default"}' > "$CONFIG_FILE"
+        NEW_DEFAULT="default"
+        [ "$SET_DEFAULT" = "default" ] && NEW_DEFAULT="$WIKI_NAME"
+        jq -n --arg old "$OLD_DIR" --arg name "$WIKI_NAME" --arg path "$BASE_DIR" --arg def "$NEW_DEFAULT" \
+          '{"wikis": {"default": $old, ($name): $path}, "default": $def}' > "$CONFIG_FILE"
       else
         jq -n --arg name "$WIKI_NAME" --arg path "$BASE_DIR" \
           '{"wikis": {($name): $path}, "default": $name}' > "$CONFIG_FILE"
       fi
     fi
   else
-    # Fresh config with named wiki
+    # Fresh config with named wiki — always the default when it's the first
     jq -n --arg name "$WIKI_NAME" --arg path "$BASE_DIR" \
       '{"wikis": {($name): $path}, "default": $name}' > "$CONFIG_FILE"
   fi

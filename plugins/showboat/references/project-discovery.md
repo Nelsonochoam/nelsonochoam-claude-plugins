@@ -46,7 +46,7 @@ Determine which feature is active. All artifact reads and writes are scoped to t
 
 Two variables are now set:
 - **`$BASE_DIR`** — repo-level directory (`<base_dir>/<repo-name>`). Use this for repo-wide artifacts: `testing-context.md`.
-- **`$DEMO_BASE`** — feature-scoped directory (`<base_dir>/<repo-name>/<feature>/demo`). Use this for feature artifacts: `demos/`, `evidence/`, `verifications/`, `learnings/`.
+- **`$DEMO_BASE`** — feature-scoped directory (`<base_dir>/<repo-name>/<feature>/demo`). Demo documents are written directly here (e.g., `$DEMO_BASE/<feature-name>.md`). Only `learnings/` lives as a subdirectory.
 
 ## 3. Verify Configuration
 

@@ -126,33 +126,51 @@ Use `AskUserQuestion` to ask for the storage location. Present the choices clear
 
 Store the final result as `base_dir`.
 
-## Step 2: Knowledge Index (optional)
+## Step 2: Playbook (optional)
 
-Use `AskUserQuestion` to ask if the user has an existing knowledge base showboat should read from:
+Use `AskUserQuestion` to ask if the user has a playbook document showboat should use when testing:
 
-> Do you have an existing knowledge base or index file that showboat should use for testing context?
+> Do you have a playbook — a markdown file describing how to test your applications?
 >
-> This is a markdown file that serves as an entry point to testing knowledge —
-> it could be a wiki index, an Obsidian MOC, a runbook, or any markdown file
-> with links to relevant docs. Showboat will progressively load from it when
-> it needs context about how to test your applications.
+> This is a document with general testing knowledge: how to log in, which URLs to use,
+> common patterns, credentials, service setup. It can be a single file or an entry point
+> that links to other files (Obsidian wikilinks, relative paths) — showboat will follow
+> links progressively to load only what's relevant.
 >
-> 1. **No knowledge index** (showboat will learn from scratch via introspect)
+> 1. **No playbook** (showboat will infer testing approach from the codebase)
 > 2. **I have one** (Please provide the full absolute path below)
 
 **Logic:**
-- If the user selects "No knowledge index", set `knowledge_index` to `null` (omit from config).
+- If the user selects "No playbook", omit `playbook` from config.
+- If the user provides a path, validate it exists and is a `.md` file. Store as `playbook`.
+- If the path contains `~`, expand it using `$HOME`.
+
+## Step 3: Knowledge Index (optional)
+
+Use `AskUserQuestion` to ask if the user has an existing knowledge base showboat should read from:
+
+> Do you have a knowledge index — a markdown entry point to broader testing documentation?
+>
+> This could be an Obsidian MOC, a wiki index, or a runbook. Showboat reads it
+> progressively when building demos, following links to load only relevant pages.
+>
+> 1. **No knowledge index**
+> 2. **I have one** (Please provide the full absolute path below)
+
+**Logic:**
+- If the user selects "No knowledge index", omit `knowledge_index` from config.
 - If the user provides a path, validate it exists and is a `.md` file. Store as `knowledge_index`.
 - If the path contains `~`, expand it using `$HOME`.
 
-## Step 3: Confirm
+## Step 4: Confirm
 
 Use `AskUserQuestion` to show a summary and ask for confirmation:
 
 > Ready to configure showboat:
 >
 >   Base directory:    `<base_dir>/<repo-name>/` (one folder per repo)
->   Knowledge index:   `<knowledge_index path>` (or "none — will learn from scratch")
+>   Playbook:          `<playbook path>` (or "none — will infer from codebase")
+>   Knowledge index:   `<knowledge_index path>` (or "none")
 >   Config file:       `~/.showboat/config.json`
 >
 >   Output format: Obsidian-compatible markdown (frontmatter, wikilinks, Dataview properties)
@@ -163,24 +181,24 @@ Options: `Yes, apply` / `No, cancel`
 
 If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 
-## Step 4: Apply
+## Step 5: Apply
 
 Call the helper script to handle all setup deterministically:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<knowledge_index or empty>"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<knowledge_index or empty>" "<playbook or empty>"
 ```
 
 This script will:
 - Create `~/.showboat` directory
 - Handle existing symlinks at `~/.showboat`
 - Create the artifact base directory
-- Write `config.json` with `base_dir` and optionally `knowledge_index`
+- Write `config.json` with `base_dir`, and optionally `playbook` and `knowledge_index`
 - Validate everything succeeded
 
 If it fails, it exits with code 1 and prints an error.
 
-## Step 5: Done
+## Step 6: Done
 
 Once the command succeeds, say:
 
@@ -192,13 +210,10 @@ Showboat initialized.
 
   Output structure (per feature):
     <feature>/demo/
-      testing-context.md   — app testing playbook
-      demos/               — demo documents with evidence
-      evidence/            — raw capture logs + screenshots
-      verifications/       — re-verification reports
-      learnings/           — introspection learnings
+      <feature>.md         — demo document (built by showboat CLI)
+      introspection.md     — corrections and lessons from testing sessions
 
-Run /showboat:context to create a testing playbook for this repo.
+  Playbook: <path or "not configured — showboat will infer from codebase">
 ```
 
 If Rodney or shot-scraper were missing during the prerequisites check, add a reminder:
