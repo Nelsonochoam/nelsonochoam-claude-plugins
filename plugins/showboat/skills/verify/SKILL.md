@@ -30,7 +30,7 @@ Use `AskUserQuestion` to ask which demo to verify.
 ## Read the Demo Document
 
 ```bash
-cat "$DEMO_BASE/<feature-name>.md"
+cat "$DEMO_BASE/demo.md"
 ```
 
 If the file doesn't exist, stop and tell the user:
@@ -44,7 +44,7 @@ If the file doesn't exist, stop and tell the user:
 Use the showboat CLI to re-execute all code blocks and compare against recorded output:
 
 ```bash
-showboat verify "$DEMO_BASE/<feature-name>.md"
+showboat verify "$DEMO_BASE/demo.md"
 ```
 
 The command prints diffs for any blocks whose output has changed and exits with code 1 if there are differences, 0 if everything matches.
@@ -52,7 +52,7 @@ The command prints diffs for any blocks whose output has changed and exits with 
 If you want to update the document with new outputs without modifying the original:
 
 ```bash
-showboat verify "$DEMO_BASE/<feature-name>.md" --output "$DEMO_BASE/<feature-name>-reverified-<YYYY-MM-DD>.md"
+showboat verify "$DEMO_BASE/demo.md" --output "$DEMO_BASE/<feature-name>-reverified-<YYYY-MM-DD>.md"
 ```
 
 ## Done

@@ -27,7 +27,7 @@ Also extract any inline details the user provided — app URL, port, credentials
 
 ```bash
 DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
-DEMO_FILE="$DEMO_BASE/<feature-name>.md"
+DEMO_FILE="$DEMO_BASE/demo.md"
 ```
 
 ## Understand What Changed

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ensure-demo.sh — Creates and returns the demo directory for the active feature.
+# ensure-demo.sh — Creates and returns the feature directory for the active feature.
 #
 # Feature resolution priority:
 #   1. FEATURE env var
@@ -11,9 +11,9 @@
 #   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
 #
 # Creates:
-#   <BASE_DIR>/<feature>/demo/
+#   <BASE_DIR>/<feature>/
 #
-# Prints: <BASE_DIR>/<feature>/demo  (or <BASE_DIR> if no feature)
+# Prints: <BASE_DIR>/<feature>  (or <BASE_DIR> if no feature)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR=$(bash "$SCRIPT_DIR/resolve-basedir.sh")
@@ -35,7 +35,7 @@ fi
 # Persist to session file so subsequent skills don't need to re-resolve
 if [ -n "$RESOLVED_FEATURE" ]; then
   echo "$RESOLVED_FEATURE" > "/tmp/.showboat_feature_${PPID}"
-  DEMO_BASE="$BASE_DIR/$RESOLVED_FEATURE/demo"
+  DEMO_BASE="$BASE_DIR/$RESOLVED_FEATURE"
 else
   DEMO_BASE="$BASE_DIR"
 fi

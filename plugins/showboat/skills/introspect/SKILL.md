@@ -33,7 +33,7 @@ Review the current conversation for anything that went wrong or was corrected:
 Also check for any failed or partial demo documents:
 
 ```bash
-showboat verify "$DEMO_BASE/<feature-name>.md" 2>&1 || true
+showboat verify "$DEMO_BASE/demo.md" 2>&1 || true
 grep -l 'status: partial\|status: regression' "$DEMO_BASE/"*.md 2>/dev/null
 ```
 
