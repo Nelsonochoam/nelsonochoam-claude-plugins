@@ -63,7 +63,7 @@ If there's nothing obvious in the conversation, ask the user.
 
 ### 5. Testing Context Gaps
 
-Location: `$DEMO_BASE/testing-context.md`
+Location: `$BASE_DIR/testing-context.md`
 
 Compare the testing context against what happened in the evidence:
 - Routes in the context that returned 404 in evidence → route is wrong

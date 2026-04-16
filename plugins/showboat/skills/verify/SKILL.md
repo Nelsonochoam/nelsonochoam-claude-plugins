@@ -54,7 +54,7 @@ If there are no verification commands, stop:
 Only if the verification commands include `http` or `screenshot` steps that require a running server, read the testing context for dev server instructions:
 
 ```bash
-cat "$DEMO_BASE/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
+cat "$BASE_DIR/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
 ```
 
 Skip this section entirely if all verification steps are `command` type (no server needed).

@@ -1,6 +1,6 @@
 # Project Discovery
 
-Follow these steps to resolve the showboat project (repo-level output directory). Each skill that references this file will specify any skill-specific overrides.
+Follow these steps to resolve the showboat output directory. Each skill that references this file will specify any skill-specific overrides.
 
 ## 1. Resolve Base Directory
 
@@ -10,38 +10,43 @@ Run:
 BASE_DIR=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-basedir.sh")
 ```
 
-This returns the base directory path for the current repo (e.g., `<configured_path>/<repo-name>/`). All artifact reads and writes use `BASE_DIR` as the root.
+This returns the repo-level base directory (e.g., `<configured_path>/<repo-name>`).
 
-## 2. Resolve Project
+## 2. Resolve Feature
 
-Check if a showboat project session is already active:
+Determine which feature is active. All artifact reads and writes are scoped to the feature:
 
-1. **`SHOWBOAT_PROJECT` env variable is set** -> use it, then ensure directories exist:
+1. **`FEATURE` env variable is set** → use it as the feature name:
 
    ```bash
-   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh")
-   echo "$SHOWBOAT_PROJECT" > "/tmp/.showboat_session_${PPID}"
+   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "$FEATURE")
    ```
 
-2. **`SHOWBOAT_PROJECT` is not set** -> check the session file:
+2. **`FEATURE` is not set** → check the session file:
 
    ```bash
-   SESSION_FILE="/tmp/.showboat_session_${PPID}"
+   SESSION_FILE="/tmp/.showboat_feature_${PPID}"
    if [ -f "$SESSION_FILE" ]; then
-     SHOWBOAT_PROJECT=$(cat "$SESSION_FILE")
-     DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh")
+     FEATURE=$(cat "$SESSION_FILE")
+     DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "$FEATURE")
    fi
    ```
 
-   If the session file exists and contains a project name, use it -- skip asking the user.
+   If the session file exists, use it — skip asking the user.
 
-3. **Neither env var nor session file** -> derive from git. The project name is the repo name, resolved automatically by `resolve-basedir.sh`. Just ensure directories exist:
+3. **Neither env var nor session file** → if the skill requires a feature name, use `AskUserQuestion` to ask: *"Which feature are you working on? (e.g., `add-user-search` or a ticket ID like `TICKET-1234`)"*
+
+   Once the feature name is known, persist and resolve:
 
    ```bash
-   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh")
+   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
    ```
 
-   Showboat always knows its project -- it is the current repo (derived automatically from git).
+   The session file is keyed to the current `claude` process PID (`$PPID`), so it is automatically scoped to this session and ignored by future `claude` invocations.
+
+Two variables are now set:
+- **`$BASE_DIR`** — repo-level directory (`<base_dir>/<repo-name>`). Use this for repo-wide artifacts: `testing-context.md`.
+- **`$DEMO_BASE`** — feature-scoped directory (`<base_dir>/<repo-name>/<feature>/demo`). Use this for feature artifacts: `demos/`, `evidence/`, `verifications/`, `learnings/`.
 
 ## 3. Verify Configuration
 

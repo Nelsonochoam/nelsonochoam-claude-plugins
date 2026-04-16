@@ -29,14 +29,17 @@ Stop and show install instructions. Do not proceed with configuration until requ
 ```
 Showboat requires the following tools that are not installed:
 
-  jq     — JSON processor (used for config and evidence capture)
-           Install: brew install jq
+  showboat — the showboat CLI (https://github.com/simonw/showboat)
+             Install: uv tool install showboat
 
-  curl   — HTTP client (used for API evidence capture)
-           Install: brew install curl
+  jq       — JSON processor (used for config and evidence capture)
+             Install: brew install jq
 
-  git    — Version control (used for diff evidence and repo detection)
-           Install: brew install git
+  curl     — HTTP client (used for API evidence capture)
+             Install: brew install curl
+
+  git      — Version control (used for diff evidence and repo detection)
+             Install: brew install git
 ```
 
 Only list the tools that are actually missing. After showing instructions, stop.
@@ -49,13 +52,14 @@ Show a warning but continue with setup:
 Prerequisites check:
 
   Required (installed):
+    ✓ showboat
     ✓ jq
     ✓ curl
     ✓ git
 
   Recommended (for screenshots and browser automation):
     <✓ or ✗> rodney     — Browser automation CLI (multi-turn sessions: navigate, click, screenshot)
-                          Install: uvx rodney
+                          Install: uv tool install rodney
                           Docs: https://simonwillison.net/2026/Feb/10/showboat-and-rodney/
 
     <✓ or ✗> shot-scraper — Single-shot screenshot CLI
@@ -186,12 +190,13 @@ Showboat initialized.
   Artifacts stored at: <base_dir>/<repo-name>/
   Config file: ~/.showboat/config.json
 
-  Output structure (per repo):
-    testing-context.md   — app testing playbook
-    demos/               — demo documents with evidence
-    evidence/            — raw capture logs + screenshots
-    verifications/       — re-verification reports
-    learnings/           — introspection learnings
+  Output structure (per feature):
+    <feature>/demo/
+      testing-context.md   — app testing playbook
+      demos/               — demo documents with evidence
+      evidence/            — raw capture logs + screenshots
+      verifications/       — re-verification reports
+      learnings/           — introspection learnings
 
 Run /showboat:context to create a testing playbook for this repo.
 ```
@@ -200,7 +205,7 @@ If Rodney or shot-scraper were missing during the prerequisites check, add a rem
 
 ```
 Note: Screenshot capture is not available. To enable it, install one of:
-  uvx rodney                                        (recommended — full browser automation)
+  uv tool install rodney                             (recommended — full browser automation)
   pip install shot-scraper && shot-scraper install   (simpler — single-shot screenshots)
 ```
 

@@ -20,7 +20,7 @@ Store the resolved base directory as `$DEMO_BASE`.
 ## Check for Existing Context
 
 ```bash
-cat "$DEMO_BASE/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
+cat "$BASE_DIR/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
 ```
 
 **If exists and `--update` was NOT passed:** Read the existing context, then use `AskUserQuestion` to ask:
@@ -138,7 +138,7 @@ Keep questions focused. Do not ask about things you already found in the code.
 
 Read the template at `${CLAUDE_SKILL_DIR}/references/context-template.md` and fill it in with everything you discovered.
 
-Write the file to `$DEMO_BASE/testing-context.md`.
+Write the file to `$BASE_DIR/testing-context.md`.
 
 **Important conventions:**
 - Use Obsidian YAML frontmatter with `app_name`, `app_type`, `repo`, `created`, `updated` fields
@@ -162,7 +162,7 @@ When `--update` was passed or the user chose to update:
 After writing, say:
 
 ```
-Testing context written to: $DEMO_BASE/testing-context.md
+Testing context written to: $BASE_DIR/testing-context.md
 
 Discovered:
   App type: <app_type>

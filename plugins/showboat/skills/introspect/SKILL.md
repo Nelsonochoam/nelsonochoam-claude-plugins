@@ -103,7 +103,7 @@ Options: `I have corrections to share` / `Just analyze the failures, no addition
 ### 5. Testing Context — Find Gaps
 
 ```bash
-cat "$DEMO_BASE/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
+cat "$BASE_DIR/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
 ```
 
 Compare what the testing context says against what actually happened in the evidence. Look for:

@@ -1,31 +1,53 @@
 #!/usr/bin/env bash
-# ensure-demo.sh — Creates the demo and evidence directories for a feature.
+# ensure-demo.sh — Creates and returns the demo directory for the active feature.
+#
+# Feature resolution priority:
+#   1. FEATURE env var
+#   2. /tmp/.showboat_feature_${PPID} session file
+#   3. $1 argument
+#   4. No feature — returns BASE_DIR directly (backward compatible)
 #
 # Usage:
-#   DEMO_PATH=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
+#   DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
 #
 # Creates:
-#   <BASE_DIR>/demos/
-#   <BASE_DIR>/evidence/
-#   <BASE_DIR>/evidence/assets/
-#   <BASE_DIR>/verifications/
+#   <BASE_DIR>/<feature>/demo/demos/
+#   <BASE_DIR>/<feature>/demo/evidence/
+#   <BASE_DIR>/<feature>/demo/evidence/assets/
+#   <BASE_DIR>/<feature>/demo/verifications/
+#   <BASE_DIR>/<feature>/demo/learnings/
 #
-# Prints the base directory path (repo-level, not feature-level).
-
-FEATURE_NAME="$1"
+# Prints: <BASE_DIR>/<feature>/demo  (or <BASE_DIR> if no feature)
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR=$(bash "$SCRIPT_DIR/resolve-basedir.sh")
 
-# Create directory structure
-mkdir -p "$BASE_DIR/demos"
-mkdir -p "$BASE_DIR/evidence/assets"
-mkdir -p "$BASE_DIR/verifications"
-mkdir -p "$BASE_DIR/learnings"
+# Resolve feature — env var > session file > argument
+RESOLVED_FEATURE="${FEATURE:-}"
 
-# If a feature name was provided, ensure its evidence file directory exists
-if [ -n "$FEATURE_NAME" ]; then
-  touch "$BASE_DIR/evidence/${FEATURE_NAME}.jsonl" 2>/dev/null || true
+if [ -z "$RESOLVED_FEATURE" ]; then
+  SESSION_FILE="/tmp/.showboat_feature_${PPID}"
+  if [ -f "$SESSION_FILE" ]; then
+    RESOLVED_FEATURE=$(cat "$SESSION_FILE")
+  fi
 fi
 
-printf '%s\n' "$BASE_DIR"
+if [ -z "$RESOLVED_FEATURE" ] && [ -n "$1" ]; then
+  RESOLVED_FEATURE="$1"
+fi
+
+# Persist to session file so subsequent skills don't need to re-resolve
+if [ -n "$RESOLVED_FEATURE" ]; then
+  echo "$RESOLVED_FEATURE" > "/tmp/.showboat_feature_${PPID}"
+  DEMO_BASE="$BASE_DIR/$RESOLVED_FEATURE/demo"
+else
+  DEMO_BASE="$BASE_DIR"
+fi
+
+# Create directory structure
+mkdir -p "$DEMO_BASE/demos"
+mkdir -p "$DEMO_BASE/evidence/assets"
+mkdir -p "$DEMO_BASE/verifications"
+mkdir -p "$DEMO_BASE/learnings"
+
+printf '%s\n' "$DEMO_BASE"

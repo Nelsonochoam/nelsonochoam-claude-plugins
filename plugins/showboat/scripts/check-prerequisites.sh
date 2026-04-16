@@ -15,6 +15,13 @@ INSTALLED=()
 
 # ── Required tools (showboat will not work without these) ────────────
 
+# showboat — the showboat CLI itself (https://github.com/simonw/showboat)
+if command -v showboat &>/dev/null; then
+  INSTALLED+=("showboat")
+else
+  MISSING_REQUIRED+=("showboat")
+fi
+
 # jq — used by resolve-basedir.sh, capture-command.sh, detect-capabilities.sh
 if command -v jq &>/dev/null; then
   INSTALLED+=("jq")

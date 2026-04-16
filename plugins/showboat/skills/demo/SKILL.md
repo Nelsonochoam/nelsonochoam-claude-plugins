@@ -30,7 +30,7 @@ DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>"
 ## Read Testing Context
 
 ```bash
-cat "$DEMO_BASE/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
+cat "$BASE_DIR/testing-context.md" 2>/dev/null || echo "NOT_FOUND"
 ```
 
 **If NOT found:** Warn the user:
@@ -201,7 +201,7 @@ Check if `$DEMO_BASE/demos/index.md` exists:
 
 ## Update Testing Context (Feature-Specific Section)
 
-If `testing-context.md` exists, append a new entry to the "Feature-Specific Testing" section:
+If `$BASE_DIR/testing-context.md` exists, append a new entry to the "Feature-Specific Testing" section:
 
 ```markdown
 ### <Feature Name> (added <YYYY-MM-DD>)
