@@ -145,24 +145,7 @@ Use `AskUserQuestion` to ask if the user has a playbook document showboat should
 - If the user provides a path, validate it exists and is a `.md` file. Store as `playbook`.
 - If the path contains `~`, expand it using `$HOME`.
 
-## Step 3: Knowledge Index (optional)
-
-Use `AskUserQuestion` to ask if the user has an existing knowledge base showboat should read from:
-
-> Do you have a knowledge index — a markdown entry point to broader testing documentation?
->
-> This could be an Obsidian MOC, a wiki index, or a runbook. Showboat reads it
-> progressively when building demos, following links to load only relevant pages.
->
-> 1. **No knowledge index**
-> 2. **I have one** (Please provide the full absolute path below)
-
-**Logic:**
-- If the user selects "No knowledge index", omit `knowledge_index` from config.
-- If the user provides a path, validate it exists and is a `.md` file. Store as `knowledge_index`.
-- If the path contains `~`, expand it using `$HOME`.
-
-## Step 4: Confirm
+## Step 3: Confirm
 
 Use `AskUserQuestion` to show a summary and ask for confirmation:
 
@@ -170,7 +153,6 @@ Use `AskUserQuestion` to show a summary and ask for confirmation:
 >
 >   Base directory:    `<base_dir>/<repo-name>/` (one folder per repo)
 >   Playbook:          `<playbook path>` (or "none — will infer from codebase")
->   Knowledge index:   `<knowledge_index path>` (or "none")
 >   Config file:       `~/.showboat/config.json`
 >
 >   Output format: Obsidian-compatible markdown (frontmatter, wikilinks, Dataview properties)
@@ -181,24 +163,24 @@ Options: `Yes, apply` / `No, cancel`
 
 If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 
-## Step 5: Apply
+## Step 4: Apply
 
 Call the helper script to handle all setup deterministically:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<knowledge_index or empty>" "<playbook or empty>"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<playbook or empty>"
 ```
 
 This script will:
 - Create `~/.showboat` directory
 - Handle existing symlinks at `~/.showboat`
 - Create the artifact base directory
-- Write `config.json` with `base_dir`, and optionally `playbook` and `knowledge_index`
+- Write `config.json` with `base_dir`, and optionally `playbook`
 - Validate everything succeeded
 
 If it fails, it exits with code 1 and prints an error.
 
-## Step 6: Done
+## Step 5: Done
 
 Once the command succeeds, say:
 

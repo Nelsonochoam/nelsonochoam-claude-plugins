@@ -2,7 +2,7 @@
 # setup-showboat.sh — Creates showboat configuration.
 #
 # Usage:
-#   bash setup-showboat.sh "<base_dir>" ["<knowledge_index>"] ["<playbook>"]
+#   bash setup-showboat.sh "<base_dir>" ["<playbook>"]
 #
 # Creates:
 #   ~/.showboat/config.json
@@ -11,28 +11,20 @@
 set -euo pipefail
 
 BASE_DIR="$1"
-KNOWLEDGE_INDEX="${2:-}"
-PLAYBOOK="${3:-}"
+PLAYBOOK="${2:-}"
 
 if [ -z "$BASE_DIR" ]; then
-  echo "Usage: setup-showboat.sh <base_dir> [<knowledge_index>] [<playbook>]" >&2
+  echo "Usage: setup-showboat.sh <base_dir> [<playbook>]" >&2
   exit 1
 fi
 
 # Expand ~ if present
 BASE_DIR="${BASE_DIR/#\~/$HOME}"
-[ -n "$KNOWLEDGE_INDEX" ] && KNOWLEDGE_INDEX="${KNOWLEDGE_INDEX/#\~/$HOME}"
 [ -n "$PLAYBOOK" ] && PLAYBOOK="${PLAYBOOK/#\~/$HOME}"
 
 # Ensure base_dir is absolute
 if [[ "$BASE_DIR" != /* ]]; then
   echo "Error: base_dir must be an absolute path (got: $BASE_DIR)" >&2
-  exit 1
-fi
-
-# Validate knowledge_index if provided
-if [ -n "$KNOWLEDGE_INDEX" ] && [[ "$KNOWLEDGE_INDEX" != /* ]]; then
-  echo "Error: knowledge_index must be an absolute path (got: $KNOWLEDGE_INDEX)" >&2
   exit 1
 fi
 
@@ -60,12 +52,10 @@ mkdir -p "$BASE_DIR"
 CONFIG_FILE="$HOME/.showboat/config.json"
 CONFIG_JSON=$(jq -n \
   --arg base_dir "$BASE_DIR" \
-  --arg knowledge_index "$KNOWLEDGE_INDEX" \
   --arg playbook "$PLAYBOOK" \
   '{
     base_dir: $base_dir
   }
-  + (if $knowledge_index != "" then {knowledge_index: $knowledge_index} else {} end)
   + (if $playbook != "" then {playbook: $playbook} else {} end)
 ')
 printf '%s\n' "$CONFIG_JSON" > "$CONFIG_FILE"

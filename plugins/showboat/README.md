@@ -224,14 +224,12 @@ Config file: `~/.showboat/config.json`
 ```json
 {
   "base_dir": "/path/to/your/output/directory",
-  "playbook": "/path/to/playbook.md",
-  "knowledge_index": "/path/to/knowledge/index.md"
+  "playbook": "/path/to/playbook.md"
 }
 ```
 
 - **`base_dir`** — where demo artifacts go. Per-repo subdirectories are created automatically.
-- **`playbook`** — (optional) markdown file describing how to test your applications.
-- **`knowledge_index`** — (optional) entry point to broader testing documentation (Obsidian MOC, wiki index, runbook). Showboat follows links progressively — reads the index, loads only pages relevant to the current feature.
+- **`playbook`** — (optional) markdown file describing how to test your applications. Can be a single self-contained file or an entry point that links to other files — showboat follows links progressively to load only what's relevant.
 
 ## Installation
 

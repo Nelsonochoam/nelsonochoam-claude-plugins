@@ -79,6 +79,12 @@ showboat note "$DEMO_FILE" "<2-3 sentence summary of what was built and why, der
 
 Every piece of evidence is captured by a `showboat` command. If a command errors in a way that shouldn't stay in the document, remove it with `showboat pop "$DEMO_FILE"` before retrying.
 
+**Evidence requirements — this is non-negotiable:**
+
+- If the change touches any API endpoint → you **must** make real curl/HTTP calls to that endpoint and capture the responses. Test output alone does not prove the API works.
+- If the change touches any UI component or page → you **must** use rodney to navigate, interact, and take screenshots. Test output alone does not prove the UI works.
+- Automated tests are **supporting evidence only**. They confirm code paths but do not replace live execution. A demo that shows only test results is incomplete.
+
 ### 1. What Changed
 
 ```bash
@@ -179,9 +185,9 @@ showboat exec "$DEMO_FILE" bash "curl -s -X <METHOD> '<url>' \
   -d '<body>' | jq ."
 ```
 
-### 3. Automated Tests (supporting evidence)
+### 3. Automated Tests (supporting evidence only)
 
-Tests confirm correctness but don't replace the manual demonstration above. Run them as supporting evidence:
+Tests confirm code paths but **do not replace live demonstration**. If the feature touches an API or UI and you haven't yet made real curl calls or rodney interactions, do that first — then run tests as corroborating evidence. Never use test output as the primary proof that a feature works.
 
 ```bash
 showboat note "$DEMO_FILE" "## Test Suite"

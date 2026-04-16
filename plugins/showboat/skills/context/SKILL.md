@@ -48,25 +48,6 @@ If learnings exist, read the most recent files. Extract knowledge that should go
 - Correct routes and URL patterns (overriding what code inspection might suggest)
 - Verification patterns that worked in practice
 
-### Query Knowledge Index (optional)
-
-```bash
-KNOWLEDGE_INDEX=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-knowledge-index.sh" 2>/dev/null) || true
-echo "${KNOWLEDGE_INDEX:-NO_KNOWLEDGE_INDEX}"
-```
-
-**If NO_KNOWLEDGE_INDEX** — skip this section. The knowledge index is optional. Showboat works fine with just code inspection and learnings.
-
-**If a knowledge index exists**, read it and follow links progressively to find testing-relevant knowledge:
-- Known testing patterns for this app type
-- Environment and infrastructure knowledge
-- Authentication and authorization flows
-- Common pitfalls and workarounds
-
-Only read linked pages that seem relevant to this repo's app type — don't load the entire knowledge base.
-
-This accumulated knowledge should inform the testing context you write — don't rely only on code inspection when prior sessions have already discovered what actually works.
-
 ### Use Inline Details from User
 
 If `$ARGUMENTS` contains testing details (e.g., `/showboat:context "app runs on port 8080, uses JWT auth, needs redis"`), incorporate those details directly into the testing context. Inline details take priority over code-inferred values.
