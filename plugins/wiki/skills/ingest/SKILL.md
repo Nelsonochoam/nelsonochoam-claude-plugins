@@ -34,7 +34,7 @@ The user provides one of:
 
 Read the file. If it's in a supported format (markdown, text, PDF), process it directly.
 
-Copy the raw source to `$VAULT/raw/`:
+Copy the raw source to `$VAULT/raw/` if it isn't already there:
 - Articles/blog posts → `$VAULT/raw/articles/<kebab-case-name>.md`
 - Research papers → `$VAULT/raw/papers/<kebab-case-name>.md`
 - Images/assets → `$VAULT/raw/assets/<original-name>`
@@ -47,37 +47,11 @@ Use `WebFetch` to retrieve the content. Save the markdown output to `$VAULT/raw/
 
 No raw file to save. Create pages directly from the provided content.
 
-## Detect Showboat Learnings Files
+## Read the Index
 
-Check if the source is a showboat learnings file (has `type: learnings` in frontmatter or lives in a `learnings/` directory):
+Read `$VAULT/wiki/index.md` once. It is a flat catalog of every page — wikilinks and one-line summaries. You will use it throughout ingest to check what already exists.
 
-```bash
-head -10 "<source-file>" | grep -q "type: learnings" && echo "SHOWBOAT_LEARNINGS" || echo "REGULAR_SOURCE"
-```
-
-**If this is a showboat learnings file**, follow this specialized ingest path instead of the generic workflow:
-
-1. **Parse the structured learnings** — each `### N. <description>` section is a self-contained learning with Category, What happened, What was wrong, Correct approach, and Source fields.
-
-2. **Create/update testing pattern concept pages** — for each learning category that appears (navigation, auth, timing, interaction, data, environment, workflow, tooling):
-   - Check if `wiki/concepts/<category>-testing-patterns.md` exists
-   - If yes, append the new learning to the page
-   - If no, create it as a concept page with examples from this learnings file
-   - Example: `wiki/concepts/auth-testing-patterns.md` accumulates all auth-related learnings across repos
-
-3. **Create repo-specific concept pages** — if multiple learnings relate to the same repo or feature:
-   - Create `wiki/concepts/<repo-name>-testing-knowledge.md` with environment, auth, and workflow knowledge specific to that repo
-   - This page becomes the go-to reference for testing that repo
-
-4. **Extract the Patterns section** — if the learnings file has a `## Patterns` section, each pattern is a synthesis opportunity. Create `wiki/synthesis/<pattern-name>.md` pages.
-
-5. **Link back to showboat artifacts** — use wikilinks to the original demos and verification reports cited in the learnings (from `source_demos` and `source_verifications` frontmatter).
-
-6. **Update the index and log** as normal (see below).
-
-After processing a learnings file, continue to the "Key Rules" section — skip the generic ingest workflow.
-
-**If this is NOT a showboat learnings file**, proceed with the generic workflow below. Only now read these reference files — skip them entirely for learnings files:
+Do not scan wiki folders. Do not read individual pages yet. Open a specific page only when you are about to update it — not to check whether it exists.
 
 ## Read Ingest Workflow
 
@@ -93,7 +67,7 @@ Read `${CLAUDE_SKILL_DIR}/references/page-templates.md` for the templates to use
 2. **Update, don't duplicate** — if an entity or concept page already exists, update it with new information rather than creating a duplicate.
 3. **Every page must link** — every new page must have at least one outbound wikilink. Add inbound links from related existing pages.
 4. **Update the index** — add every new page to `wiki/index.md`.
-5. **Log the operation** — append to `wiki/log.md`.
+5. **Log the operation** — call the log-append script; never read or edit `log.md` directly.
 6. **Check for synthesis opportunities** — if the new source connects to existing knowledge in interesting ways, create a synthesis page.
 
 ## Done

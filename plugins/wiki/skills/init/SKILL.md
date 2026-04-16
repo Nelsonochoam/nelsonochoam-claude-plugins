@@ -50,7 +50,7 @@ Use `AskUserQuestion` to ask for a name:
 >
 > Examples:
 > - **personal** — your own knowledge base
-> - **testing** — testing patterns and runbooks for showboat
+> - **testing** — testing patterns and runbooks
 > - **research** — research papers and notes
 > - **team** — shared team knowledge
 
@@ -169,7 +169,4 @@ To target this wiki from any command:
   --wiki <wiki_name>              flag on any /wiki: command
   WIKI=<wiki_name>                env var (name lookup)
   WIKI=<base_dir>                 env var (direct path)
-
-To use this wiki as showboat's knowledge index:
-  Set knowledge_index to: <base_dir>/wiki/index.md
 ```

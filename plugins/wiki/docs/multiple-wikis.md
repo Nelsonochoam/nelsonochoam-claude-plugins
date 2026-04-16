@@ -87,19 +87,6 @@ export WIKI=projects
 /wiki:query --wiki projects "How does this apply to qnr-server?"
 ```
 
-### Showboat integration
-
-Point showboat's `knowledge_index` at whichever vault holds your testing knowledge:
-
-```json
-{
-  "base_dir": "/path/to/showboat-output",
-  "knowledge_index": "/Users/you/Projects/vaults/playbooks/wiki/index.md"
-}
-```
-
-Now `/showboat:demo` reads from your playbooks vault when testing. Ingest new runbooks and showboat automatically benefits next session.
-
 ## When to use multiple wikis vs. one
 
 Use **separate wikis** when knowledge is genuinely siloed — different schemas, confidentiality boundaries, or distinct audiences (testing runbooks vs. personal research).

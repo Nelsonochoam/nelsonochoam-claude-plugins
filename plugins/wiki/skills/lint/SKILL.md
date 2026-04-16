@@ -1,7 +1,7 @@
 ---
 name: lint
-description: Health-check the wiki — find orphan pages, missing cross-references, contradictions, and stale content. Optionally auto-fix issues.
-argument-hint: '[--fix to auto-fix issues]'
+description: Health-check the wiki — find orphan pages, dead links, missing cross-references, and structural issues. Optionally auto-fix.
+argument-hint: '[--fix to auto-fix structural issues]'
 model: opus
 ---
 
@@ -9,7 +9,7 @@ User's request: $ARGUMENTS
 
 # Lint Wiki
 
-You are running a health check on the wiki knowledge base. Your job is to find structural issues, missing connections, and content problems, then report (and optionally fix) them.
+You are running a health check on the wiki knowledge base. Structural checks are handled by a script (fast, deterministic). You handle the semantic checks that require reading and judgment.
 
 ## Vault Discovery
 
@@ -17,43 +17,37 @@ Read and follow `${CLAUDE_PLUGIN_ROOT}/references/vault-discovery.md`.
 
 Store the resolved vault path as `$VAULT`.
 
-## Read Schema
+## Step 1: Run Structural Checks
 
-If `$VAULT/CLAUDE.md` exists, read it for vault-specific conventions and linting criteria.
-
-## Read Lint Checks
-
-Read and follow `${CLAUDE_SKILL_DIR}/references/lint-checks.md` for the detailed check list.
-
-## Scan All Pages
-
-Build a list of all wiki pages:
+Run the lint script. It checks dead links, orphan pages, missing frontmatter, missing outbound links, index gaps, stale pages, and empty sections — without loading any wiki content into context:
 
 ```bash
-find "$VAULT/wiki" -name "*.md" ! -name "index.md" ! -name "log.md" -type f
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/lint.sh" "$VAULT"
 ```
 
-For each page, read its content and extract:
-- Frontmatter fields (type, created, updated, sources, tags)
-- All outbound wikilinks (`[[...]]`)
-- Page title (first `# ` heading)
+Capture the output. Each line is a finding in the format `SEVERITY|check|path|detail`.
 
-## Run Checks
+Parse and count findings by severity (CRITICAL / WARNING / SUGGESTION).
 
-Execute each check from `lint-checks.md`:
+## Step 2: Semantic Checks (LLM)
 
-1. **Orphan pages** — pages with no inbound links from other pages
-2. **Dead links** — wikilinks pointing to pages that don't exist
-3. **Missing frontmatter** — pages without required frontmatter fields
-4. **Missing outbound links** — pages with no wikilinks to other pages
-5. **Stale pages** — pages not updated for a long time (configurable, default: 90 days)
-6. **Missing concepts** — important terms mentioned in multiple pages but without dedicated concept pages
-7. **Index gaps** — pages that exist but aren't listed in the index
-8. **Tag inconsistencies** — pages with types that don't match their `wiki/<type>` tag
-9. **Empty sections** — pages with section headers but no content
-10. **Contradictions** — conflicting claims across pages (requires careful reading)
+The script cannot detect these — they require reading and reasoning. Read `wiki/index.md` to orient yourself, then selectively read pages flagged as relevant.
 
-## Report Findings
+### Missing concepts
+
+Look at the index for terms that appear frequently but have no dedicated concept page. A term mentioned in 3+ source or entity pages without a `concepts/<term>.md` is a candidate.
+
+### Contradictions
+
+For pages that cover the same entity or concept, check whether they make conflicting claims. Flag pairs for human review — do not auto-fix contradictions.
+
+### Missing cross-references
+
+Look for pages that clearly relate to each other but don't link. This is a suggestion-level finding.
+
+Only read pages you actually need for these checks — do not load the entire wiki.
+
+## Step 3: Report Findings
 
 Present findings organized by severity:
 
@@ -65,87 +59,60 @@ Issues found: <count>
 
 ## Critical
 
-<!-- Issues that break the knowledge graph -->
-
 ### Dead Links (<count>)
-- [[page-name]] links to [[missing-page]] (line <N>)
+- wiki/concepts/foo.md → [[bar]] target not found
 - ...
 
 ### Missing Frontmatter (<count>)
-- <page-path>: missing `type` field
+- wiki/entities/foo.md — missing: type, updated
 - ...
 
 ## Warnings
 
-<!-- Issues that degrade quality -->
-
 ### Orphan Pages (<count>)
-- [[page-name]] — no inbound links. Consider linking from [[related-page]].
-- ...
-
-### Missing Concepts (<count>)
-- "<term>" mentioned in <N> pages but has no concept page. Consider creating [[concepts/<term>]].
+- wiki/entities/baz.md — no inbound links
 - ...
 
 ### Index Gaps (<count>)
-- [[page-name]] exists but is not in the index.
+- wiki/concepts/qux.md — not listed in index.md
+- ...
+
+### Missing Concepts (<count>)
+- "term" mentioned in N pages but has no concept page
 - ...
 
 ## Suggestions
 
-<!-- Nice-to-have improvements -->
-
 ### Stale Pages (<count>)
-- [[page-name]] — last updated <date> (<N> days ago)
+- wiki/sources/old.md — last updated 2025-01-01 (105 days ago)
 - ...
 
 ### Missing Cross-References
-- [[page-a]] and [[page-b]] discuss similar topics but don't link to each other
-- ...
+- wiki/concepts/foo.md and wiki/concepts/bar.md discuss similar topics but don't link
 
 ## Summary
 
-Total: <critical> critical, <warning> warnings, <suggestion> suggestions
+<N> critical, <N> warnings, <N> suggestions
 ```
 
-## Auto-Fix (if `--fix` passed)
+## Step 4: Auto-Fix (if `--fix` passed)
 
-If `$ARGUMENTS` contains `--fix`:
+If `$ARGUMENTS` contains `--fix`, fix structural issues only:
 
-1. **Dead links**: Create stub pages for missing link targets with a `status: stub` frontmatter
-2. **Missing frontmatter**: Add required fields based on the page's directory (entities/ → type: entity, etc.)
-3. **Index gaps**: Add missing pages to the index
-4. **Tag inconsistencies**: Fix tags to match the page type
-5. **Orphan pages**: Add links from the most relevant existing page
+1. **Dead links** — create stub pages: minimal frontmatter + `status: stub` + note
+2. **Missing frontmatter** — infer `type` from directory, set dates to today, add `wiki/<type>` tag
+3. **Index gaps** — add missing pages to the appropriate section in `wiki/index.md`
+4. **No outbound links** — read the page and add wikilinks to related pages already in the index
 
 Do NOT auto-fix:
-- Contradictions (requires human judgment)
-- Stale pages (might be intentionally stable)
-- Missing concepts (creating concept pages requires content, not just stubs)
+- Contradictions (human judgment required)
+- Stale pages (may be intentionally stable)
+- Missing concepts (requires writing real content)
 
-Report what was fixed:
+Report what was fixed after running.
 
-```
-Auto-fixed:
-  - Created <N> stub pages for dead links
-  - Added frontmatter to <N> pages
-  - Added <N> pages to index
-  - Fixed tags on <N> pages
-  - Added links to <N> orphan pages
+## Step 5: Log the Operation
 
-Remaining (manual attention needed):
-  - <count> contradictions
-  - <count> stale pages
-  - <count> missing concepts
-```
-
-## Log the Operation
-
-Append to `$VAULT/wiki/log.md`:
-
-```markdown
-## [YYYY-MM-DD] lint | Health Check
-
-Scanned <N> pages. Found <N> issues (<N> critical, <N> warnings, <N> suggestions).
-<Fixed <N> issues automatically. | No auto-fixes applied.>
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/log-append.sh" "$VAULT" "lint" "Health Check"
 ```

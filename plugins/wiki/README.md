@@ -67,35 +67,32 @@ The schema (`CLAUDE.md`) is the brain of the vault — it tells the LLM how page
 
 ### `/wiki:ingest`
 
-The core operation. Reads a source, extracts knowledge, and compiles it into wiki pages. A single source typically touches 10-15 pages.
+The core operation. Point it at a source — a file you've dropped into `raw/`, a URL, or inline text — and the LLM reads it, extracts knowledge, and compiles it into wiki pages. A single source typically touches 10-15 pages.
 
 ```bash
-# Ingest a local file
-/wiki:ingest path/to/article.md
+# Ingest a file (already in raw/ or anywhere on disk)
+/wiki:ingest raw/articles/article.md
 
-# Ingest a URL
-/wiki:ingest https://simonwillison.net/2026/Feb/10/showboat-and-rodney/
+# Ingest a URL (fetched and saved to raw/ automatically)
+/wiki:ingest https://example.com/article
 
 # Ingest inline text/topic
 /wiki:ingest "The key differences between transformers and RNNs are..."
-
-# Ingest showboat learnings (auto-detected, creates testing pattern concept pages)
-/wiki:ingest path/to/learnings/2026-04-20-introspect.md
 ```
 
 What happens during ingest:
 
 1. **Read the source** — parse the document, extract key entities, concepts, and takeaways
-2. **Save raw source** — copy to `raw/articles/` or `raw/papers/` (immutable archive)
-3. **Create source summary** — write `wiki/sources/<name>.md` with key takeaways, summary, notable quotes
-4. **Create/update entity pages** — for each significant person, organization, or product mentioned, create or update `wiki/entities/<name>.md`
-5. **Create/update concept pages** — for each key idea, framework, or technology discussed, create or update `wiki/concepts/<name>.md`
-6. **Cross-link** — add `[[wikilinks]]` between all related pages, and update existing pages that should link to new content
-7. **Check for synthesis** — if the source connects to existing knowledge in novel ways, create a `wiki/synthesis/<name>.md` page
-8. **Update index** — add all new pages to `wiki/index.md`
-9. **Log the operation** — append to `wiki/log.md`
-
-When the source is a **showboat learnings file** (auto-detected by `type: learnings` in frontmatter), the ingest follows a specialized path: it parses the structured learnings, creates testing pattern concept pages (e.g., `wiki/concepts/auth-testing-patterns.md`), and creates repo-specific knowledge pages.
+2. **Discuss** — the LLM surfaces its read (key takeaways, entities, concepts it found) and asks what you want to emphasize before writing anything
+3. **Read index** — check `wiki/index.md` (the single source of truth) to see what pages already exist; no folder scanning
+4. **Save raw source** — copy to `raw/articles/` or `raw/papers/` if not already there (immutable archive)
+5. **Create source summary** — write `wiki/sources/<name>.md` shaped by your guidance
+6. **Create/update entity pages** — for each significant person, organization, or product, create or update `wiki/entities/<name>.md`
+7. **Create/update concept pages** — for each key idea or framework discussed, create or update `wiki/concepts/<name>.md`
+8. **Cross-link** — add `[[wikilinks]]` between all related pages, and update existing pages that should link to new content
+9. **Check for synthesis** — if the source connects to existing knowledge in novel ways, create a `wiki/synthesis/<name>.md` page
+10. **Update index** — add all new pages to `wiki/index.md`
+11. **Log the operation** — append to `wiki/log.md` via script (parseable with `grep "^## \[" log.md | tail -5`)
 
 ### `/wiki:query`
 
@@ -196,25 +193,6 @@ Run wiki maintenance on my knowledge base at /path/to/vault:
 
 Schedule it to run nightly or weekly. The routine runs on Anthropic's cloud, so it works while you sleep.
 
-**Showboat learnings sync routine:**
-
-If you use the showboat plugin, learnings accumulate in `<showboat-base>/*/learnings/`. Set up a routine to ingest them:
-
-```
-/schedule create weekly-learnings-sync
-```
-
-```
-Find all showboat learnings files that haven't been ingested into the wiki yet:
-
-1. Scan <showboat-base>/*/learnings/*.md for files not in wiki/sources/
-2. For each new learnings file, run wiki:ingest
-3. After ingesting, run wiki:lint to check for new orphans or missing links
-4. Log what was synced
-```
-
-Schedule weekly. This is the automated version of the showboat-to-wiki feedback loop.
-
 ### In-session automation with /loop
 
 For maintenance during an active session, use `/loop`:
@@ -236,27 +214,13 @@ For local automation that needs access to your files but should survive session 
 /schedule create --desktop --cron "0 9 * * *" daily-wiki-lint
 ```
 
-### Drop files in raw/ for batch ingest
+### Drop files in raw/ then ingest
 
-The simplest workflow: save articles and papers to `raw/articles/` or `raw/papers/` (via Obsidian Web Clipper, manual download, or any tool). Then periodically run `/wiki:ingest` on each, or let a routine handle it.
+Save articles and papers to `raw/articles/` or `raw/papers/` (via Obsidian Web Clipper, manual download, or any tool), then ingest each one:
 
 ```bash
-# Ingest everything new in raw/articles
-for f in raw/articles/*.md; do /wiki:ingest "$f"; done
+/wiki:ingest raw/articles/article-name.md
 ```
-
-### Use the wiki as showboat's knowledge index
-
-Point showboat's `knowledge_index` at your wiki's `index.md`:
-
-```json
-{
-  "base_dir": "/path/to/showboat",
-  "knowledge_index": "/path/to/vault/wiki/index.md"
-}
-```
-
-Now showboat progressively reads from your wiki when it needs testing context. As the wiki grows with ingested learnings, showboat gets smarter about how to test things — without you doing anything.
 
 ### Build a domain-specific knowledge graph
 
@@ -319,9 +283,9 @@ A weekly `/wiki:lint` catches most structural issues. For deeper maintenance, re
 /wiki:init                            # set up vault
 
 # Ingest sources one at a time
-/wiki:ingest https://article-1.com
-/wiki:ingest path/to/paper.pdf
-/wiki:ingest https://article-2.com
+/wiki:ingest raw/articles/article-1.md
+/wiki:ingest https://example.com/paper
+/wiki:ingest raw/articles/article-2.md
 
 # Ask questions to synthesize understanding
 /wiki:query "What are the key themes across these sources?"
@@ -333,10 +297,10 @@ A weekly `/wiki:lint` catches most structural issues. For deeper maintenance, re
 ### Research project
 
 ```bash
-# Ingest all your research materials
-/wiki:ingest paper-1.md
-/wiki:ingest paper-2.md
-/wiki:ingest paper-3.md
+# Ingest papers as you read them
+/wiki:ingest raw/papers/paper-1.md
+/wiki:ingest raw/papers/paper-2.md
+/wiki:ingest raw/papers/paper-3.md
 
 # Ask analytical questions
 /wiki:query "Where do these papers agree and disagree?"
@@ -351,33 +315,15 @@ Point the vault at a shared Obsidian vault (synced via git or Obsidian Sync). Mu
 
 ```bash
 # Agent ingests meeting notes
-/wiki:ingest meeting-notes-2026-04-15.md
+/wiki:ingest raw/articles/meeting-notes-2026-04-15.md
 
-# Human adds a research paper via Obsidian Web Clipper
-# Agent ingests it on next session
+# Human clips an article via Obsidian Web Clipper → raw/articles/
+# Agent ingests it next session
 /wiki:ingest raw/articles/new-paper.md
 
 # Anyone can query
 /wiki:query "What decisions were made about the API redesign?"
 ```
-
-### Showboat feedback loop
-
-The wiki pairs with the showboat plugin to build testing knowledge that compounds:
-
-```bash
-# Agent tests a feature, makes mistakes, user corrects
-/showboat:demo my-feature
-/showboat:introspect my-feature     # writes learnings file
-
-# Wiki ingests the learnings, creates concept pages
-/wiki:ingest path/to/learnings/2026-04-20-introspect.md
-
-# Showboat points knowledge_index at wiki/index.md
-# Next test session benefits from accumulated knowledge
-```
-
-Set up a routine to automate the ingest step, and the loop runs itself.
 
 ## Obsidian Setup
 
@@ -427,28 +373,25 @@ Use `--wiki <name>` on any command to target a specific wiki:
 
 When you omit `--wiki`, the default wiki is used. Set `WIKI=<name>` or `WIKI=<path>` as an env var to override for a session. See [Multiple wikis](docs/multiple-wikis.md) for full examples.
 
-### Example: personal wiki + testing wiki
+### Example: personal wiki + research wiki
 
 ```bash
 # Set up a personal knowledge base
 /wiki:init personal
 
-# Set up a testing knowledge wiki for showboat
-/wiki:init testing
-
-# Point showboat at the testing wiki
-# In ~/.showboat/config.json: "knowledge_index": "/path/to/testing-vault/wiki/index.md"
+# Set up a research wiki
+/wiki:init research
 
 # Personal research goes to personal wiki
 /wiki:ingest --wiki personal https://interesting-article.com
 
-# Testing learnings go to testing wiki
-/wiki:ingest --wiki testing path/to/showboat/learnings/2026-04-20-introspect.md
+# Research papers go to research wiki
+/wiki:ingest --wiki research path/to/paper.pdf
 
 # Or set WIKI for a focused session on one wiki
-export WIKI=testing
+export WIKI=research
 /wiki:ingest path/to/runbook.md
-/wiki:ingest path/to/more-learnings.md
+/wiki:ingest path/to/notes.md
 /wiki:lint --fix
 ```
 
@@ -476,9 +419,8 @@ This plugin implements [Karpathy's LLM Wiki](https://gist.github.com/karpathy/44
 | QMD for search at scale | Recommended in docs for 100+ page wikis |
 
 Extensions beyond the original gist (informed by [LLM Wiki v2](https://gist.github.com/rohitg00/2067ab416f7bbe447c1977edaaa681e2)):
-- **Showboat learnings integration** — structured testing knowledge auto-compiles into concept pages
 - **Automated maintenance via Routines** — daily/weekly lint, ingest, and compaction on a schedule
-- **Progressive loading** — showboat reads the index and follows only relevant links, not the whole wiki
+- **Multiple named wikis** — separate knowledge bases with `--wiki` targeting and `WIKI` env var
 
 ## References
 
