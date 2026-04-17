@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.5.2
+
+### Research Questions — External Research Directives
+
+The research-questions phase now explicitly supports directives for researching third-party frameworks, libraries, or external APIs when understanding them is a prerequisite for making sense of the codebase.
+
+#### What changed
+
+- **New item type: External research.** Step 2 now lists `External research` alongside questions, directives, and focus areas as a valid form. Use it when an external knowledge gap would block understanding the codebase (e.g. "Research how [framework X] handles [topic Y] — understand its API before diving into our integration code").
+- **New guideline #6.** Important Guidelines now includes explicit permission and framing guidance for external research items.
+
+## 1.5.1
+
+### Intent — `CRISPY_FEATURE` Env Var Priority
+
+The intent skill now respects the `CRISPY_FEATURE` environment variable as the highest-priority source for the feature name, before ticket IDs and intent title derivation. This allows external tooling or session hooks to pin the active feature without the skill overriding it.
+
+#### What changed
+
+- **Feature name priority order updated.** Intent now checks `CRISPY_FEATURE` first, then ticket ID, then kebab-case title.
+- **`FEATURE` generic env var support.** Feature discovery now falls back to the generic `FEATURE` env var (shared cross-plugin convention) if `CRISPY_FEATURE` is not set.
+
 ## 1.5.0
 
 ### Skill Naming — Namespace Format

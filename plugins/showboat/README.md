@@ -40,7 +40,7 @@ The core skill. Manually tests a feature and builds a demo document using the sh
 
 ```bash
 /showboat:demo add-user-search
-/showboat:demo TN-1234 "app is running on http://localhost:3278"
+/showboat:demo add-user-search "app is running on http://localhost:3278"
 ```
 
 What it does:

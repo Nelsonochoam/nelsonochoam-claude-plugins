@@ -32,11 +32,12 @@ Read the intent document carefully at `$FEATURE_PATH/1-intent.md` as the input d
 
 For each feature area or touch point, think: *what does a research agent need to look at or understand here?*
 
-Each bullet can be a question, a directive, or a focus area — whatever best captures the need:
+Each bullet can be a question, a directive, focus area, or external research item — whatever best captures the need:
 
 - **Questions** — surface ambiguities or decisions that depend on what the code currently does (e.g. "How does `AuthMiddleware` currently handle token expiry?")
 - **Directives** — explicit instructions for the researcher (e.g. "Look at `src/auth/session.ts` — understand how sessions are invalidated", "Find where `featureFlag.enabled` is checked")
 - **Focus areas** — components, files, or flows to examine (e.g. "The `PaymentService` and its interaction with `OrderRepository`")
+- **External research** — if understanding how a third-party framework, library, or external API works is needed before the codebase research can be meaningful, include an explicit directive (e.g. "Research how [framework X] handles [topic Y] — understand its API before diving into our integration code"). Use this sparingly and only when the external knowledge gap would block understanding the codebase.
 
 Include specific file paths, component names, function names, or flag names whenever you know them or can confirm them with a quick scan. A grounded item like `"Check how useUserStore (stores/user.ts) manages token refresh"` is far more useful to a researcher than a vague one.
 
@@ -85,5 +86,6 @@ Any phase can follow — each works with whatever artifacts exist.
 1. **Light touch only**: You may do a quick scan to confirm specifics mentioned in the intent, but deep research happens later — stay shallow
 2. **Steer, don't answer**: Every item should tell the research agent where to look or what to resolve, not provide the answer
 3. **Grounded in the intent**: Every item should trace back to something mentioned or implied in the intent document
-4. **Mix of forms**: Use questions for ambiguities, directives for things to look up, and focus areas for components or flows to examine — whatever is clearest
+4. **Mix of forms**: Use questions for ambiguities, directives for things to look up, focus areas for components or flows, and external research directives when needed — whatever is clearest
 5. **Tight scope**: The list should implicitly bound what the research agent works on — good items keep it on track, not wandering
+6. **External research is allowed**: If the intent involves a framework, library, or external API that the research agent would need to understand before making sense of the codebase, include an explicit external research directive. Frame it as "Research how X works — specifically [aspect]" so the agent knows what to look up and why.
