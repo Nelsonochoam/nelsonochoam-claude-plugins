@@ -68,7 +68,7 @@ After all automated checks pass for this phase, pause for manual confirmation be
 |---|---|
 | `{N}` | Phase number from the structure outline |
 | `{feature}` | Feature name from `manifest.json` |
-| `{phase_title}` | Full phase title (e.g., "Add status field to Questionnaire model") |
+| `{phase_title}` | Full phase title (e.g., "Add status field to the Order model") |
 | `{dependencies_yaml}` | YAML list of dependency IDs, e.g., `[phase-1]` or `[]` |
 | `{dependency_section}` | See below |
 

@@ -45,8 +45,8 @@ Determine which feature is active. All artifact reads and writes are scoped to t
    The session file is keyed to the current `claude` process PID (`$PPID`), so it is automatically scoped to this session and ignored by future `claude` invocations.
 
 Two variables are now set:
-- **`$BASE_DIR`** — repo-level directory (`<base_dir>/<repo-name>`). Use this for repo-wide artifacts: `testing-context.md`.
-- **`$DEMO_BASE`** — feature-scoped directory (`<base_dir>/<repo-name>/<feature>`). Demo documents are written directly here (e.g., `$DEMO_BASE/demo.md`). Only `learnings/` lives as a subdirectory.
+- **`$BASE_DIR`** — repo-level directory (`<base_dir>/<repo-name>`). Use this for any repo-wide artifact a skill needs.
+- **`$DEMO_BASE`** — feature-scoped directory (`<base_dir>/<repo-name>/<feature>`). Demo documents are written directly here (e.g., `$DEMO_BASE/demo.md`). The runbook graph lives wherever the user configured in `/showboat:init`, not under `$BASE_DIR`.
 
 ## 3. Verify Configuration
 

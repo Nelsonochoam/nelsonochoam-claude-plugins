@@ -83,6 +83,5 @@ Output matches expected pattern.
 ## Links
 
 - Original demo: [[demos/<feature-name>]]
-- Testing context: [[testing-context]]
 - Demo index: [[demos/index]]
 ```

@@ -1,6 +1,6 @@
-# Self-Discovery: Testing Without a Context File
+# Self-Discovery: Testing Without a Runbook
 
-When no `testing-context.md` exists, gather the same information by reading the codebase directly. The goal is to answer: how do I run this app, how do I test it, and what should I exercise?
+When no runbook is configured, gather testing information by reading the codebase directly. The goal is to answer: how do I run this app, how do I test it, and what should I exercise?
 
 Use the git diff as the north star — it tells you exactly what changed and therefore what to test. Everything else (how to start the server, what endpoints exist) is in service of demonstrating those specific changes.
 
@@ -110,7 +110,7 @@ Use these signals to decide how to test:
 | Library exports, no entry point | library | run test suite |
 | Both frontend + API routes | hybrid | rodney + curl |
 
-See `${CLAUDE_PLUGIN_ROOT}/skills/context/references/app-type-patterns.md` for detailed detection patterns.
+See `${CLAUDE_PLUGIN_ROOT}/references/app-type-patterns.md` for detailed detection patterns.
 
 ## 8. When You're Uncertain
 
@@ -124,7 +124,7 @@ If a command fails, use `showboat pop "$DEMO_FILE"` to remove it and try the nex
 
 ## What to Produce
 
-By the end of self-discovery, you should have the same information you'd get from a `runbooks.md`:
+By the end of self-discovery, you should have the same information you'd get from a runbook:
 - Dev server command and URL
 - 1-2 test commands to run
 - The specific routes or endpoints affected by the diff
@@ -132,4 +132,4 @@ By the end of self-discovery, you should have the same information you'd get fro
 
 If you discover something broadly useful (the port, the auth flow, the test command), note it at the end of the demo:
 
-> No runbook found — I inferred the following. Add a `runbooks.md` at the repo root to make this permanent.
+> No runbook configured — I inferred the following. Run `/showboat:init --reset` and choose "Auto-generate" to capture this permanently.

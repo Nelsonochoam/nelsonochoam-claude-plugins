@@ -4,14 +4,14 @@
 User: /crispy:implement
 Assistant: Running next-phase.sh to find the next workable phase...
 
-Next phase: phase-1 — "Add status field to Questionnaire model"
+Next phase: phase-1 — "Add status field to the Order model"
 
 Reading phases/phase-1.md for implementation details...
 
 [Reads phase doc — it contains exact file paths, code changes, and success criteria]
 [Reads all files the phase doc says to modify]
 
-Starting Phase 1, Step 1: Add status field to the Questionnaire model...
+Starting Phase 1, Step 1: Add status field to the Order model...
 
 [Implements steps, runs lint + type-check]
 [Updates manifest.json: implementation.phase-1.status = "done"]
@@ -19,8 +19,8 @@ Starting Phase 1, Step 1: Add status field to the Questionnaire model...
 Phase 1 Complete — Ready for Manual Verification
 
 Automated verification passed:
-- [x] yarn workspace @sb/server lint
-- [x] yarn workspace @sb/server run type-check
+- [x] npm run lint
+- [x] npm run type-check
 
 Please verify manually:
 - [ ] Migration applies cleanly in your local dev database

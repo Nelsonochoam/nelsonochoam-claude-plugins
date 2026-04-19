@@ -10,7 +10,7 @@ If you keep your Obsidian vaults in a common directory, point each one to a name
 ~/Projects/vaults/
 ├── personal/     — personal knowledge base (AI, Ideas, Meetings, ...)
 ├── playbooks/    — runbooks and testing playbooks
-└── projects/     — project-specific notes (qnr-server, ...)
+└── projects/     — project-specific notes (one folder per repo)
 ```
 
 Run `/wiki:init` once per vault:
@@ -84,7 +84,7 @@ export WIKI=projects
 ```bash
 # Ingest a personal article, then check projects for related knowledge
 /wiki:ingest --wiki personal https://interesting-article.com
-/wiki:query --wiki projects "How does this apply to qnr-server?"
+/wiki:query --wiki projects "How does this apply to the current repo?"
 ```
 
 ## When to use multiple wikis vs. one

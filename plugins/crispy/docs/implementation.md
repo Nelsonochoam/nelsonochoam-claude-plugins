@@ -12,7 +12,7 @@ When `/crispy:plan` is confirmed, it generates:
 {
   "implementation": {
     "phase-1": {
-      "name": "Phase 1: Add status field to Questionnaire model",
+      "name": "Phase 1: Add status field to the Order model",
       "status": "pending",
       "dependencies": [],
       "file": ".crispy/my-feature/phases/phase-1.md"

@@ -49,7 +49,7 @@ That script writes the path into `~/.showboat/config.json`, creates the `referen
 
 ### If the configured runbook file does not exist on disk
 
-Treat this as bootstrapping — create it using the skeleton in [`runbook-structure.md`](references/runbook-structure.md). The filename is whatever the user configured; the file's role is the slim top-level index.
+Treat this as bootstrapping — create it using the skeleton in `${CLAUDE_PLUGIN_ROOT}/references/runbook-structure.md`. The filename is whatever the user configured; the file's role is the slim top-level index.
 
 ## Understand the Current Graph
 
@@ -59,7 +59,7 @@ Read the file at `$RUNBOOK` (the main index, whatever filename the user configur
 - Detect duplicates (do not add a learning that restates existing content)
 - Add cross-links when a new entry in doc A relates to existing content in doc B
 
-Read [`references/runbook-structure.md`](references/runbook-structure.md) for the canonical shape of the graph and the rules that keep the main index slim.
+Read `${CLAUDE_PLUGIN_ROOT}/references/runbook-structure.md` for the canonical shape of the graph and the rules that keep the main index slim.
 
 ## Categorize Learnings
 
@@ -85,7 +85,7 @@ Apply these rules (detailed in `merge-rules.md`):
 The file at `$RUNBOOK` (the main index) should change **only** when:
 
 - A new reference document was created → add it to the task→doc table
-- A top-level constant (test org ID, base URL, cwd rule) was corrected
+- A top-level constant (base URL, test-account identifier, cwd rule) was corrected
 
 Do not push content into the main index. Details belong in sub-docs. The index exists to route agents to the right sub-doc.
 

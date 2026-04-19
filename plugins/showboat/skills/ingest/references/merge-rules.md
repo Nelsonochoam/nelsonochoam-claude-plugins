@@ -8,13 +8,13 @@ The introspection categorizes each entry with a tag like `[interaction]` or `[en
 
 | Introspection tag | Default sub-doc | What belongs here |
 |---|---|---|
-| `environment` | `references/environment.md` | Login, auth, Doppler, required cwd, env vars, service health |
+| `environment` | `references/environment.md` | Login, auth, secret-manager setup, required cwd, env vars, service health |
 | `auth` | `references/environment.md` | Login flows, token injection, session cookies |
 | `commands` | `references/testing.md` | Test commands, type-check, build, path conventions |
 | `interaction` | `references/rodney-patterns.md` | Clicks, typing, selectors, DOM manipulation |
-| `navigation` | `references/pages.md` | Routes, drawer/modal flows, per-page specifics |
+| `navigation` | `references/pages.md` | Routes, modal/dialog flows, per-page specifics |
 | `timing` | `references/rodney-patterns.md` | Wait strategies, race conditions, stability checks |
-| `data` | `references/pages.md` or `references/environment.md` | Feature flags, seed data, org state (pick based on where the agent hits it) |
+| `data` | `references/pages.md` or `references/environment.md` | Feature flags, seed data, account state (pick based on where the agent hits it) |
 | `workflow` | `references/showboat.md` | Demo authoring, verify limitations, session state |
 
 If a category does not map to any existing sub-doc, create a new one. Pick a name that describes the topic, not the feature.
@@ -43,11 +43,11 @@ When a sub-doc exists and you know the new content belongs in it, pick the place
 
 When writing a new entry, ask: *does this touch another sub-doc's topic?* If yes, link.
 
-Link to the specific section using an anchor, not the file. GitHub/Obsidian anchors are lowercased headings with spaces replaced by `-` and special chars stripped. For example, a heading `## Anchors & special-char aria-labels` has the anchor `#anchors--special-char-aria-labels`.
+Link to the specific section using an anchor, not the file. GitHub/Obsidian anchors are lowercased headings with spaces replaced by `-` and special chars stripped. For example, a heading `## Waiting for network idle` has the anchor `#waiting-for-network-idle`.
 
 Examples:
 
-- New `pages.md` drawer flow mentions quoted aria-labels → link to `rodney-patterns.md#anchors--special-char-aria-labels`.
+- New `pages.md` section describes a login-gated route → link to `environment.md#obtaining-a-session-token`.
 - New `showboat.md` note about flag-gated branches → link to `testing.md#when-to-rely-on-tests-vs-browser`.
 
 Prefer one canonical home for content, with one-way links from related docs.

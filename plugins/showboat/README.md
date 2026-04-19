@@ -16,7 +16,7 @@ Rodney provides the browser side: a persistent Chrome session the agent can navi
 
 ### Workflow
 
-1. **Configure** (`/showboat:init`) — Tell showboat where to write output. Optionally point it at a runbook document so it knows how to test your app.
+1. **Configure** (`/showboat:init`) — Tell showboat where to write output and (optionally) auto-generate a testing runbook by exploring the current repo. The runbook is a graph of docs agents load on demand.
 2. **Demonstrate** (`/showboat:demo`) — After implementing a feature, the agent manually tests it — navigating the UI with rodney, hitting APIs with curl — and builds a demo document from real captured output.
 3. **Re-verify** (`/showboat:verify`) — Re-run all code blocks in a demo to check for regressions.
 4. **Record corrections** (`/showboat:introspect`) — When testing goes wrong or you correct the agent, write the corrections to `introspection.md` so they're available next time.
@@ -33,7 +33,13 @@ One-time setup per machine. Interactive wizard.
 /showboat:init --reset # reconfigure
 ```
 
-Writes `~/.showboat/config.json`. The output directory can be an Obsidian vault, a notes folder, or any path. Optionally configure a **runbook** — a markdown file describing how to test your applications. See [Runbook](#runbook) below.
+Writes `~/.showboat/config.json`. The output directory can be an Obsidian vault, a notes folder, or any path. For the runbook you can:
+
+- **Skip it** — showboat will infer testing approach from the codebase each demo.
+- **Point at an existing file** — use your own runbook as-is.
+- **Auto-generate one from the current repo** — showboat explores the repo (entry points, dev-server scripts, test commands, routes, API endpoints) and writes a slim index plus focused sub-docs in `references/`. That graph is then extended by `/showboat:ingest` as testing sessions surface corrections.
+
+See [Runbook](#runbook) below.
 
 ### `/showboat:demo`
 
@@ -139,7 +145,7 @@ Use it right after `/showboat:introspect` to turn per-feature corrections into s
 
 ## Runbook
 
-The runbook is a markdown file that tells agents how to test your application — login steps, URLs, test commands, common patterns, known quirks. Configure it once in `/showboat:init` and showboat reads it at the start of every demo.
+The runbook is a **graph** of markdown docs that tells agents how to test your application — a slim index plus focused sub-docs in `references/` (environment, testing, pages, api, cli, ...). Agents load the index always and pull in sub-docs on demand, so knowledge scales without bloating context. Configure it once in `/showboat:init`.
 
 ```json
 {
@@ -148,31 +154,27 @@ The runbook is a markdown file that tells agents how to test your application �
 }
 ```
 
-The runbook can be a **single self-contained file** or an **entry point that links to other files**. When the runbook contains links (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`), showboat follows them progressively — reading only the pages relevant to what it's currently testing.
+Example structure:
 
-Example runbook:
-```markdown
-# App Testing Runbook
-
-## Dev Server
-npm run dev — ready when you see "Local: http://localhost:3000"
-
-## Login
-Navigate to /auth/login. Use test@example.com / password123.
-
-## Key Routes
-- /users — user list with search. Requires auth.
-- /dashboard — main dashboard. Requires auth.
-
-## API
-Base URL: http://localhost:3000/api
-Auth header: Authorization: Bearer <token from /api/auth/login>
-
-## Test Command
-npm test -- --testPathPattern=<changed-files>
+```
+<runbook-dir>/
+  runbook.md                — slim index (always loaded): quick constants + task→doc map
+  references/
+    environment.md          — login, env vars, dev-server, prerequisites
+    testing.md              — test commands, type-check, build
+    pages.md                — routes, pages, auth requirements (web apps)
+    api.md                  — endpoints and example curl calls (APIs)
+    cli.md                  — command invocations (CLIs)
 ```
 
-If no runbook is configured, the demo skill infers testing information from the codebase — package.json scripts, route files, git diff. It works without a runbook; it just works better with one.
+Sub-docs cross-link to each other using section anchors, so an agent reading `pages.md` can jump straight to the auth snippet in `environment.md` without loading the whole graph.
+
+**Two ways to get one:**
+
+- `/showboat:init` auto-generates an initial graph by exploring the current repo — entry points, dev-server scripts, test commands, route definitions, OpenAPI specs.
+- `/showboat:ingest` extends the graph over time by merging corrections from `/showboat:introspect` runs into the right sub-docs.
+
+If no runbook is configured, the demo skill infers testing information from the codebase each time — package.json scripts, route files, git diff. It works without a runbook; it just works better (and cheaper) with one.
 
 ## Output Structure
 
