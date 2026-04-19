@@ -43,26 +43,26 @@ Read the diff of the most relevant changed files to understand: what routes, end
 
 The goal is to know: where the app runs, how to authenticate, which routes or endpoints to exercise, and which test commands are relevant.
 
-### Read the playbook (if configured)
+### Read the runbook (if configured)
 
 ```bash
-PLAYBOOK=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-playbook.sh" 2>/dev/null) || true
-echo "${PLAYBOOK:-NO_PLAYBOOK}"
+RUNBOOK=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-runbook.sh" 2>/dev/null) || true
+echo "${RUNBOOK:-NO_RUNBOOK}"
 ```
 
-If a playbook path is returned, read it:
+If a runbook path is returned, read it:
 
 ```bash
-cat "$PLAYBOOK"
+cat "$RUNBOOK"
 ```
 
-The playbook is a markdown document with general testing knowledge for the application — how to log in, which URLs to use, test commands, common patterns, known quirks. It may be a single self-contained file, or it may contain links to other files (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`).
+The runbook is a markdown document with general testing knowledge for the application — how to log in, which URLs to use, test commands, common patterns, known quirks. It may be a single self-contained file, or it may contain links to other files (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`).
 
-**Follow links progressively**: scan the playbook for links relevant to what you're testing (the feature name, the route, the service). Read only those linked pages — not everything. This mirrors how you'd browse a wiki: start at the index, follow only what's relevant.
+**Follow links progressively**: scan the runbook for links relevant to what you're testing (the feature name, the route, the service). Read only those linked pages — not everything. This mirrors how you'd browse a wiki: start at the index, follow only what's relevant.
 
 Use everything you find to inform: how to start the app, how to authenticate, which endpoints or pages to exercise, what a passing response looks like.
 
-### When there is no playbook
+### When there is no runbook
 
 Read `${CLAUDE_SKILL_DIR}/references/self-discovery.md` and follow it to discover the same information from the codebase. The git diff is your primary guide — it tells you exactly what changed and therefore what to demonstrate.
 
@@ -85,14 +85,7 @@ Every piece of evidence is captured by a `showboat` command. If a command errors
 - If the change touches any UI component or page → you **must** use rodney to navigate, interact, and take screenshots. Test output alone does not prove the UI works.
 - Automated tests are **supporting evidence only**. They confirm code paths but do not replace live execution. A demo that shows only test results is incomplete.
 
-### 1. What Changed
-
-```bash
-showboat note "$DEMO_FILE" "## What Changed"
-showboat exec "$DEMO_FILE" bash "git diff --stat HEAD~1"
-```
-
-### 2. Manual Demonstration (primary proof)
+### 1. Manual Demonstration (primary proof)
 
 This is the heart of the demo. Manually exercise the feature the way a user would — navigate, interact, observe, assert. Use rodney for browser-based features and curl for APIs.
 
@@ -185,7 +178,7 @@ showboat exec "$DEMO_FILE" bash "curl -s -X <METHOD> '<url>' \
   -d '<body>' | jq ."
 ```
 
-### 3. Automated Tests (supporting evidence only)
+### 2. Automated Tests (supporting evidence only)
 
 Tests confirm code paths but **do not replace live demonstration**. If the feature touches an API or UI and you haven't yet made real curl calls or rodney interactions, do that first — then run tests as corroborating evidence. Never use test output as the primary proof that a feature works.
 
@@ -196,13 +189,13 @@ showboat exec "$DEMO_FILE" bash "<test-command>"
 
 If tests are slow or noisy, run only the test file(s) directly related to the changed code.
 
-### 4. Type Check / Build (if applicable)
+### 3. Type Check / Build (if applicable)
 
 ```bash
 showboat exec "$DEMO_FILE" bash "<type-check-or-build-command>"
 ```
 
-### 5. Closing Note
+### 4. Closing Note
 
 ```bash
 showboat note "$DEMO_FILE" "The <feature> is correctly implemented. The browser interaction and API calls above demonstrate the full user-facing behavior."

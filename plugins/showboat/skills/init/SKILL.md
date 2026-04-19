@@ -126,23 +126,23 @@ Use `AskUserQuestion` to ask for the storage location. Present the choices clear
 
 Store the final result as `base_dir`.
 
-## Step 2: Playbook (optional)
+## Step 2: Runbook (optional)
 
-Use `AskUserQuestion` to ask if the user has a playbook document showboat should use when testing:
+Use `AskUserQuestion` to ask if the user has a runbook document showboat should use when testing:
 
-> Do you have a playbook — a markdown file describing how to test your applications?
+> Do you have a runbook — a markdown file describing how to test your applications?
 >
 > This is a document with general testing knowledge: how to log in, which URLs to use,
 > common patterns, credentials, service setup. It can be a single file or an entry point
 > that links to other files (Obsidian wikilinks, relative paths) — showboat will follow
 > links progressively to load only what's relevant.
 >
-> 1. **No playbook** (showboat will infer testing approach from the codebase)
+> 1. **No runbook** (showboat will infer testing approach from the codebase)
 > 2. **I have one** (Please provide the full absolute path below)
 
 **Logic:**
-- If the user selects "No playbook", omit `playbook` from config.
-- If the user provides a path, validate it exists and is a `.md` file. Store as `playbook`.
+- If the user selects "No runbook", omit `runbook` from config.
+- If the user provides a path, validate it exists and is a `.md` file. Store as `runbook`.
 - If the path contains `~`, expand it using `$HOME`.
 
 ## Step 3: Confirm
@@ -152,7 +152,7 @@ Use `AskUserQuestion` to show a summary and ask for confirmation:
 > Ready to configure showboat:
 >
 >   Base directory:    `<base_dir>/<repo-name>/` (one folder per repo)
->   Playbook:          `<playbook path>` (or "none — will infer from codebase")
+>   Runbook:          `<runbook path>` (or "none — will infer from codebase")
 >   Config file:       `~/.showboat/config.json`
 >
 >   Output format: Obsidian-compatible markdown (frontmatter, wikilinks, Dataview properties)
@@ -168,14 +168,14 @@ If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 Call the helper script to handle all setup deterministically:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<playbook or empty>"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-showboat.sh" "<base_dir>" "<runbook or empty>"
 ```
 
 This script will:
 - Create `~/.showboat` directory
 - Handle existing symlinks at `~/.showboat`
 - Create the artifact base directory
-- Write `config.json` with `base_dir`, and optionally `playbook`
+- Write `config.json` with `base_dir`, and optionally `runbook`
 - Validate everything succeeded
 
 If it fails, it exits with code 1 and prints an error.
@@ -195,7 +195,7 @@ Showboat initialized.
       <feature>.md         — demo document (built by showboat CLI)
       introspection.md     — corrections and lessons from testing sessions
 
-  Playbook: <path or "not configured — showboat will infer from codebase">
+  Runbook: <path or "not configured — showboat will infer from codebase">
 ```
 
 If Rodney or shot-scraper were missing during the prerequisites check, add a reminder:

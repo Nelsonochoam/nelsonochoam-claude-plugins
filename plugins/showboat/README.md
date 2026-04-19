@@ -16,10 +16,11 @@ Rodney provides the browser side: a persistent Chrome session the agent can navi
 
 ### Workflow
 
-1. **Configure** (`/showboat:init`) — Tell showboat where to write output. Optionally point it at a playbook document so it knows how to test your app.
+1. **Configure** (`/showboat:init`) — Tell showboat where to write output. Optionally point it at a runbook document so it knows how to test your app.
 2. **Demonstrate** (`/showboat:demo`) — After implementing a feature, the agent manually tests it — navigating the UI with rodney, hitting APIs with curl — and builds a demo document from real captured output.
 3. **Re-verify** (`/showboat:verify`) — Re-run all code blocks in a demo to check for regressions.
 4. **Record corrections** (`/showboat:introspect`) — When testing goes wrong or you correct the agent, write the corrections to `introspection.md` so they're available next time.
+5. **Ingest learnings** (`/showboat:ingest`) — Generalize the per-feature corrections into the shared runbook so future demos benefit from them.
 
 ## Skills
 
@@ -32,7 +33,7 @@ One-time setup per machine. Interactive wizard.
 /showboat:init --reset # reconfigure
 ```
 
-Writes `~/.showboat/config.json`. The output directory can be an Obsidian vault, a notes folder, or any path. Optionally configure a **playbook** — a markdown file describing how to test your applications. See [Playbook](#playbook) below.
+Writes `~/.showboat/config.json`. The output directory can be an Obsidian vault, a notes folder, or any path. Optionally configure a **runbook** — a markdown file describing how to test your applications. See [Runbook](#runbook) below.
 
 ### `/showboat:demo`
 
@@ -45,8 +46,8 @@ The core skill. Manually tests a feature and builds a demo document using the sh
 
 What it does:
 1. Reads `git diff` to understand what changed
-2. Loads the playbook (if configured) for testing knowledge — login steps, URLs, known patterns
-3. If no playbook: discovers testing info from the codebase (package.json, route files, etc.)
+2. Loads the runbook (if configured) for testing knowledge — login steps, URLs, known patterns
+3. If no runbook: discovers testing info from the codebase (package.json, route files, etc.)
 4. Initializes the demo document: `showboat init <file> "<title>"`
 5. **Manually tests the feature** — this is the main event:
    - Browser features: rodney navigates, interacts, asserts, and screenshots
@@ -65,16 +66,6 @@ Example demo document structure:
 *2026-04-15T10:30:00Z*
 
 Added real-time search filtering to the users page...
-
-## What Changed
-
-\`\`\`bash
-git diff --stat HEAD~1
-\`\`\`
-\`\`\`output
-src/components/UserSearch.tsx | 42 +++
-src/api/users.ts              | 18 +-
-\`\`\`
 
 ## Manual Browser Verification
 
@@ -127,22 +118,41 @@ Captures corrections and lessons from a testing session into `introspection.md`.
 
 Reviews the current conversation for corrections you gave the agent (wrong routes, missing auth steps, selector fixes, timing issues, etc.) and appends them to `$DEMO_BASE/introspection.md`. Simple and flat — no index files, no categories.
 
-## Playbook
+### `/showboat:ingest`
 
-The playbook is a markdown file that tells agents how to test your application — login steps, URLs, test commands, common patterns, known quirks. Configure it once in `/showboat:init` and showboat reads it at the start of every demo.
+Takes an introspection file and merges its learnings into the shared runbook, preserving progressive-loading structure (slim index + focused sub-docs in `references/`).
+
+```bash
+/showboat:ingest                                    # uses $DEMO_BASE/introspection.md for the current feature
+/showboat:ingest /path/to/some/introspection.md     # explicit file
+```
+
+What it does:
+
+1. Resolves the introspection file — argument first, then `$DEMO_BASE/introspection.md` as the default
+2. Resolves the configured runbook path and reads the current graph (main index + all `references/*.md`)
+3. Categorizes each introspection entry (interaction, environment, commands, etc.) and maps it to the right sub-doc
+4. Merges each entry: creates or updates sub-docs, cross-links related sections, skips duplicates
+5. Updates the main index only when a new sub-doc was added or a top-level constant changed
+
+Use it right after `/showboat:introspect` to turn per-feature corrections into shared knowledge.
+
+## Runbook
+
+The runbook is a markdown file that tells agents how to test your application — login steps, URLs, test commands, common patterns, known quirks. Configure it once in `/showboat:init` and showboat reads it at the start of every demo.
 
 ```json
 {
   "base_dir": "/path/to/output",
-  "playbook": "/path/to/playbook.md"
+  "runbook": "/path/to/runbook.md"
 }
 ```
 
-The playbook can be a **single self-contained file** or an **entry point that links to other files**. When the playbook contains links (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`), showboat follows them progressively — reading only the pages relevant to what it's currently testing.
+The runbook can be a **single self-contained file** or an **entry point that links to other files**. When the runbook contains links (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`), showboat follows them progressively — reading only the pages relevant to what it's currently testing.
 
-Example playbook:
+Example runbook:
 ```markdown
-# App Testing Playbook
+# App Testing Runbook
 
 ## Dev Server
 npm run dev — ready when you see "Local: http://localhost:3000"
@@ -162,7 +172,7 @@ Auth header: Authorization: Bearer <token from /api/auth/login>
 npm test -- --testPathPattern=<changed-files>
 ```
 
-If no playbook is configured, the demo skill infers testing information from the codebase — package.json scripts, route files, git diff. It works without a playbook; it just works better with one.
+If no runbook is configured, the demo skill infers testing information from the codebase — package.json scripts, route files, git diff. It works without a runbook; it just works better with one.
 
 ## Output Structure
 
@@ -211,6 +221,13 @@ Every piece of evidence comes from executing a real command. The showboat CLI ru
 /showboat:demo my-feature           # retry with the correction in context
 ```
 
+### Generalize corrections into the runbook
+
+```bash
+/showboat:introspect my-feature     # captures corrections for this feature
+/showboat:ingest                    # merges them into the shared runbook
+```
+
 ### Check for regressions after unrelated changes
 
 ```bash
@@ -224,12 +241,12 @@ Config file: `~/.showboat/config.json`
 ```json
 {
   "base_dir": "/path/to/your/output/directory",
-  "playbook": "/path/to/playbook.md"
+  "runbook": "/path/to/runbook.md"
 }
 ```
 
 - **`base_dir`** — where demo artifacts go. Per-repo subdirectories are created automatically.
-- **`playbook`** — (optional) markdown file describing how to test your applications. Can be a single self-contained file or an entry point that links to other files — showboat follows links progressively to load only what's relevant.
+- **`runbook`** — (optional) markdown file describing how to test your applications. Can be a single self-contained file or an entry point that links to other files — showboat follows links progressively to load only what's relevant.
 
 ## Installation
 

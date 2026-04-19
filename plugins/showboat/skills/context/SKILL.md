@@ -1,6 +1,6 @@
 ---
 name: context
-description: Create or update the testing playbook for the current repo — describes how to run, test, and verify the application.
+description: Create or update the testing runbook for the current repo — describes how to run, test, and verify the application.
 argument-hint: '<optional: --update to refresh an existing context>'
 model: opus
 ---
@@ -9,7 +9,7 @@ User's request: $ARGUMENTS
 
 # Create Testing Context
 
-You are building a testing playbook for this repository. This document tells agents (and humans) everything they need to know to test and verify changes to this application.
+You are building a testing runbook for this repository. This document tells agents (and humans) everything they need to know to test and verify changes to this application.
 
 ## Project Discovery
 

@@ -2,7 +2,7 @@
 # setup-showboat.sh — Creates showboat configuration.
 #
 # Usage:
-#   bash setup-showboat.sh "<base_dir>" ["<playbook>"]
+#   bash setup-showboat.sh "<base_dir>" ["<runbook>"]
 #
 # Creates:
 #   ~/.showboat/config.json
@@ -11,16 +11,16 @@
 set -euo pipefail
 
 BASE_DIR="$1"
-PLAYBOOK="${2:-}"
+RUNBOOK="${2:-}"
 
 if [ -z "$BASE_DIR" ]; then
-  echo "Usage: setup-showboat.sh <base_dir> [<playbook>]" >&2
+  echo "Usage: setup-showboat.sh <base_dir> [<runbook>]" >&2
   exit 1
 fi
 
 # Expand ~ if present
 BASE_DIR="${BASE_DIR/#\~/$HOME}"
-[ -n "$PLAYBOOK" ] && PLAYBOOK="${PLAYBOOK/#\~/$HOME}"
+[ -n "$RUNBOOK" ] && RUNBOOK="${RUNBOOK/#\~/$HOME}"
 
 # Ensure base_dir is absolute
 if [[ "$BASE_DIR" != /* ]]; then
@@ -28,9 +28,9 @@ if [[ "$BASE_DIR" != /* ]]; then
   exit 1
 fi
 
-# Validate playbook if provided
-if [ -n "$PLAYBOOK" ] && [[ "$PLAYBOOK" != /* ]]; then
-  echo "Error: playbook must be an absolute path (got: $PLAYBOOK)" >&2
+# Validate runbook if provided
+if [ -n "$RUNBOOK" ] && [[ "$RUNBOOK" != /* ]]; then
+  echo "Error: runbook must be an absolute path (got: $RUNBOOK)" >&2
   exit 1
 fi
 
@@ -52,11 +52,11 @@ mkdir -p "$BASE_DIR"
 CONFIG_FILE="$HOME/.showboat/config.json"
 CONFIG_JSON=$(jq -n \
   --arg base_dir "$BASE_DIR" \
-  --arg playbook "$PLAYBOOK" \
+  --arg runbook "$RUNBOOK" \
   '{
     base_dir: $base_dir
   }
-  + (if $playbook != "" then {playbook: $playbook} else {} end)
+  + (if $runbook != "" then {runbook: $runbook} else {} end)
 ')
 printf '%s\n' "$CONFIG_JSON" > "$CONFIG_FILE"
 

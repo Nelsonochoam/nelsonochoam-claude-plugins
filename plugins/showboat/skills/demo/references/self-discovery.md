@@ -124,7 +124,7 @@ If a command fails, use `showboat pop "$DEMO_FILE"` to remove it and try the nex
 
 ## What to Produce
 
-By the end of self-discovery, you should have the same information you'd get from a `playbooks.md`:
+By the end of self-discovery, you should have the same information you'd get from a `runbooks.md`:
 - Dev server command and URL
 - 1-2 test commands to run
 - The specific routes or endpoints affected by the diff
@@ -132,4 +132,4 @@ By the end of self-discovery, you should have the same information you'd get fro
 
 If you discover something broadly useful (the port, the auth flow, the test command), note it at the end of the demo:
 
-> No playbook found — I inferred the following. Add a `playbooks.md` at the repo root to make this permanent.
+> No runbook found — I inferred the following. Add a `runbooks.md` at the repo root to make this permanent.
