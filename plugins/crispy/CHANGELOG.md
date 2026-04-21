@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.5.3
+
+### Plan — Subagent-Per-Phase Writing
+
+The plan phase now delegates phase doc writing to subagents instead of writing all phases in the main context window. For complex projects, the previous approach exhausted the context budget before all phases could be written.
+
+#### What changed
+
+- **Phase docs written by subagents.** Each phase doc is now written by a dedicated subagent with a fresh context. The main context handles only lightweight tasks: reading artifact summaries, determining phase structure, and writing the master `6-plan.md` index.
+- **Dependency-aware spawning.** Phases with no dependencies are spawned concurrently. Each dependent phase is spawned as soon as its specific dependencies complete — not after all phases at the same depth finish.
+- **Per-phase self-review.** The self-review checklist is now split: main context checks master plan items; each subagent checks the per-phase items for its own doc.
+- **Narrowed pre-write research.** `with-design.md` Step 1b and `without-design.md` Step 2c no longer do broad codebase exploration in the main context. Per-phase file-level research (signatures, imports, test patterns) moves to each phase's subagent.
+
 ## 1.5.2
 
 ### Research Questions — External Research Directives

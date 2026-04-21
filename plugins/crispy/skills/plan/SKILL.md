@@ -47,25 +47,40 @@ Before writing, collect:
 
 ## Self-Review Before Writing
 
-Read and run through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. If any item fails, do more research or tighten the step.
+Read through `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md`. Apply only the items under the **"Master plan (`6-plan.md`)"** section — the "Each phase doc" items are checked by each phase subagent before writing its file. If any master plan item fails, do more research or tighten the phase structure before proceeding.
 
-## Write the Plan and Phase Docs (Single Pass)
+## Write the Plan and Phase Docs
 
-This step produces **all plan artifacts at once**: the master index (`6-plan.md`) and individual phase docs (`phases/phase-N.md`).
+This step produces all plan artifacts: the master index (`6-plan.md`) and individual phase docs (`phases/phase-N.md`).
 
 ### Create the phases directory
 
 Create `$FEATURE_PATH/phases/` if it doesn't exist.
 
-### Write the phase docs first
+### Write the phase docs via subagents
 
-Read the phase template from `${CLAUDE_SKILL_DIR}/references/phase-template.md`. For each phase, write a self-sufficient phase doc to `$FEATURE_PATH/phases/phase-{N}.md`.
+**Do not write phase docs in this context window.** For complex projects, gathering all file-level detail for every phase simultaneously exhausts the context budget. Delegate phase writing to subagents — each subagent gets a fresh context dedicated to researching and writing one phase.
 
-Each phase doc must contain:
-- All implementation details for that phase (exact file paths, code blocks, function signatures, design decisions applied)
-- References linking back to `6-plan.md`, `1-intent.md`, `3-research.md`, `4-design.md`
-- Dependency references as file paths to other phase docs (e.g., `[Phase 1: <title>](phases/phase-1.md)`)
-- Per-phase success criteria (automated + manual)
+**Spawn phases as soon as their dependencies are satisfied**
+
+Track completion per phase. Spawn a phase subagent as soon as all of its specific dependencies have completed — do not wait for unrelated phases that happen to share the same dependency depth. For phases with no dependencies, spawn all of them concurrently in a single message immediately.
+
+Each subagent writes its phase doc file directly — do not collect content to write yourself.
+
+**What each subagent prompt must include**
+
+Construct a self-contained prompt per phase — the subagent has no prior conversation context. Include:
+
+- Absolute `FEATURE_PATH` (e.g. `/path/to/features/add-dark-mode`)
+- Absolute `CLAUDE_SKILL_DIR` (for template and checklist paths)
+- Phase number, title, and goal — copied verbatim from the structure outline
+- Which prior artifacts exist and should be read in full (list absolute paths for any that exist): `1-intent.md`, `3-research.md`, `4-design.md`, `5-structure-outline.md`
+- Dependency phase file paths (if this phase depends on others)
+- The specific codebase files this phase is expected to modify (from the structure outline's file list for this phase) — the subagent uses these as starting points for targeted research
+- Instruction to read the phase template from `$CLAUDE_SKILL_DIR/references/phase-template.md`
+- Instruction to apply the per-phase items from `$CLAUDE_SKILL_DIR/references/self-review-checklist.md` before writing
+- Output target: write the completed phase doc to `$FEATURE_PATH/phases/phase-{N}.md` — write the file directly, do not return content in the response
+- If something is missing or ambiguous, write the best-possible phase doc with an explicit `TODO:` comment marking the gap — do not stop to ask questions
 
 **An agent reading only the phase doc must have everything it needs to implement the phase.**
 

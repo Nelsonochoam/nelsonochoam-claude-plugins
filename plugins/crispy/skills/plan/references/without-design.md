@@ -71,6 +71,8 @@ Which completed phases are still valid? Should any be re-done given the refined 
 
 If no `manifest.json` exists, skip this step.
 
-## Step 2c: Research to Complete the Plan
+## Step 2c: Scope Verification
 
-Once decisions are resolved, research whatever is still needed so that every phase doc can be written without placeholders. Look up anything the exploration didn't cover — exact file paths, function signatures, prop types, import lists, test patterns, data shapes. Do not proceed until you have everything needed to write every step concretely.
+Per-phase file-level research (exact function signatures, prop types, import lists, test patterns, data shapes) is delegated to each phase's subagent — do not do broad codebase exploration here.
+
+Only do a narrow targeted lookup if a resolved design decision depends on knowing a specific API shape or if a phase's scope remains structurally ambiguous after the exploration in Step 1b. Resolve those gaps, then proceed.

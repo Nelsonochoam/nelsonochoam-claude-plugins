@@ -19,8 +19,8 @@ After reading, extract and hold in mind (skip items whose source doc doesn't exi
 - **File references**: From the research doc — use these exact paths and line numbers in each step entry. If no research doc exists, resolve all file paths through direct codebase lookup before writing the plan.
 - **Out of scope**: From the intent doc's "What we're NOT doing" — anything listed there must not appear in the plan.
 
-## Step 1b: Research to Complete the Plan
+## Step 1b: Scope Verification
 
-Research whatever is needed so that every phase doc can be written without placeholders. The goal is a plan complete enough that an agent can implement each phase without opening additional files or making judgment calls.
+Per-phase file-level research (exact function signatures, prop types, import lists, test patterns, data shapes) is delegated to each phase's subagent — do not do it here.
 
-Start from what the prior artifacts already provide. Look up anything they don't cover — exact file paths, function signatures, prop types, import lists, test patterns, data shapes. Use the Read tool for targeted file reads and spawn parallel sub-agents for independent lookups. Do not proceed to Step 2 until you have everything needed to write every step concretely.
+Only do a narrow targeted lookup here if reading the artifacts leaves a phase's scope ambiguous at a structural level (e.g., it's unclear which subsystem is involved, or the structure outline references a file that doesn't appear in the research doc). Resolve the ambiguity, then proceed.
