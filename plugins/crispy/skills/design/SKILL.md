@@ -40,6 +40,8 @@ Before surfacing individual decisions, think through the overall direction. Draf
 - Which existing patterns and code this builds on (reference with `file:line`)
 - Key technical details an implementer needs to understand
 
+As part of this step, identify the **structural patterns** already established in the codebase that the implementation should follow. Look for: class hierarchies, facade wrappers, service/repository/adapter conventions, hook composition patterns, error handling conventions, naming and file organization norms. For each relevant pattern, locate a concrete example with a `file:line` reference and extract a representative snippet. These become the **Patterns to Follow** section — the goal is alignment before a line is written, not decoration.
+
 For complex flows, use your judgment on whether a mermaid diagram (sequence, flowchart, or state diagram) would help explain the approach more clearly than prose alone. If visualizing the flow makes it easier for an engineer to understand component interactions, branching logic, or state transitions — include one. Don't add diagrams for the sake of it; they should earn their place by clarifying something that text struggles to convey.
 
 Use pseudo-code for flows and interactions. Use real code for interfaces, APIs, and config shapes. Reference existing patterns inline where you're building on them — e.g., "We'll follow the service pattern at `src/services/baz.ts:1-15`."
@@ -49,8 +51,9 @@ Use pseudo-code for flows and interactions. Use real code for interfaces, APIs, 
 Surface every decision where the approach could meaningfully diverge — where there are 2+ meaningful options, where the research reveals ambiguity, or where a choice has significant tradeoffs.
 
 For each question:
+
 - Write a context line explaining **why** this decision matters
-- Present **Option A** and **Option B** (or C if genuinely needed) with code snippets showing what each looks like in practice
+- Present the options that genuinely exist — this may be one (if the approach is clear), two, or up to three if there are meaningfully distinct alternatives. Don't manufacture options to fill a template, and don't collapse distinct alternatives to keep it short. Include code snippets for each option where the shape differs.
 - Include explicit **Pros** and **Cons** for each option
 - Give a **Recommendation** that names the specific tradeoff being accepted
 
@@ -58,51 +61,32 @@ Read `${CLAUDE_SKILL_DIR}/references/questions-format.md` for the exact format.
 
 ### 3. Write Draft to File
 
-Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`). Write a draft design document to `$FEATURE_PATH/4-design.md` (create the directory if needed) that includes:
-
-- **Summary** — what we're building
-- **Motivation** — why it matters, who's affected, cost of inaction
-- **Current State** — factual findings from research with `file:line` references
-- **Desired End State** — what's true when done
-- **What we're not doing** — explicit scope boundaries
-- **Proposed Approach** — the narrative core: how the solution works, with code and inline pattern references
-- **Design Questions** — the open questions with options, tradeoffs, and your recommendation (follow the format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`)
-- **Risks & Mitigations** — what could go wrong and how we handle it
-- **Validation** — how to verify the solution works
-- **AC Coverage** — traceability from acceptance criteria to design sections (see template)
+Read the template from `${CLAUDE_SKILL_DIR}/references/template.md`. Collect the task/ticket identifier from the intent (e.g. `ticket-3459-feature-name`). Write a draft design document to `$FEATURE_PATH/4-design.md` (create the directory if needed), following the template structure. For Design Questions, follow the format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`.
 
 Before writing the draft, review the intent's acceptance criteria:
-- If the intent contains explicit ACs (AC-1, AC-2, etc.), verify that every AC is addressed by at least one design decision (D1, D2, etc.). Map each AC to the decisions that cover it in the AC Coverage table.
-- If the intent has no explicit ACs, infer the key outcomes the design is meant to achieve from the intent's summary, motivation, and scope. List these as coverage items in the AC Coverage section using the checklist format from the template.
-- If any AC is not covered by the design, either expand the design to address it or note it as intentionally deferred with a reason.
 
-Do NOT print the document content in the conversation. Once written, say:
+- If the intent contains explicit ACs (AC-1, AC-2, etc.), verify that every AC is addressed by at least one design decision. Map each AC to the decisions that cover it in the AC Coverage table.
+- If the intent has no explicit ACs, infer the key outcomes from the intent's summary and scope. List these as coverage items using the checklist format from the template.
+- If any AC is not covered, either expand the design to address it or note it as intentionally deferred with a reason.
 
-```
-Draft written to $FEATURE_PATH/4-design.md — open it and let me know your thoughts.
-```
+Do NOT print the document content in the conversation.
 
-Wait for the user's response.
+### 4. Present Design Questions Conversationally
 
-### 4. Collaborate Until Confirmed
+Once the draft is written, bring the design questions into the conversation — do not ask the user to open the file. Present all questions at once in the conversation using the format from `${CLAUDE_SKILL_DIR}/references/questions-format.md`, then ask the user to respond.
 
-Work with the user like two peers reviewing a document together. They may question decisions, prefer different options, surface new requirements, or want to change direction entirely.
-
-- Update `$FEATURE_PATH/4-design.md` after each meaningful exchange to reflect the current agreed state.
-- Do not re-print the document in the conversation — keep discussion focused and refer the user back to the file.
-- If they introduce new requirements or constraints, discuss the implications, update the approach, and surface any new design questions that arise.
+As the user answers each question:
+- Update `$FEATURE_PATH/4-design.md` immediately to reflect each decision — move the resolved question into **Resolved Design Questions** and update the Proposed Approach if the decision affects it.
+- If their answer is ambiguous or introduces a new constraint, ask one focused follow-up before moving on.
 - If more research is needed, do it and return with updated options and a recommendation.
-- If anything is ambiguous, ask one focused follow-up before moving on.
-- **If the user shares images** (screenshots, mockups, diagrams): copy them from the image cache (not the temp paths — see intent skill's Image Handling section for the `~/.claude/image-cache/` approach) to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `4-design.md` using `![description](artifacts/name.png)`, and confirm what you see.
+- If they introduce new requirements, discuss the implications, surface any new design questions that arise, and update the draft.
+- **If the user shares images**: copy them from the image cache (see intent skill's Image Handling section) to `$FEATURE_PATH/artifacts/` with descriptive kebab-case names, embed them in the relevant section of `4-design.md`, and confirm what you see.
 
-Follow the resolution format from `${CLAUDE_SKILL_DIR}/references/questions-format.md` when recording decisions.
+Continue until every question is resolved and all intent ACs are covered by the design.
 
-Once all questions are resolved and the user is satisfied, do a final update to `$FEATURE_PATH/4-design.md`:
+### 5. Confirm
 
-- Move resolved questions into a **Resolved Design Questions** section
-- Ensure the Proposed Approach reflects all decisions made
-
-Then say:
+Once all questions are resolved and the user is satisfied, do a final update to `$FEATURE_PATH/4-design.md` ensuring the Proposed Approach reflects all decisions. Then say:
 
 ```
 ════════════════════════════════════════
@@ -113,16 +97,21 @@ Any phase can follow — each works with whatever artifacts exist.
 ════════════════════════════════════════
 ```
 
-
 ## Guidelines
 
-- **Lead with the approach, not the questions**: The document should be readable as a design narrative even if you skip the questions section. The Proposed Approach is the core — questions refine it.
-- **Show how it works**: Include flows, sequences, or pseudo-code in the Proposed Approach. An engineer should be able to picture the full solution after reading this section alone.
-- **Patterns are evidence, not decoration**: Reference existing code inline to justify the approach ("following the pattern at `file:line`"), don't list patterns in a disconnected section.
-- **Code depth is contextual**: Use pseudo-code for flows and interactions, real code for interfaces/APIs/config shapes. Match the level of detail to what communicates the idea best.
-- **All questions at once**: Don't drip questions one at a time — present the full set so the user can see the shape of the problem.
-- **Every option needs Pros/Cons**: Make tradeoffs explicit so the reader can evaluate independently of your recommendation. "Simpler" is not a pro — "fewer moving parts: single file vs. three-file module" is.
-- **Always take a position**: Every question must have a recommendation that names the tradeoff being accepted — not "either could work."
-- **One question per decision**: If two things are actually separate decisions, split them.
-- **Name the risks**: Every design has risks. Surface them in the Risks & Mitigations section rather than leaving them implicit.
-- **Design is direction, not execution**: The document describes what and why — not step-by-step implementation instructions.
+1. **Be Critical:**
+   - Question whether the approach is actually the right one
+   - Surface real tradeoffs — don't just validate the obvious path
+   - Every option needs explicit Pros/Cons; "simpler" is not a pro
+   - Always take a position with a recommendation that names the tradeoff being accepted
+
+2. **Be Interactive:**
+   - Surface all questions at once in the conversation — don't drip them one at a time
+   - Update the draft silently as each decision is made; keep the conversation focused
+   - Get alignment at each decision point before moving on
+
+3. **Be Grounded:**
+   - Reference real code with `file:line` — don't invent patterns
+   - Patterns to Follow shows shapes (class skeletons, interfaces), not walkthroughs
+   - Use pseudo-code for flows, real code for interfaces and config shapes
+   - Design describes what and why — not step-by-step implementation instructions

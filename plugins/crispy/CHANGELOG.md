@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.6.0
+
+### Design — Interactive Q&A, Patterns to Follow, Leaner Document
+
+The design phase is now conversational and produces a leaner document that links to the intent rather than repeating it.
+
+#### What changed
+
+- **Interactive design questions.** The skill writes the draft silently, then surfaces all design questions in the conversation. As the user responds, the draft updates in real-time. The file stays current; decisions happen in chat.
+- **Patterns to Follow section.** A new section between Current State and Desired End State captures structural conventions found in the codebase — class hierarchies, facades, service/repository patterns, hook composition, etc. — each with a `file:line` reference and a representative snippet. Goal is pattern alignment before a line is written.
+- **Intent link replaces repeated sections.** Summary and Motivation are removed from the design document. A single `> [Intent](1-intent.md)` reference at the top replaces them — context, motivation, scope, and ACs live in the intent doc.
+- **Risks & Mitigations and Validation sections removed.** These sections were redundant with intent ACs and design decisions; removed to keep the document focused.
+- **Flexible option count for design questions.** Questions now surface however many options genuinely exist — one if the path is clear, two or three if there are meaningfully distinct alternatives. No padding, no collapsing.
+- **Guidelines reformatted.** Verbose flat list replaced with three numbered guidelines: Be Critical, Be Interactive, Be Grounded.
+
 ## 1.5.3
 
 ### Plan — Subagent-Per-Phase Writing

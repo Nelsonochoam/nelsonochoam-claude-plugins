@@ -23,6 +23,13 @@ Present the full set of questions at once. Each question should make the decisio
   - **Pros**: <what you gain>
   - **Cons**: <what you lose or accept>
 
+- **Option C** *(include only when a third genuinely distinct option exists — not a minor variant of A or B)*: <description>
+  ```ts
+  // code showing what this looks like in practice
+  ```
+  - **Pros**: <what you gain>
+  - **Cons**: <what you lose or accept>
+
 **Recommendation**: Option A — <specific reason grounded in research or intent>, accepting <specific tradeoff>.
 
 ---
@@ -53,7 +60,7 @@ You can also just say "go with all recommendations" if they look right.
 ## Guidelines for Writing Questions
 
 - **Context first**: Start each question with why it matters, not just what the options are. The reader should understand the stakes before evaluating options.
-- **Code for every option where the shape differs**: If Option A and B result in meaningfully different code structure, show both. Use pseudo-code for flows, real code for interfaces/APIs/config.
+- **Surface the options that genuinely exist**: A question may have one obvious path, two real alternatives, or three distinct approaches. Don't manufacture options to fill a format, and don't merge distinct alternatives to keep it tidy. Show code for each option where the shape meaningfully differs. Use pseudo-code for flows, real code for interfaces/APIs/config.
 - **Explicit Pros/Cons**: Every option gets Pros and Cons bullets. Be specific — "simpler" is not a pro, "fewer moving parts — single file vs. three-file module" is.
 - **Recommendations acknowledge tradeoffs**: Don't just say "Option A is better." Say "Option A — [reason], accepting [what you give up]."
 - **One decision per question**: If two things are separate decisions, split them. If they're entangled, explain the dependency.

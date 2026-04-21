@@ -1,29 +1,39 @@
 # Design Document Template
 
-```markdown
+````markdown
 ---
 task: <ticket-id-kebab-description>
 type: design
 ---
 
-### Summary
-
-<What we're building and the approach at a glance — 2–4 sentences drawn from the intent>
-
-### Motivation
-
-<Why this change matters — what problem exists today, who is affected, and what is the cost of not doing it. Frame for an engineering audience: what breaks, what's slow, what's impossible without this change.>
+> [Intent](1-intent.md) — context, motivation, scope, and acceptance criteria.
 
 ### Current State
 
-- <Factual bullet from research, with `file:line` reference where relevant>
-- ..
+<!-- What exists now, what's missing, key constraints discovered -->
 
 ### Desired End State
 
-- <What will be true when this is done>
-- <User-facing framing where helpful: "A user can now...">
-- ..
+<!-- A Specification of the desired end state after this plan is complete, and how to verify it -->
+
+### Patterns to Follow
+
+<!-- Structural conventions found in the codebase that the implementation should align with. Each entry is a pattern name, a source reference, a one-line description, and a representative snippet. Omit entries that aren't relevant to this feature. -->
+
+**<Pattern Name>** — `file:line`
+<What this pattern is and when it's used — one sentence.>
+
+```ts
+// representative snippet showing the pattern's shape
+```
+````
+
+**<Pattern Name>** — `file:line`
+<What this pattern is and when it's used — one sentence.>
+
+```ts
+// representative snippet
+```
 
 ### What we're not doing
 
@@ -76,16 +86,29 @@ User invokes /foo
 <Why this decision matters — what depends on it>
 
 - **Option A**: <description>
+
   ```ts
   // code showing what this looks like
   ```
+
   - **Pros**: <what you gain>
   - **Cons**: <what you lose or accept>
 
 - **Option B**: <description>
+
   ```ts
   // code showing what this looks like
   ```
+
+  - **Pros**: <what you gain>
+  - **Cons**: <what you lose or accept>
+
+- **Option C** _(only if a third genuinely distinct option exists — omit if not)_: <description>
+
+  ```ts
+  // code showing what this looks like
+  ```
+
   - **Pros**: <what you gain>
   - **Cons**: <what you lose or accept>
 
@@ -99,22 +122,12 @@ User invokes /foo
 ### Resolved Design Questions
 
 #### D1. <Decision Title>
+
 **Chosen**: Option X — <rationale and any deviations from recommendation>
 
 #### D2. <Next decision>
+
 **Chosen**: <resolution>
-
-### Risks & Mitigations
-
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| <what could go wrong> | Low / Med / High | <what happens if it does> | <how we prevent or handle it> |
-| <assumption that might be wrong> | Low / Med / High | <consequence> | <fallback or validation step> |
-
-### Validation
-
-- <How we verify the solution works end-to-end — not just pass/fail, but what to check and how>
-- ..
 
 ### AC Coverage
 
@@ -122,10 +135,10 @@ User invokes /foo
 
 #### When the intent has explicit ACs:
 
-| AC | Description | Decisions |
-|----|-------------|-----------|
-| AC-1 | <short name from intent> | D1, D3 |
-| AC-2 | <short name from intent> | D2 |
+| AC   | Description              | Decisions |
+| ---- | ------------------------ | --------- |
+| AC-1 | <short name from intent> | D1, D3    |
+| AC-2 | <short name from intent> | D2        |
 
 - [ ] All acceptance criteria from the intent are covered
 - [ ] No design section introduces behavior outside the stated ACs without justification
@@ -137,4 +150,7 @@ User invokes /foo
 - [ ] <Key outcome inferred from the intent's summary/motivation — e.g., "Users can filter results by date range"> → Proposed Approach, paragraph 2
 - [ ] <Another outcome> → Proposed Approach, paragraph 4; Validation, item 1
 - [ ] <Edge case or constraint addressed> → Risks & Mitigations, row 1
+
+```
+
 ```
