@@ -124,7 +124,7 @@ Run /crispy:$SKILL_NAME now."
   if ! CRISPY_FEATURE="$FEATURE_NAME" claude -p \
     --plugin-dir "$PLUGIN_DIR/crispy" \
     --add-dir "$FEATURE_PATH" \
-    --permission-mode bypassPermissions \
+    --permission-mode auto \
     --model opus \
     "$PROMPT" 2>&1; then
     echo "" >&2

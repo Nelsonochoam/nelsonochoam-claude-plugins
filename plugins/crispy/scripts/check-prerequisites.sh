@@ -35,16 +35,15 @@ fi
 # --- Check which other artifacts exist ---
 AVAILABLE_JSON="[]"
 
-declare -A ARTIFACTS=(
-  ["research-questions"]="$FEATURE_PATH/2-research-questions.md"
-  ["research"]="$FEATURE_PATH/3-research.md"
-  ["design"]="$FEATURE_PATH/4-design.md"
-  ["structure"]="$FEATURE_PATH/5-structure-outline.md"
-  ["plan"]="$FEATURE_PATH/6-plan.md"
-)
-
 for key in research-questions research design structure plan; do
-  if [ -f "${ARTIFACTS[$key]}" ]; then
+  case "$key" in
+    research-questions) artifact="$FEATURE_PATH/2-research-questions.md" ;;
+    research)           artifact="$FEATURE_PATH/3-research.md" ;;
+    design)             artifact="$FEATURE_PATH/4-design.md" ;;
+    structure)          artifact="$FEATURE_PATH/5-structure-outline.md" ;;
+    plan)               artifact="$FEATURE_PATH/6-plan.md" ;;
+  esac
+  if [ -f "$artifact" ]; then
     AVAILABLE_JSON=$(echo "$AVAILABLE_JSON" | jq --arg p "$key" '. + [$p]')
   fi
 done
