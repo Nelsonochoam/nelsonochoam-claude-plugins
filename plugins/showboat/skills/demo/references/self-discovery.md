@@ -104,11 +104,11 @@ Use these signals to decide how to test:
 
 | Signal | App type | Testing approach |
 |--------|----------|-----------------|
-| `pages/` or `app/` dir with JSX | web-app | rodney for UI, screenshots |
+| `pages/` or `app/` dir with JSX | web-app | browser tool for UI, screenshots |
 | Route files returning JSON only | api | curl for endpoints |
 | `bin/` or CLI framework | cli | exec commands, capture stdout |
 | Library exports, no entry point | library | run test suite |
-| Both frontend + API routes | hybrid | rodney + curl |
+| Both frontend + API routes | hybrid | browser tool + curl |
 
 See `${CLAUDE_PLUGIN_ROOT}/references/app-type-patterns.md` for detailed detection patterns.
 

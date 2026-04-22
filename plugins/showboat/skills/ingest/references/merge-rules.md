@@ -11,9 +11,9 @@ The introspection categorizes each entry with a tag like `[interaction]` or `[en
 | `environment` | `references/environment.md` | Login, auth, secret-manager setup, required cwd, env vars, service health |
 | `auth` | `references/environment.md` | Login flows, token injection, session cookies |
 | `commands` | `references/testing.md` | Test commands, type-check, build, path conventions |
-| `interaction` | `references/rodney-patterns.md` | Clicks, typing, selectors, DOM manipulation |
+| `interaction` | `references/browser-tool.md` | Clicks, typing, selectors, DOM manipulation — tool-specific gotchas |
 | `navigation` | `references/pages.md` | Routes, modal/dialog flows, per-page specifics |
-| `timing` | `references/rodney-patterns.md` | Wait strategies, race conditions, stability checks |
+| `timing` | `references/browser-tool.md` | Wait strategies, race conditions, stability checks |
 | `data` | `references/pages.md` or `references/environment.md` | Feature flags, seed data, account state (pick based on where the agent hits it) |
 | `workflow` | `references/showboat.md` | Demo authoring, verify limitations, session state |
 
@@ -48,6 +48,7 @@ Link to the specific section using an anchor, not the file. GitHub/Obsidian anch
 Examples:
 
 - New `pages.md` section describes a login-gated route → link to `environment.md#obtaining-a-session-token`.
+- New `browser-tool.md` section about a tricky selector → link to the relevant `pages.md` section where that element lives.
 - New `showboat.md` note about flag-gated branches → link to `testing.md#when-to-rely-on-tests-vs-browser`.
 
 Prefer one canonical home for content, with one-way links from related docs.

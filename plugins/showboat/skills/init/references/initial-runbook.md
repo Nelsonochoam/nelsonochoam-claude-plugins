@@ -12,11 +12,11 @@ Read `${CLAUDE_PLUGIN_ROOT}/references/app-type-patterns.md` and decide the `app
 
 | app_type | Generate these sub-docs |
 |---|---|
-| web-app | `environment.md`, `testing.md`, `pages.md` |
+| web-app | `environment.md`, `testing.md`, `pages.md`, `browser-tool.md` |
 | api | `environment.md`, `testing.md`, `api.md` |
 | cli | `environment.md`, `testing.md`, `cli.md` |
 | library | `environment.md`, `testing.md` |
-| hybrid | `environment.md`, `testing.md`, plus whichever of `pages.md` / `api.md` / `cli.md` apply |
+| hybrid | `environment.md`, `testing.md`, `browser-tool.md`, plus whichever of `pages.md` / `api.md` / `cli.md` apply |
 
 Skip any sub-doc where there is nothing meaningful to write. An empty doc is worse than none.
 
@@ -45,9 +45,12 @@ Extract:
 
 From the same manifests and any CI configs:
 - Unit, integration, and e2e test commands
+- How to run a single file or a single test (not just the full suite)
 - Type-check and lint commands
 - Build command
 - Any path conventions (e.g., "run the file closest to the change, not the full suite")
+- Any setup required before tests run (seed data, env vars, services that must be running)
+- Known slow or flaky tests
 
 ### pages.md — for web-app / hybrid
 
@@ -66,7 +69,32 @@ Scan endpoint definitions and OpenAPI specs:
 - `openapi.yaml`, `swagger.json`
 - GraphQL schemas
 
-For each endpoint, capture method + path + one-line purpose. Include one real `curl` example per resource, not every verb.
+For each endpoint (or resource group), capture:
+- Method + path + one-line purpose
+- Auth required: token type, how to obtain it, which header
+- A ready-to-run `curl` example with realistic parameters — not a template
+
+If there is a shared auth pattern (e.g., Bearer token from a login endpoint), document it once at the top. The goal is that an agent can pick up this doc and immediately make a real call without having to figure out auth separately.
+
+### browser-tool.md — for web-app / hybrid
+
+This file is the screenshot and interaction contract for the project. The demo skill reads it before any browser work, so the skill stays tool-agnostic.
+
+**Step 1: Detect what browser tool is available.**
+
+Run:
+```bash
+bash "${CLAUDE_PLUGIN_ROOT}/scripts/detect-capabilities.sh"
+```
+
+If the user passed a tool preference with `/showboat:init` (e.g., "use playwright", "we use webreel"), that overrides detection.
+
+**Step 2: Ask if unclear.** If detection returns no tool and the user gave no preference, use `AskUserQuestion`:
+> "Which browser automation tool does this project use? (rodney, playwright CLI, webreel, or other)"
+
+**Step 3: Write the doc.** Use the detected/selected tool. Cover every capability listed in `${CLAUDE_PLUGIN_ROOT}/references/runbook-structure.md#browser-tool-md`. If a capability is not available for the tool (e.g., no video), say so explicitly.
+
+See `${CLAUDE_PLUGIN_ROOT}/docs/example-runbooks/` for ready-made examples for rodney, playwright, and webreel — copy the relevant one and adapt project-specific details (port, auth, selector conventions).
 
 ### cli.md — for cli / hybrid
 

@@ -4,7 +4,7 @@ These rules ensure evidence is trustworthy and verifiable. Follow them strictly.
 
 ## Anti-Fabrication Rules
 
-1. **Always execute commands** — never write evidence records with pre-composed output. Run the actual command via `capture-command.sh` or equivalent, and use the real stdout/stderr/exit code.
+1. **Always execute commands** — never write evidence records with pre-composed output. Run the actual command via `showboat exec` and use the real stdout/stderr/exit code.
 
 2. **Never paste pre-written output** — if you know what the output should be, run the command anyway. The evidence must reflect what actually happened, not what you expected.
 

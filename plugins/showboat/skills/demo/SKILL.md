@@ -1,228 +1,91 @@
 ---
 name: demo
-description: Build a demo document using the showboat CLI — proves a feature works through manual browser interaction (rodney) and API calls (curl), not just test output.
-argument-hint: '<feature-name>'
+description: Build a demo document using the showboat CLI — demonstrates how something behaves through real outputs, screenshots, videos, and curl calls across different scenarios.
+argument-hint: "<feature-name>"
 model: opus
 ---
 
 User's request: $ARGUMENTS
 
-# Demo: Prove It With Showboat
+# Demo: Show How It Behaves
 
-You are building a demo document that **manually proves a feature works**. The document is constructed entirely by running `showboat` commands — never by writing markdown directly. That distinction matters: a document built from real command executions is proof; one written by hand is not.
+Your job is to **demonstrate how something works to a human** by capturing real outputs across meaningful scenarios. You are not trying to prove it works — you are showing what it actually does. If something is broken, the demo should show that honestly too. The document is built entirely by running `showboat` commands — never by writing markdown directly.
 
-The goal is to act like a human tester sitting at a browser: navigate to the feature, interact with it, observe the results, and capture everything. Automated tests are supporting evidence. The manual demonstration is the main event.
+Start by learning what showboat can do:
 
-## Project Discovery
+```bash
+showboat --help
+```
+
+## Setup
 
 Read and follow `${CLAUDE_PLUGIN_ROOT}/references/project-discovery.md`.
 
-Store the resolved variables as `$BASE_DIR` and `$DEMO_BASE`.
-
-## Parse Arguments
-
-Extract the feature name from `$ARGUMENTS` (e.g., `add-user-search`). If missing, use `AskUserQuestion` to ask for it.
-
-Also extract any inline details the user provided — app URL, port, credentials, routes. These override everything else.
+**Get the feature name** from `$ARGUMENTS`. If missing, use `AskUserQuestion` to ask. Extract any inline context the user provided (URL, port, credentials, routes) — these override everything else.
 
 ```bash
 DEMO_BASE=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/ensure-demo.sh" "<feature-name>")
 DEMO_FILE="$DEMO_BASE/demo.md"
 ```
 
-## Understand What Changed
+## Understand What to Demo and How
 
-```bash
-git log --oneline -5
-git diff --stat HEAD~1
-```
+Figure out what the user wants demonstrated and gather enough context to do it confidently. Don't start capturing evidence until you know what to show and how to access it.
 
-Read the diff of the most relevant changed files to understand: what routes, endpoints, or UI components were added or modified. This tells you exactly what to test.
-
-## Prepare to Test
-
-The goal is to know: where the app runs, how to authenticate, which routes or endpoints to exercise, and which test commands are relevant.
-
-### Read the runbook (if configured)
+**Check for a runbook first** — it may already answer most questions:
 
 ```bash
 RUNBOOK=$(bash "${CLAUDE_PLUGIN_ROOT}/scripts/resolve-runbook.sh" 2>/dev/null) || true
 echo "${RUNBOOK:-NO_RUNBOOK}"
 ```
 
-If a runbook path is returned, read it:
+If a runbook exists, read it. It is your source of truth for how to access and test this app — URLs, credentials, server startup, available browser tools, API auth patterns, known quirks. Load only the sub-documents relevant to what you're demonstrating.
 
-```bash
-cat "$RUNBOOK"
-```
+**If there is no runbook**, read `${CLAUDE_SKILL_DIR}/references/self-discovery.md` and discover the same information from the codebase.
 
-The runbook is a markdown document with general testing knowledge for the application — how to log in, which URLs to use, test commands, common patterns, known quirks. It may be a single self-contained file, or it may contain links to other files (Obsidian wikilinks like `[[auth-guide]]` or relative paths like `./api-testing.md`).
+**For anything that requires deeper codebase understanding** — what a flow does, what endpoints exist, how auth works, what a PR changed — spawn parallel `Explore` subagents rather than guessing or reading files yourself. Run independent questions in parallel, only what you actually need:
 
-**Follow links progressively**: scan the runbook for links relevant to what you're testing (the feature name, the route, the service). Read only those linked pages — not everything. This mirrors how you'd browse a wiki: start at the index, follow only what's relevant.
+- "What routes or API endpoints are involved in `<flow>`?"
+- "How does authentication work in this codebase?"
+- "What changed in this PR and what behavior should be exercised?"
 
-Use everything you find to inform: how to start the app, how to authenticate, which endpoints or pages to exercise, what a passing response looks like.
+Only explore what the user input and runbook didn't already answer. The goal is to gather just enough to execute confidently.
 
-### When there is no runbook
+**If you're still stuck**, ask the user — it's always fine to ask rather than proceed on bad assumptions.
 
-Read `${CLAUDE_SKILL_DIR}/references/self-discovery.md` and follow it to discover the same information from the codebase. The git diff is your primary guide — it tells you exactly what changed and therefore what to demonstrate.
-
-Do not block on missing information. Make a reasonable attempt, use `showboat pop` to discard failed commands, and move on. Mark the demo `partial` in the closing report.
-
-## Initialize the Demo Document
+## Initialize the Document
 
 ```bash
 showboat init "$DEMO_FILE" "<Feature Title>"
-showboat note "$DEMO_FILE" "<2-3 sentence summary of what was built and why, derived from git log.>"
+showboat note "$DEMO_FILE" "<2-3 sentence description of what is being demonstrated and what scenarios will be covered.>"
 ```
 
 ## Capture Evidence
 
-Every piece of evidence is captured by a `showboat` command. If a command errors in a way that shouldn't stay in the document, remove it with `showboat pop "$DEMO_FILE"` before retrying.
+Think about what scenarios are worth showing — the happy path, edge cases, error conditions, different inputs. Capture real outputs for each. Be honest: if something returns an error or behaves unexpectedly, capture that too.
 
-**Evidence requirements — this is non-negotiable:**
+Choose the best method based on what you're demonstrating:
 
-- If the change touches any API endpoint → you **must** make real curl/HTTP calls to that endpoint and capture the responses. Test output alone does not prove the API works.
-- If the change touches any UI component or page → you **must** use rodney to navigate, interact, and take screenshots. Test output alone does not prove the UI works.
-- Automated tests are **supporting evidence only**. They confirm code paths but do not replace live execution. A demo that shows only test results is incomplete.
+### UI flows → screenshots and video
 
-### 1. Manual Demonstration (primary proof)
+Screenshots and video are the most persuasive evidence for UI behavior. If the runbook describes a browser tool (rodney, playwright, webreel, or similar), use it. Check for browser-specific docs in the runbook's `references/` directory.
 
-This is the heart of the demo. Manually exercise the feature the way a user would — navigate, interact, observe, assert. Use rodney for browser-based features and curl for APIs.
-
-#### Check what tools are available
+If no browser tool is documented, run:
 
 ```bash
 bash "${CLAUDE_PLUGIN_ROOT}/scripts/detect-capabilities.sh"
 ```
 
-**If rodney or curl is needed**, read `${CLAUDE_SKILL_DIR}/references/testing-commands.md` now — it has the full reference for both tools: rodney navigation/interaction/assertions/screenshots and curl patterns for auth, chaining, and field assertions.
+Use whatever is available.
 
-#### For web app features — use Rodney
+### API or backend flows → curl
 
-Start one browser session and keep it running for all interactions. Don't restart between pages.
+Make real HTTP requests and capture the actual responses. Test different inputs, edge cases, and error scenarios — not just the happy path. Raw curl output is more honest than any wrapper. See `${CLAUDE_SKILL_DIR}/references/testing-commands.md` for auth and assertion patterns.
 
-```bash
-showboat note "$DEMO_FILE" "## Manual Browser Verification"
-showboat exec "$DEMO_FILE" bash "rodney start"
-```
+### When live execution isn't possible → tests
 
-Navigate to the feature. If the app requires login, authenticate first:
+If the service isn't running or the environment is unavailable, fall back to running the relevant tests. Capture the output. Tests are weaker evidence but still show behavior.
 
-```bash
-showboat exec "$DEMO_FILE" bash "rodney open '<login-url>'"
-showboat exec "$DEMO_FILE" bash "rodney input '<email-selector>' '<email>'"
-showboat exec "$DEMO_FILE" bash "rodney input '<password-selector>' '<password>'"
-showboat exec "$DEMO_FILE" bash "rodney click '<submit-selector>'"
-showboat exec "$DEMO_FILE" bash "rodney waitload"
-```
+### When nothing else fits → be creative
 
-Navigate to the feature being demonstrated:
-
-```bash
-showboat exec "$DEMO_FILE" bash "rodney open '<feature-url>'"
-showboat exec "$DEMO_FILE" bash "rodney waitstable"
-```
-
-Take a before-state screenshot:
-
-```bash
-showboat note "$DEMO_FILE" "Initial state of <page/feature>:"
-rodney screenshot /tmp/sb-<feature>-before.png
-showboat image "$DEMO_FILE" /tmp/sb-<feature>-before.png
-```
-
-Interact with the feature — click buttons, fill forms, trigger the behavior being tested:
-
-```bash
-showboat exec "$DEMO_FILE" bash "rodney click '<selector>'"
-showboat exec "$DEMO_FILE" bash "rodney input '<selector>' '<value>'"
-showboat exec "$DEMO_FILE" bash "rodney waitstable"
-```
-
-Assert the expected outcome is visible. Use `rodney exists`, `rodney text`, `rodney assert`, or `rodney js` to verify — not just screenshot:
-
-```bash
-# Verify expected element/text appeared
-showboat exec "$DEMO_FILE" bash "rodney exists '<result-selector>'"
-showboat exec "$DEMO_FILE" bash "rodney text '<result-selector>'"
-
-# Or use JS assertions
-showboat exec "$DEMO_FILE" bash "rodney assert 'document.querySelector(\"<sel>\").textContent' '<expected>'"
-```
-
-Take an after-state screenshot showing the result:
-
-```bash
-showboat note "$DEMO_FILE" "Result after <action>:"
-rodney screenshot /tmp/sb-<feature>-after.png
-showboat image "$DEMO_FILE" /tmp/sb-<feature>-after.png
-```
-
-Repeat for each meaningful state or interaction the feature has.
-
-Stop the browser when done:
-
-```bash
-showboat exec "$DEMO_FILE" bash "rodney stop"
-```
-
-#### For API features — use curl
-
-For each affected endpoint, make a real request and capture the full response. Prove specific behavior — not just a 200 status, but that the response contains the right data. See `${CLAUDE_SKILL_DIR}/references/testing-commands.md` for auth, chaining, and field-assertion patterns.
-
-```bash
-showboat note "$DEMO_FILE" "## API Verification"
-showboat note "$DEMO_FILE" "Testing <endpoint description>:"
-showboat exec "$DEMO_FILE" bash "curl -s -X <METHOD> '<url>' \
-  -H 'Content-Type: application/json' \
-  -d '<body>' | jq ."
-```
-
-### 2. Automated Tests (supporting evidence only)
-
-Tests confirm code paths but **do not replace live demonstration**. If the feature touches an API or UI and you haven't yet made real curl calls or rodney interactions, do that first — then run tests as corroborating evidence. Never use test output as the primary proof that a feature works.
-
-```bash
-showboat note "$DEMO_FILE" "## Test Suite"
-showboat exec "$DEMO_FILE" bash "<test-command>"
-```
-
-If tests are slow or noisy, run only the test file(s) directly related to the changed code.
-
-### 3. Type Check / Build (if applicable)
-
-```bash
-showboat exec "$DEMO_FILE" bash "<type-check-or-build-command>"
-```
-
-### 4. Closing Note
-
-```bash
-showboat note "$DEMO_FILE" "The <feature> is correctly implemented. The browser interaction and API calls above demonstrate the full user-facing behavior."
-```
-
-## Verify
-
-```bash
-showboat verify "$DEMO_FILE"
-```
-
-If verify exits non-zero, review the diffs and either fix the commands or add a note explaining the divergence.
-
-## Done
-
-Report:
-
-```
-Demo written: $DEMO_FILE
-
-Evidence captured:
-  - <count> rodney interactions
-  - <count> screenshots
-  - <count> curl/API calls
-  - <count> test/build outputs
-  - Status: <verified | partial>
-
-Re-run all checks:
-  showboat verify "$DEMO_FILE"
-```
+Find another way: run a CLI tool, inspect a log, diff before/after state, exercise the code directly with a script. The goal is always to give a human something concrete to look at — not a description, but actual output.
