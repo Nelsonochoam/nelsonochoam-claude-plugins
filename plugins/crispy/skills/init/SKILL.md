@@ -50,13 +50,37 @@ Use `AskUserQuestion` to ask for the storage location. Present the choices clear
 
 Store the final result as `base_dir`.
 
-## Step 2: Confirm
+## Step 2: Folder Organization
+
+Use `AskUserQuestion` to ask how features should be organized:
+
+> Should crispy group feature folders by git repository?
+>
+> - **Yes** (default) — `<base_dir>/<repo-name>/<feature>/` — keeps each repo's work separate
+> - **No** — `<base_dir>/<feature>/` — flat layout, useful when features span multiple repos
+
+Store the result as `folders_git` (`true` or `false`).
+
+**Logic:**
+- If the user selects "Yes" (or provides no answer), set `folders_git` to `true`.
+- If the user selects "No", set `folders_git` to `false`.
+
+## Step 3: Confirm
 
 Use `AskUserQuestion` to show a summary and ask for confirmation:
 
+If `folders_git` is `true`:
 > Ready to configure crispy:
 >
 >   Base directory: `<base_dir>/<repo-name>/` (one folder per repo)
+>   Config file:    `~/.crispy/config.json`
+>
+> Proceed?
+
+If `folders_git` is `false`:
+> Ready to configure crispy:
+>
+>   Base directory: `<base_dir>/` (flat, features written directly here)
 >   Config file:    `~/.crispy/config.json`
 >
 > Proceed?
@@ -65,27 +89,27 @@ Options: `Yes, apply` / `No, cancel`
 
 If the user cancels, exit with "Configuration cancelled. Nothing was changed."
 
-## Step 3: Apply
+## Step 4: Apply
 
 Call the helper script to handle all setup deterministically:
 
 ```bash
-bash "${CLAUDE_SKILL_DIR}/scripts/setup-crispy.sh" "<base_dir>"
+bash "${CLAUDE_SKILL_DIR}/scripts/setup-crispy.sh" "<base_dir>" "<folders_git>"
 ```
 
 This script will:
 - Create `~/.crispy` directory
-- Handle existing symlinks at `~/.crispy`
 - Create the artifact base directory
-- Write `config.json` with proper JSON escaping
+- Write `config.json` with `base_dir` and `folders.git`
 - Validate everything succeeded
 
 If it fails, it exits with code 1 and prints an error.
 
-## Step 4: Done
+## Step 5: Done
 
 Once the command succeeds, say:
 
+If `folders_git` is `true`:
 ```
 Crispy initialized.
 
@@ -95,7 +119,18 @@ Crispy initialized.
 Run /crispy:intent to start your first feature.
 ```
 
+If `folders_git` is `false`:
+```
+Crispy initialized.
+
+  Artifacts stored at: <base_dir>/<feature>/
+  Config file: ~/.crispy/config.json
+
+Run /crispy:intent to start your first feature.
+```
+
 ## Notes
 
-- `base_dir` in config stores the root WITHOUT the repo-name segment. The `resolve-basedir.sh` script appends the current repo name at runtime.
+- `base_dir` in config stores the root path. The `resolve-basedir.sh` script appends the repo name at runtime only when `folders.git` is `true`.
+- `folders.git` defaults to `true` — existing installs without this key in config behave exactly as before.
 - The config file is always written to `~/.crispy/config.json` for consistency across repos, but artifacts can be stored anywhere.

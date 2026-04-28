@@ -8,7 +8,7 @@ When you run `/crispy:init`, choose a storage path. Crispy will organize artifac
 
 ```
 <your-chosen-path>/
-  <repo-name>/
+  <repo-name>/          ← omitted in flat layout mode
     <feature>/
       1-intent.md
       2-research-questions.md
@@ -20,6 +20,8 @@ When you run `/crispy:init`, choose a storage path. Crispy will organize artifac
         phase-1.md
         ...
 ```
+
+By default, features are grouped by repo name. If your features span multiple repos, choose the flat layout during init — features then sit directly under your chosen path.
 
 If you choose a path inside a markdown reader's directory, all artifacts automatically appear in that app.
 
@@ -34,7 +36,7 @@ Examples:
 **Steps:**
 1. Run `/crispy:init`
 2. When asked for storage location, provide: `/path/to/your/vault/crispy`
-3. Artifacts now appear in your vault under `crispy/<repo-name>/<feature>/`
+3. Artifacts now appear in your vault under `crispy/<repo-name>/<feature>/` (or `crispy/<feature>/` if you chose the flat layout)
 
 **What you get:**
 - Full-text search of all artifacts

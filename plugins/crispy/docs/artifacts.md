@@ -2,7 +2,7 @@
 
 ## How Artifacts Are Stored
 
-All files go in `<base_dir>/<repo-name>/<feature-name>/`:
+By default, files go in `<base_dir>/<repo-name>/<feature-name>/` (one folder per repo):
 
 ```
 <base_dir>/
@@ -23,6 +23,15 @@ All files go in `<base_dir>/<repo-name>/<feature-name>/`:
         phase-1.md           ← self-sufficient implementation doc
         phase-2.md
         ...
+```
+
+If you opt into the **flat layout** during `/crispy:init` (useful for features that span multiple repos), files go directly in `<base_dir>/<feature-name>/` instead:
+
+```
+<base_dir>/
+  my-feature/
+    1-intent.md
+    ...
 ```
 
 The `artifacts/` subfolder stores images shared during any phase — screenshots of current UI, mockups, whiteboard photos, diagrams, etc. These are referenced from markdown documents using relative links like `![description](artifacts/filename.png)`, which renders natively in Obsidian, Logseq, and most markdown viewers.
@@ -52,9 +61,9 @@ Every skill writes its output to the artifact storage **before** asking for your
 
 This keeps the conversation clean — you're reviewing a structured document, not a wall of text.
 
-## Multiple Repositories
+## Working Across Multiple Repos
 
-When working on multiple repos, each gets its own folder under `<base_dir>/<repo-name>/`. If you use the same base directory for all repos, all artifacts appear in the same place organized by repo and feature.
+See [Working Across Multiple Repos](./multi-repo.md) for the recommended folder structure, setup, and workflow.
 
 ## Changing Your Storage Location
 
@@ -65,3 +74,39 @@ To change where artifacts are stored:
 ```
 
 Answer the prompts to specify a new base directory. Existing artifacts in the old location are not affected.
+
+## Configuration Reference
+
+Crispy stores its config at `~/.crispy/config.json`. You can edit this file directly instead of re-running `/crispy:init`.
+
+**Full schema:**
+
+```json
+{
+  "base_dir": "/absolute/path/to/artifacts",
+  "folders": {
+    "git": true
+  }
+}
+```
+
+| Field | Type | Default | Description |
+|---|---|---|---|
+| `base_dir` | string | `~/.crispy` | Absolute path where feature folders are written. Must already exist. |
+| `folders.git` | boolean | `true` | When `true`, features are grouped under a repo-name subfolder: `<base_dir>/<repo>/<feature>/`. When `false`, features are written flat: `<base_dir>/<feature>/`. |
+
+**Example — flat layout pointing at an Obsidian vault:**
+
+```json
+{
+  "base_dir": "/Users/you/Documents/MyVault/crispy",
+  "folders": {
+    "git": false
+  }
+}
+```
+
+**Notes:**
+- The `folders` key is optional. If absent, crispy behaves as if `folders.git` is `true`.
+- Changes take effect immediately — no restart needed.
+- The config file itself always lives at `~/.crispy/config.json` regardless of where artifacts are stored.

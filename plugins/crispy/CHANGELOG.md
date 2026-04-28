@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.7.0
+
+### Init — Optional Flat Layout for Cross-Repo Features
+
+The init wizard now lets you choose whether crispy groups feature folders by git repository or writes them flat directly under `base_dir`.
+
+#### What changed
+
+- **`folders.git` config option.** A new `folders` object in `~/.crispy/config.json` controls layout. `folders.git: true` (default) preserves the existing `<base_dir>/<repo-name>/<feature>/` structure. `folders.git: false` writes features directly to `<base_dir>/<feature>/` — useful when a feature spans multiple repos.
+- **Init wizard step added.** `/crispy:init` now asks "Should crispy group features by git repository?" after setting the storage location. The answer is written into config alongside `base_dir`.
+- **`setup-crispy.sh` added.** New helper script that writes `~/.crispy/config.json` with both `base_dir` and `folders.git`.
+- **Backward compatible.** Existing configs without a `folders` key default to `git: true` — no behavior change for current users.
+
+---
+
 ## 1.6.0
 
 ### Design — Interactive Q&A, Patterns to Follow, Leaner Document
