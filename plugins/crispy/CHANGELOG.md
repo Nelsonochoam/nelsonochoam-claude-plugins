@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.7.1
+
+### Bug Fix — Imprecise Variable References in Intent and Plan Skills
+
+#### What changed
+
+- **`skills/intent/SKILL.md`**: Fixed bare relative path `references/intent-template.md` to `${CLAUDE_SKILL_DIR}/references/intent-template.md`. Claude was resolving it against the plugin root instead of the skill's own folder, causing a read error and falling back to inferred structure instead of the canonical template.
+- **`skills/plan/SKILL.md`**: Fixed two occurrences of `$CLAUDE_SKILL_DIR` (no braces) in subagent prompt instructions to `${CLAUDE_SKILL_DIR}` for consistency.
+
+---
+
 ## 1.7.0
 
 ### Init — Optional Flat Layout for Cross-Repo Features

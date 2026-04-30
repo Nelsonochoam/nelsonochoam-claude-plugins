@@ -120,7 +120,7 @@ If images were shared earlier (before the feature folder existed), copy them to 
 - Write `$FEATURE_PATH/1-intent.md` with front matter (`task` and `type: intent` fields) and a Summary section preserving the user's words. Include any additional sections (Acceptance Criteria, Constraints, etc.) only if the user provided that information in their description.
 
 **If the user went through the full Q&A flow**:
-- Read the template from `references/intent-template.md`, then write the intent document to `$FEATURE_PATH/1-intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
+- Read the template from `${CLAUDE_SKILL_DIR}/references/intent-template.md`, then write the intent document to `$FEATURE_PATH/1-intent.md` — the document **must include the front matter block** (`task` and `type` fields) from the template, filled in with the resolved feature name and `type: intent`. Acceptance criteria must use the Given/When/Then format with numbered labels (AC-1, AC-2, etc.)
 
 Then say:
 

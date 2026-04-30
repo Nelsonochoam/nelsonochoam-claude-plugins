@@ -77,8 +77,8 @@ Construct a self-contained prompt per phase — the subagent has no prior conver
 - Which prior artifacts exist and should be read in full (list absolute paths for any that exist): `1-intent.md`, `3-research.md`, `4-design.md`, `5-structure-outline.md`
 - Dependency phase file paths (if this phase depends on others)
 - The specific codebase files this phase is expected to modify (from the structure outline's file list for this phase) — the subagent uses these as starting points for targeted research
-- Instruction to read the phase template from `$CLAUDE_SKILL_DIR/references/phase-template.md`
-- Instruction to apply the per-phase items from `$CLAUDE_SKILL_DIR/references/self-review-checklist.md` before writing
+- Instruction to read the phase template from `${CLAUDE_SKILL_DIR}/references/phase-template.md`
+- Instruction to apply the per-phase items from `${CLAUDE_SKILL_DIR}/references/self-review-checklist.md` before writing
 - Output target: write the completed phase doc to `$FEATURE_PATH/phases/phase-{N}.md` — write the file directly, do not return content in the response
 - If something is missing or ambiguous, write the best-possible phase doc with an explicit `TODO:` comment marking the gap — do not stop to ask questions
 
